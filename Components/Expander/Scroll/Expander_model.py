@@ -281,32 +281,32 @@ if __name__ == '__main__':
     expander = Expander()
     expander.print_setup()
 
-    # # Set fluid states for connectors
-    # expander.su.set_fluid('R134a')
-    # expander.ex.set_fluid('R134a')
+    "If the inputs are not set directly BUT throught the connectors"
+    expander.su.set_fluid('R134a')
+    expander.ex.set_fluid('R134a')
 
-    # # # Set properties for su connector
-    # expander.su.set_p(955214.9)
-    # expander.su.set_T(374.1)  # You need to set su.h appropriately
+    # # Set properties for su connector
+    expander.su.set_p(955214.9)
+    expander.su.set_T(374.1)  # You need to set su.h appropriately
 
-    # # # Set properties for ex connector
-    # expander.ex.set_p(293940.1)
+    # # Set properties for ex connector
+    expander.ex.set_p(293940.1)
     
-    # # Set rotational speed
-    # expander.work_exp.set_speed(1500)
+    # Set rotational speed
+    expander.work_exp.set_speed(1500)
 
-    # # Set ambient temperature
-    # expander.heat_amb.set_temperature_in(293)
+    # Set ambient temperature
+    expander.heat_amb.set_temperature_in(293)
 
     # Setting inputs
-    expander.set_inputs(
-        N_rot=3000,
-        T_amb=298.15,
-        su_p=1e5,
-        su_T=300,
-        ex_p=1e4,
-        su_fluid='R134a'  # Make sure to include fluid information
-    )
+    # expander.set_inputs(
+    #     N_rot=3000,
+    #     T_amb=298.15,
+    #     su_p=1e5,
+    #     su_T=300,
+    #     ex_p=1e4,
+    #     su_fluid='R134a'  # Make sure to include fluid information
+    # )
 
     # Setting parameters
     expander.set_parameters(
