@@ -319,3 +319,5 @@ if __name__ == '__main__':
     expander.print_results()
     
     # print(expander.defined)  # Should print True if the component was successfully solved
+
+    print('coucou Basile')
