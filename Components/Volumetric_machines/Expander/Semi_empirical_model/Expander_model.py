@@ -10,7 +10,7 @@ from scipy.optimize import fsolve
 import numpy as np
 import time
 
-class Expander(BaseComponent):
+class Expander_SE(BaseComponent):
     def __init__(self):
         super().__init__()
         self.su = Mass_connector()
