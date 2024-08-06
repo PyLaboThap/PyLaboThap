@@ -9,7 +9,7 @@ Created on Wed Jan 10 14:09:18 2024
 
 from CoolProp.CoolProp import PropsSI
 
-class Mass_connector:
+class MassConnector:
     def __init__(self):
 
         self.completely_known = False # True if all the properties and the mass flow rate are known

@@ -7,10 +7,10 @@ Created on Fri June 19 2024
 """
 
 from CoolProp.CoolProp import PropsSI
-from Connectors.Mass_connector import Mass_connector
+from connectors.mass_connector import MassConnector
 
 # Create an instance of the Mass_connector class
-point = Mass_connector()
+point = MassConnector()
 point.set_properties(T=500, m_dot=0.5, fluid = 'INCOMP::DowQ', P=101325)
 point.print_resume(unit_T='C', unit_p='bar')
 # point.set_T(70+273.15)

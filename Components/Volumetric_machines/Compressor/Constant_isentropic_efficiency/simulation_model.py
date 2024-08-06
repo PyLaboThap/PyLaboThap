@@ -1,16 +1,16 @@
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
 
-class Compressor_CstEff(BaseComponent):
+class CompressorCstEff(BaseComponent):
     def __init__(self):
         super().__init__()
-        self.su = Mass_connector()
-        self.ex = Mass_connector() # Mass_connector
-        self.work_cp = Work_connector()
+        self.su = MassConnector()
+        self.ex = MassConnector() # Mass_connector
+        self.W_cp = WorkConnector()
 
     def get_required_inputs(self):
         if self.inputs == {}:

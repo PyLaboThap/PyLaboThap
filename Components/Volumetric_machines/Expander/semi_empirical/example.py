@@ -5,17 +5,13 @@ Created on Wed Nov 22 14:39:37 2023
 @author: Elise
 """
 
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
 
-from Components.Volumetric_machines.Expander.Semi_empirical_model.Expander_model import Expander
+from components.volumetric_machines.expander.semi_empirical.simulation_model import ExpanderSE
 
 import numpy as np
 
 # Example usage
-expander = Expander()
+expander = ExpanderSE()
 expander.print_setup()
 
 "If the inputs are not set directly BUT throught the connectors"

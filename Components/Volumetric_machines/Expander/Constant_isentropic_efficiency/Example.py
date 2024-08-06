@@ -5,17 +5,12 @@ Created on Aug 03 21:31:37 2023
 @author: Elise
 """
 
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
-
-from Components.Volumetric_machines.Expander.Constant_isentropic_efficiency.Expander_model import Expander_CstEff
+from components.volumetric_machines.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
 
 import numpy as np
 
 # Example usage
-EXP = Expander_CstEff()
+EXP = ExpanderCstEff()
 EXP.print_setup()
 
 # "If the inputs are not set directly BUT throught the connectors"

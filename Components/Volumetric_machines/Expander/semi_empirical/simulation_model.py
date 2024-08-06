@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
 from scipy.optimize import fsolve
 import numpy as np
 import time
 
-class Expander_SE(BaseComponent):
+class ExpanderSE(BaseComponent):
     def __init__(self):
         super().__init__()
-        self.su = Mass_connector()
-        self.ex = Mass_connector() # Mass_connector
-        self.work_exp = Work_connector()
-        self.heat_amb = Heat_connector()
+        self.su = MassConnector()
+        self.ex = MassConnector() # Mass_connector
+        self.work_exp = WorkConnector()
+        self.heat_amb = HeatConnector()
 
     def get_required_inputs(self):
         

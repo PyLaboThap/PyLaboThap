@@ -1,17 +1,17 @@
-from Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
 
 class Template(BaseComponent):
     def __init__(self):
         super().__init__()
         # Define connectors here
-        self.su = Mass_connector()
-        self.ex = Mass_connector() # Mass_connector
-        self.work_su = Work_connector()
-        self.heat_ex = Heat_connector()
+        self.su = MassConnector()
+        self.ex = MassConnector() # Mass_connector
+        self.work_su = WorkConnector()
+        self.heat_ex = HeatConnector()
 
     def get_required_inputs(self):
         
