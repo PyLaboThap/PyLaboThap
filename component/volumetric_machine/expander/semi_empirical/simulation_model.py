@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from component.base_component import BaseComponent
-from connectors.mass_connector import MassConnector
-from connectors.work_connector import WorkConnector
-from connectors.heat_connector import HeatConnector
+from connector.mass_connector import MassConnector
+from connector.work_connector import WorkConnector
+from connector.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
 from scipy.optimize import fsolve
