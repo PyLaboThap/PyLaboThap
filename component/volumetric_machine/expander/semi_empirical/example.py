@@ -6,7 +6,7 @@ Created on Wed Nov 22 14:39:37 2023
 """
 
 
-from components.volumetric_machines.expander.semi_empirical.simulation_model import ExpanderSE
+from component.volumetric_machine.expander.semi_empirical.simulation_model import ExpanderSE
 
 import numpy as np
 

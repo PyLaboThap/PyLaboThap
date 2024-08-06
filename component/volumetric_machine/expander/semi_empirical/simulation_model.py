@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from components.base_component import BaseComponent
+from component.base_component import BaseComponent
 from connectors.mass_connector import MassConnector
 from connectors.work_connector import WorkConnector
 from connectors.heat_connector import HeatConnector

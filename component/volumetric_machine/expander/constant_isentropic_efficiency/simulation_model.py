@@ -1,16 +1,19 @@
-from components.base_component import BaseComponent
+from component.base_component import BaseComponent
 from connectors.mass_connector import MassConnector
 from connectors.work_connector import WorkConnector
 from connectors.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
+from scipy.optimize import fsolve
+import numpy as np
+import time
 
-class CompressorCstEff(BaseComponent):
+class ExpanderCstEff(BaseComponent):
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
         self.ex = MassConnector() # Mass_connector
-        self.W_cp = WorkConnector()
+        self.work_exp = WorkConnector()
 
     def get_required_inputs(self):
         if self.inputs == {}:
@@ -44,7 +47,7 @@ class CompressorCstEff(BaseComponent):
         ]
     
     def print_setup(self):
-        print("=== Compressor Setup ===")
+        print("=== Expander Setup ===")
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
@@ -74,7 +77,7 @@ class CompressorCstEff(BaseComponent):
         if self.calculable and self.parametrized:
 
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
-            h_ex = self.su.h + (h_ex_is - self.su.h) / self.params['eta_is']
+            h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
             self.ex.set_h(h_ex)
 
     def print_results(self):

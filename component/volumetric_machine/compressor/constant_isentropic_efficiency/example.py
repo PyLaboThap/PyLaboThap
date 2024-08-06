@@ -4,12 +4,12 @@ Created on Aug 03 21:31:37 2023
 @author: Elise
 """
 
-from components.base_component import BaseComponent
+from component.base_component import BaseComponent
 from connectors.mass_connector import MassConnector
 from connectors.work_connector import WorkConnector
 from connectors.heat_connector import HeatConnector
 
-from components.volumetric_machines.compressor.constant_isentropic_efficiency.simulation_model import CompressorCstEff
+from component.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model import CompressorCstEff
 
 import numpy as np
 
