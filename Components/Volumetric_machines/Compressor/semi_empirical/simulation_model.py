@@ -5,10 +5,10 @@ Created on Wed Nov 29 10:38:08 2023
 @author: Elise
 """
 
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
 from scipy.optimize import fsolve
@@ -18,13 +18,13 @@ import time
 # TO DO (for the model in general not for the purpose of the off-design model of the CB):
 #Find a way so that it can take as input either m_dot or N_rot
 
-class Compressor_SE(BaseComponent):
+class CompressorSE(BaseComponent):
     def __init__(self):
         super().__init__()
-        self.su = Mass_connector()
-        self.ex = Mass_connector() # Mass_connector
-        self.work_cp = Work_connector()
-        self.heat_amb = Heat_connector()
+        self.su = MassConnector()
+        self.ex = MassConnector() # Mass_connector
+        self.work_cp = WorkConnector()
+        self.heat_amb = HeatConnector()
 
     def get_required_inputs(self):
         

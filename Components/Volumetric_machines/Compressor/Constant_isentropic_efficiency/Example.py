@@ -4,17 +4,17 @@ Created on Aug 03 21:31:37 2023
 @author: Elise
 """
 
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
-from Components.Volumetric_machines.Compressor.Constant_isentropic_efficiency.Compressor_model import Compressor_CstEff
+from components.volumetric_machines.compressor.constant_isentropic_efficiency.simulation_model import CompressorCstEff
 
 import numpy as np
 
 # Example usage
-CP = Compressor_CstEff()
+CP = CompressorCstEff()
 CP.print_setup()
 
 # "If the inputs are not set directly BUT throught the connectors"

@@ -1,4 +1,4 @@
-class Work_connector:
+class WorkConnector:
     def __init__(self):
         """
         Parameters

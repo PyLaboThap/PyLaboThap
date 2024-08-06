@@ -1,14 +1,14 @@
-from Components.Base_Component import BaseComponent
-from Connectors.Mass_connector import Mass_connector
-from Connectors.Work_connector import Work_connector
-from Connectors.Heat_connector import Heat_connector
+from components.base_component import BaseComponent
+from connectors.mass_connector import MassConnector
+from connectors.work_connector import WorkConnector
+from connectors.heat_connector import HeatConnector
 
-from Components.Volumetric_machines.Compressor.Semi_empirical_model.Compressor_model import Compressor_SE
+from components.volumetric_machines.compressor.semi_empirical.simulation_model import CompressorSE
 
 import numpy as np
 
 # Example usage
-CP = Compressor_SE()
+CP = CompressorSE()
 CP.print_setup()
 
 "If the inputs are not set directly BUT throught the connectors"

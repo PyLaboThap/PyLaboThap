@@ -1,4 +1,4 @@
-class Heat_connector:
+class HeatConnector:
     def __init__(self):
         """
         Parameters
