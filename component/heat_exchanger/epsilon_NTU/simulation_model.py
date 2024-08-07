@@ -20,8 +20,8 @@ import time
 class HXeNTU(BaseComponent):
     def __init__(self):
         super().__init__()
-        self.su = {'H' : MassConnector(), 
-                   'C' : MassConnector()}
+        self.su_hot = MassConnector()
+        self.su_cold = MassConnector()
         self.ex = {'H' : MassConnector(),
                    'C' : MassConnector()} # Mass_connector
         self.Q_dot = HeatConnector()

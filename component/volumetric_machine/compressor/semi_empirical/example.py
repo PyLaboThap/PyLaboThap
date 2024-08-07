@@ -1,8 +1,3 @@
-from component.base_component import BaseComponent
-from connector.mass_connector import MassConnector
-from connector.work_connector import WorkConnector
-from connector.heat_connector import HeatConnector
-
 from component.volumetric_machine.compressor.semi_empirical.simulation_model import CompressorSE
 
 import numpy as np
