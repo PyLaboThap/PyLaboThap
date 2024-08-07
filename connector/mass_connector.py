@@ -25,6 +25,13 @@ class MassConnector:
         self.s = None               # Specific entropy [J/kg/K]
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
+
+    def connect(self, other_connector):
+        self.fluid = other_connector.fluid
+        self.T = other_connector.T
+        self.p = other_connector.p
+        self.h = other_connector.h
+        self.m_dot = other_connector.m_dot
         
         
     def check_completely_known(self):
