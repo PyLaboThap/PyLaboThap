@@ -7,7 +7,7 @@ Created on Fri June 19 2024
 """
 
 from CoolProp.CoolProp import PropsSI
-from connectors.mass_connector import MassConnector
+from connector.mass_connector import MassConnector
 
 # Create an instance of the Mass_connector class
 point = MassConnector()
