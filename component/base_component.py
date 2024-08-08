@@ -9,11 +9,12 @@ class BaseComponent:
     def set_inputs(self, **inputs):
         for key, value in inputs.items():
             self.inputs[key] = value
+        print('coucou1')
+        # print(self.inputs)
 
     def set_parameters(self, **parameters):
         for key, value in parameters.items():
             self.params[key] = value
-
         self.check_parametrized()
 
     def check_calculable(self):
