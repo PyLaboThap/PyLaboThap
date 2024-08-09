@@ -52,7 +52,6 @@ class HXSimpleMB(BaseComponent):
         
         print(self.inputs)
         if self.inputs != {}:
-            print('coucou')
             # Working Fluid
             if 'fluid_wf' in self.inputs:
                 self.su_wf.set_fluid(self.inputs['fluid_wf'])
@@ -116,20 +115,20 @@ class HXSimpleMB(BaseComponent):
         T_wf_sat = PropsSI('T', 'P', P_wf, 'Q', 0, self.su_wf.fluid)
 
         # case depending temperatures
-        if self.HX_type == 'evaporator':
+        if self.params['HX_type'] == 'evaporator':
             sf_ht_dir = 'cooled'
             wf_ht_dir = 'heated'
             T_sf_h = self.su_sf.T
             T_sf_c = self.ex_sf.T    #T_sf_h - self.glide_sf
-            T_wf_h = T_wf_sat + self.params['Delta_T_sub_or_sup']
+            T_wf_h = T_wf_sat + self.params['Delta_T_sup_or_sub']
             T_wf_c = self.su_wf.T
             self.T_wf_out = T_wf_h
-        elif self.HX_type == 'condenser':
+        elif self.params['HX_type'] == 'condenser':
             sf_ht_dir = 'heated'
             wf_ht_dir = 'cooled'
             T_sf_c = self.su_sf.T
             T_sf_h = self.ex_sf.T   #T_sf_c + self.glide_sf
-            T_wf_c = T_wf_sat - self.params['Delta_T_sub_or_sup']
+            T_wf_c = T_wf_sat - self.params['Delta_T_sup_or_sub']
             T_wf_h = self.su_wf.T
             self.T_wf_out = T_wf_c
 
@@ -303,6 +302,7 @@ class HXSimpleMB(BaseComponent):
 
         results = self.MB_model(P_wf_f)
 
+        self.ex_wf.set_fluid(self.su_wf.fluid)
         self.ex_wf.set_T(self.T_wf_out)
         self.ex_wf.set_p(P_wf_f)
         self.ex_wf.set_m_dot(self.su_wf.m_dot)
@@ -316,18 +316,18 @@ class HXSimpleMB(BaseComponent):
     def print_results(self):
         print("=== Heat Exchanger Results ===")
         print(f"Q: {self.Q}")
-        print(f"Q_sub: {self.Q_sub}")
-        print(f"Q_sat: {self.Q_sat}")
-        print(f"Q_sup: {self.Q_sup}")
+        # print(f"Q_sub: {self.Q_sub}")
+        # print(f"Q_sat: {self.Q_sat}")
+        # print(f"Q_sup: {self.Q_sup}")
         print(f"m_dot_sf: {self.m_dot_sf}")
         print(f"T_wf_out: {self.T_wf_out}")
         print(f"U_sub: {self.U_sub}")
         print(f"U_sat: {self.U_sat}")
         print(f"U_sup: {self.U_sup}")
         print(f"tau: {self.tau}")
-        print(f"A_sub: {self.A_sub}")
-        print(f"A_sat: {self.A_sat}")
-        print(f"A_sup: {self.A_sup}")
+        # print(f"A_sub: {self.A_sub}")
+        # print(f"A_sat: {self.A_sat}")
+        # print(f"A_sup: {self.A_sup}")
         print(f"res: {self.res}")
         print(f"flag_tau: {self.flag_tau}")
         print("======================")

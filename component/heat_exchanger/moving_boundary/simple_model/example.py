@@ -23,7 +23,7 @@ EVAP.set_parameters(**{
     'HX_D': 0.06, #Diamètre de port d'entré
     'HX_A': 17.8, #Surface d'échange
     'min_pinch': 2,
-    'dT_sub_or_sup': 5
+    'Delta_T_sup_or_sub': 5
 })
 
 EVAP.solve()
