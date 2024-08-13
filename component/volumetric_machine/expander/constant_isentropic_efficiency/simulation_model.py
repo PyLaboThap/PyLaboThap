@@ -4,7 +4,7 @@ from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
-from scipy.optimize import fsolve
+# from scipy.optimize import fsolve
 import numpy as np
 import time
 

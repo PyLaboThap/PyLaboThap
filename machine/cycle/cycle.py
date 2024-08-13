@@ -9,15 +9,29 @@ from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
-
+from component.heat_exchanger.moving_boundary.simple_model.simulation_model import HXSimpleMB
+from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
+from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 class Cycle:
+
+    class Component:
+        def __init__(self, name, model):
+            self.name = name
+            self.model = model
+            self.next = None # Créer un dictionnaire qui a les mêmes keys que les exhausts du model
+            self.previous = None # Créer un dictionnaire qui a les mêmes keys que les supply du model
+        # sous-classe: utile quand tu veux que l'utilisateur n'utilise cette classe uniquement quand utiliser la classe Cycle
+
     def __init__(self):
-        self.components = {}
+        self.components = {} #That's the chain element, ajouter previous, next,... FAIRE SOUS CLASSE
         self.connectors = {}
+        self.fluid = None
 
     def add_component(self, component, name):
         self.components[name] = component
+
+    
     
     # def add_connector(self, connector, name):
     #     self.connectors[name] = connector
@@ -49,9 +63,106 @@ class Cycle:
         else:
             print("Incompatible connector types.")
 
-        print(output_connector, input_connector)
+        # print(output_connector, input_connector)
 
+    def check_parametrized(self):
+        """
+        Check for all components models if all the required parameters have been passed
+        """        
+        self.flag_not_parametrized = 0 # =1 if at least one component is not fully parametrized
+        for components in self.components.values():
+            if components.parametrized:
+                pass
+            else:
+                self.flag_not_parametrized = 1
+                print(f"Error: Parameters of {components} not completely known")
+
+        print("The cycle components are fully parametrized") if self.flag_not_parametrized == 0 else None
+
+    def solve(self):
+
+        # First, check if all the components are parametrized
+        self.check_parametrized()
+        if self.flag_not_parametrized == 1:
+            return
+        
+        for component in self.components.values():
+            print(component)
+            component.solve()
+
+    def set_guess(self):
+        pass
+
+
+
+if __name__ == "__main__":
+    # Create a cycle
+    ORC = Cycle()
     
+    # Create components
+    PUMP = PumpCstEff()
+    EVAP = HXSimpleMB()
+    COND = HXSimpleMB()
+    EXP = ExpanderCstEff()
+
+    # Set parameters
+    PUMP.set_parameters(eta_is=0.6)
+
+    EVAP.set_parameters(**{
+    'HX_type': 'evaporator',
+    'HX_D': 0.06, #Diamètre de port d'entré
+    'HX_A': 17.8, #Surface d'échange
+    'min_pinch': 2,
+    'Delta_T_sup_or_sub': 5
+    })
+
+    COND.set_parameters(**{
+    'HX_type': 'condenser',
+    'HX_D': 0.06, #Diamètre de port d'entré
+    'HX_A': 17.8, #Surface d'échange
+    'min_pinch': 2,
+    'Delta_T_sup_or_sub': 5
+    })
+
+    EXP.set_parameters(eta_is=0.8)
+
+    # Add components to the cycle
+    ORC.add_component(PUMP, "Pump") # :!\ Est-ce que les noms des composants sont importants?
+    ORC.add_component(EVAP, "Evaporator")
+    ORC.add_component(COND, "Condenser")
+    ORC.add_component(EXP, "Expander")
+
+    ORC.link_components("Pump", "ex", "Evaporator", "su_wf")
+    ORC.link_components("Evaporator", "ex_wf", "Expander", "su")
+    ORC.link_components("Expander", "ex", "Condenser", "su_wf")
+    ORC.link_components("Condenser", "ex_wf", "Pump", "su")
+
+
+    ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_sf")
+
+    # ORC.check_parametrized()
+
+    # Changer wf/sf avec Hot/cold fluids -> ajouter un argument en + pour voir lequel est le wf.
+    # Set the inputs
+    #Exo ORC M&S
+    "Expander"
+    ORC.components["Expander"].su.set_properties(P=880273, T=145+273.15, fluid='R245fa', m_dot=0.06)
+    ORC.components["Expander"].ex.set_properties(P=267199, fluid='R245fa')
+
+    "Condenser"
+    ORC.components["Condenser"].su_sf.set_properties(T=30+273.15, fluid='Water', m_dot=0.4)
+    ORC.components["Condenser"].ex_sf.set_properties(T=40+273.15, fluid='Water')
+
+    "Pump"
+    ORC.components["Pump"].su.set_properties(fluid='R245fa')
+    ORC.components["Pump"].ex.set_properties(P=880273, fluid='R245fa')
+
+    "Evaporator"
+    ORC.components["Evaporator"].su_sf.set_properties(T=150+273.15, fluid='Water', m_dot=0.4)
+    ORC.components["Evaporator"].ex_sf.set_properties(T=125+273.15, fluid='Water')
+
+    ORC.solve()
+    print(ORC.components)
 
 # class System:
 #     def __init__(self):

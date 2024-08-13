@@ -4,10 +4,11 @@ import numpy as np
 
 "Evaporator test"
 
+#Exo ORC M&S
 EVAP = HXSimpleMB()
 
 EVAP.set_inputs(
-    fluid_wf = 'R1233zd(E)',
+    fluid_wf = 'R245fa',
     su_wf_T = 60+273.15,
     su_wf_m_dot = 0.4621,
     su_wf_x = 0,

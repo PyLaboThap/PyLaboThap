@@ -1,24 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Aug 08 14:32:39 2024
-
-@author: Elise Neven
-@email: elise.neven@uliege.be
-"""
-
 from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
 from component.base_component import BaseComponent
 
-from component.heat_exchanger.moving_boundary.simple_model.modules.U import U_Gnielinski_calibrated, U_DittusBoelter, U_Cooper_calibrater, U_Thonon
+# from component.heat_exchanger.moving_boundary.simple_model.modules.U import U_Gnielinski_calibrated, U_DittusBoelter, U_Cooper_calibrater, U_Thonon
 
 from CoolProp.CoolProp import PropsSI
 import numpy as np
 import math
 
-class HXSimpleMB(BaseComponent):
+class HXPinchCst(BaseComponent):
     def __init__(self):
         super().__init__()
         self.su_wf = MassConnector() # Working fluid supply
