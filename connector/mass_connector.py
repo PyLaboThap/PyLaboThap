@@ -26,7 +26,7 @@ class MassConnector:
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
 
-    def connect(self, other_connector):
+    def connect(self, other_connector): # Connect two mass connectors (should change this bc I don't connect everything)
         self.fluid = other_connector.fluid
         self.T = other_connector.T
         self.p = other_connector.p
@@ -60,6 +60,7 @@ class MassConnector:
                 self.h = PropsSI('H', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.s = PropsSI('S', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.D = PropsSI('D', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
+                self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.state_known = True
             except:
                 print("Error: This pair of inputs is not yet supported.")
@@ -222,6 +223,19 @@ class MassConnector:
         else:          # If the quality is not known, set the value and add the variable to the list
             self.x = value
             self.variables_input = self.variables_input+[['Q',value]]
+            self.check_completely_known()
+
+    def set_cp(self, value):
+        if self.cp != None: # If the quality is already known, update the value and the corresponding variable in the list
+            self.cp = value
+            for i, var in enumerate(self.variables_input):
+                if var[0] == 'CP':
+                    self.variables_input[i][1] = value
+                    break
+            self.check_completely_known()
+        else:          # If the quality is not known, set the value and add the variable to the list
+            self.cp = value
+            self.variables_input = self.variables_input+[['CP',value]]
             self.check_completely_known()
             
             
