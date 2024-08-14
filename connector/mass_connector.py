@@ -25,6 +25,7 @@ class MassConnector:
         self.s = None               # Specific entropy [J/kg/K]
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
+        self.cp = None              # Specific heat capacity [J/kg/K]
 
     def connect(self, other_connector): # Connect two mass connectors (should change this bc I don't connect everything)
         self.fluid = other_connector.fluid
@@ -73,6 +74,7 @@ class MassConnector:
                 self.h = PropsSI('H', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.s = PropsSI('S', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.D = PropsSI('D', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
+                self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.state_known = True
             except:
                 try:
@@ -85,6 +87,7 @@ class MassConnector:
                         self.T = PropsSI('T', 'Q', self.x, 'H', self.h, self.fluid)
                         self.s = PropsSI('S', 'Q', self.x, 'H', self.h, self.fluid)
                         self.D = PropsSI('D', 'Q', self.x, 'H', self.h, self.fluid)
+                        self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                         self.state_known = True
                 except:
                     print("Error: This pair of inputs is not yet supported.")
@@ -226,17 +229,10 @@ class MassConnector:
             self.check_completely_known()
 
     def set_cp(self, value):
-        if self.cp != None: # If the quality is already known, update the value and the corresponding variable in the list
+        if self.cp != None: # If the cp is already known, update the value and the corresponding variable in the list
             self.cp = value
-            for i, var in enumerate(self.variables_input):
-                if var[0] == 'CP':
-                    self.variables_input[i][1] = value
-                    break
-            self.check_completely_known()
         else:          # If the quality is not known, set the value and add the variable to the list
-            self.cp = value
-            self.variables_input = self.variables_input+[['CP',value]]
-            self.check_completely_known()
+            self.cp = value # We don't want to calculate in this case
             
             
     def print_resume(self, unit_T='K', unit_p='Pa'):

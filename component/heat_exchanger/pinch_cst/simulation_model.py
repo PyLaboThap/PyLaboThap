@@ -22,6 +22,7 @@ class HXPinchCst(BaseComponent):
         self.guesses = {}
 
     def get_required_inputs(self):
+
         if self.inputs == {}:
             # Hot Fluid
             if self.su_wf.fluid is not None:
@@ -56,22 +57,26 @@ class HXPinchCst(BaseComponent):
                 self.su_sf.set_fluid(self.inputs['fluid_sf'])
             if 'su_sf_T' in self.inputs:
                 self.su_sf.set_T(self.inputs['su_sf_T'])
-            if 'su_sf_p' in self.inputs:
+            if 'su_sf_cp' in self.inputs:
                 self.su_sf.set_cp(self.inputs['su_sf_cp'])
             if 'su_sf_m_dot' in self.inputs:
                 self.su_sf.set_m_dot(self.inputs['su_sf_m_dot'])
-            if 'ex_sf_T' in self.inputs:
-                self.ex_sf.set_T(self.inputs['ex_sf_T'])
-            
-        return['fluid_wf', 'su_wf_T', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot', 'ex_sf_T']
+            # if 'ex_sf_T' in self.inputs:
+            #     self.ex_sf.set_T(self.inputs['ex_sf_T'])
+        # print(self.inputs['su_sf_cp'])
+        # print(self.su_sf.T)
+        # print('su_sf_cp', self.su_sf.cp)
+        # print(self.inputs['su_sf_cp'])
+        return['fluid_wf', 'su_wf_T', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
     
     def get_required_parameters(self):
         return [
             'Pinch', # Minimum pinch point
-            'Delta_T_sh', # Superheating or subcooling
+            'Delta_T_sh_sc', # Superheating or subcooling
+            'type_HX' # Evaporator or condenser
         ]
     def get_required_guesses(self):
-        return [ 'P_ev' ]
+        return [ 'P_sat' ]
     
     def print_setup(self):
         print("=== Heat Exchanger Setup ===")
@@ -98,32 +103,34 @@ class HXPinchCst(BaseComponent):
 
         print("======================")
 
-    def system(self, P_ev):
-
-        T_ev = PropsSI('Tsat', 'P', P_ev, self.su_wf.fluid)
-
+    def system_evap(self, x):
+        P_ev = x[0]
+        T_ev = PropsSI('T', 'P', P_ev, 'Q', 0.5, self.su_wf.fluid)
+        
+        print(P_ev, self.su_wf.T, T_ev)
         "Refrigerant side"
+        # if 
         "Liquid zone"
         h_ev_su = PropsSI('H', 'P', P_ev, 'T', self.su_wf.T, self.su_wf.fluid)
         h_ev_l = PropsSI('H', 'P', P_ev, 'Q', 0, self.su_wf.fluid)
         Q_dot_ev_l = self.su_wf.m_dot*(h_ev_l-h_ev_su)
-
         "Two-phase zone"
         h_ev_v = PropsSI('H', 'P', P_ev, 'Q', 1, self.su_wf.fluid)
         Q_dot_ev_tp = self.su_wf.m_dot*(h_ev_v-h_ev_l)
 
         "Vapor zone"
-        T_wf_ex = self.su_wf.T + self.params['Delta_T_sh']
+        T_wf_ex = self.su_wf.T + self.params['Delta_T_sh_sc']
         h_ev_ex = PropsSI('H', 'P', P_ev, 'T', T_wf_ex, self.su_wf.fluid)
         Q_dot_ev_v = self.su_wf.m_dot*(h_ev_ex-h_ev_v)
-
+        # print('HALLO')
         "Total heat transfer"
         Q_dot_ev = Q_dot_ev_l + Q_dot_ev_tp + Q_dot_ev_v
 
         "Secondary fluid side"
         "Total heat transfer"
+        # print(self.su_sf.cp)
         self.T_sf_ex = self.su_sf.T + Q_dot_ev/(self.su_sf.m_dot*self.su_sf.cp)
-        
+        # print('HALLO')
         "Vapor zone"
         self.T_sf_v = self.su_sf.T - Q_dot_ev_v/(self.su_sf.m_dot*self.su_sf.cp)
 
@@ -133,23 +140,74 @@ class HXPinchCst(BaseComponent):
         # Q_dot_ev_v = m_dot_oil_ev*c_oil*(T_oil_su_ev-T_oil_ev_v)"guess on DeltaT_sh to remove"
         # Q_dot_ev_tp = m_dot_oil_ev*c_oil*(T_oil_ev_v-T_oil_ev_l)
         # Q_dot_ev_l = m_dot_oil_ev*c_oil*(T_oil_ev_l-T_oil_ex_ev) 
-
+        # print('HALLO')
         PP = min(self.su_sf.T-T_wf_ex, self.T_sf_l-T_ev)
         res = PP - self.params['Pinch']
+        # print('res', res)
+        return res
 
+    def system_cond(self, x):
+        print('cond')
+        P_cd = x[0]
+        T_cd = PropsSI('T', 'P', P_cd, 'Q', 0.5, self.su_wf.fluid)
+
+        "3. Condenser model"
+        "3.1 Refrigerant side"
+        h_wf_su_cd = PropsSI('H', 'P', P_cd, 'T', self.su_wf.T, self.su_wf.fluid)
+ 
+        "3.1.1 Vapor zone"
+        h_wf_cd_v = PropsSI('H', 'P', P_cd, 'Q', 1, self.su_wf.fluid)
+        Q_dot_cd_v = self.su_wf.m_dot*(h_wf_su_cd-h_wf_cd_v)
+ 
+        "3.1.2 Two_phase zone"
+        h_wf_cd_l = PropsSI('H', 'P', P_cd, 'Q', 0, self.su_wf.fluid)
+        Q_dot_cd_tp = self.su_wf.m_dot*(h_wf_cd_v-h_wf_cd_l)
+ 
+        "3.1.3 Liquid zone"
+        T_wf_ex_cd = T_cd-self.params['Delta_T_sh_sc']
+        h_wf_ex_cd = PropsSI('H', 'P', P_cd, 'T', T_wf_ex_cd, self.su_wf.fluid)
+        Q_dot_cd_l = self.su_wf.m_dot*(h_wf_cd_l-h_wf_ex_cd)
+ 
+        "3.1.4 Total power"
+        Q_dot_cd = Q_dot_cd_v+Q_dot_cd_tp+Q_dot_cd_l 
+ 
+        "3.2 Water side"
+        T_sf_ex_cd = self.su_sf.T + Q_dot_cd/(self.su_sf.m_dot*self.su_sf.cp)
+
+        T_w_cd_l = self.su_sf.T + Q_dot_cd_l/(self.su_sf.m_dot*self.su_sf.cp)
+        T_w_cd_v = T_w_cd_l + Q_dot_cd_tp/(self.su_sf.m_dot*self.su_sf.cp)
+ 
+        "3.3 Pinch point position"
+        Pinch_cd=min(T_wf_ex_cd-self.su_sf.T, T_cd-T_w_cd_v)
+
+        res = Pinch_cd-self.params['Pinch']
+        print('res', res)   
         return res
 
 
     def solve(self):
         self.check_calculable()
-        print(self.guesses, self.calculable, self.parametrized)
+        # print('coia')
+        # print(self.guesses, self.calculable, self.parametrized)
         if self.calculable and self.parametrized:
+            if self.params['type_HX'] == 'evaporator':
+                if self.guesses != {}:
+                    # print("Guesses")
+                    P_ev_guess = self.guesses['P_sat']
+                if self.guesses == {}:
+                    # print("Guesses")
+                    P_ev_guess = PropsSI('P', 'T', self.su_wf.T+20, 'Q', 0.5, self.su_wf.fluid)
+                x = [P_ev_guess]
+                # print(x)
+                fsolve(self.system_evap, x)
+        elif self.params['type_HX'] == 'condensator':
+            print('ciao')
             if self.guesses != {}:
-                P_ev_guess = self.guesses['P_ev']
+                P_cd_guess = self.guesses['P_sat']
             if self.guesses == {}:
-                P_ev_guess = PropsSI('Psat', 'T', self.su_wf.T, self.su_wf.fluid)
-            args = ()
-            fsolve(self.system, P_ev_guess, args=args)
+                P_cd_guess = PropsSI('P', 'T', self.su_wf.T-20, 'Q', 0.5, self.su_wf.fluid)
+            x = [P_cd_guess]
+            fsolve(self.system_cond, x)
 
 
         # self.ex_wf.set_fluid(self.su_wf.fluid)
