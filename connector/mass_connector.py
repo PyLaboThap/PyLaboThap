@@ -26,13 +26,6 @@ class MassConnector:
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
         self.cp = None              # Specific heat capacity [J/kg/K]
-
-    def connect(self, other_connector): # Connect two mass connectors (should change this bc I don't connect everything)
-        self.fluid = other_connector.fluid
-        self.T = other_connector.T
-        self.p = other_connector.p
-        self.h = other_connector.h
-        self.m_dot = other_connector.m_dot
         
         
     def check_completely_known(self):

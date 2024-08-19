@@ -9,19 +9,20 @@ from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
-from component.heat_exchanger.moving_boundary.simple_model.simulation_model import HXSimpleMB
+from component.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
 from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
+
 class Cycle:
 
-    class Component:
-        def __init__(self, name, model):
-            self.name = name
-            self.model = model
-            self.next = None # Créer un dictionnaire qui a les mêmes keys que les exhausts du model
-            self.previous = None # Créer un dictionnaire qui a les mêmes keys que les supply du model
-        # sous-classe: utile quand tu veux que l'utilisateur n'utilise cette classe uniquement quand utiliser la classe Cycle
+    # class Component:
+    #     def __init__(self, name, model):
+    #         self.name = name
+    #         self.model = model
+    #         self.next = None # Créer un dictionnaire qui a les mêmes keys que les exhausts du model
+    #         self.previous = None # Créer un dictionnaire qui a les mêmes keys que les supply du model
+    #     # sous-classe: utile quand tu veux que l'utilisateur n'utilise cette classe uniquement quand utiliser la classe Cycle
 
     def __init__(self):
         self.components = {} #That's the chain element, ajouter previous, next,... FAIRE SOUS CLASSE
@@ -40,28 +41,27 @@ class Cycle:
     #     self.connectors[name].set_properties(**kwargs)
 
     def link_components(self, component1_name, output_port, component2_name, input_port):
-        if component1_name not in self.components or component2_name not in self.components:
-            print(f"Either {component1_name} or {component2_name} does not exist in the cycle.")
-            return
-        
-        component1 = self.components[component1_name] # Adress of the component1
+        component1 = self.components[component1_name]
         component2 = self.components[component2_name]
 
-        output_connector = getattr(component1, output_port, None)
-        input_connector = getattr(component2, input_port, None)
+        # Determine connector type based on the port name prefix
+        connector_type = output_port.split('-')[0]
 
-        if output_connector is None:
-            print(f"{component1_name} has no connector named {output_port}.")
-            return
-
-        if input_connector is None:
-            print(f"{component2_name} has no connector named {input_port}.")
-            return
-        
-        if isinstance(output_connector, (MassConnector, HeatConnector, WorkConnector)) and isinstance(input_connector, (MassConnector, HeatConnector, WorkConnector)):
-            output_connector.connect(input_connector)
+        if connector_type == "m":  # Mass connector
+            connector = MassConnector()
+        elif connector_type == "q":  # Heat connector
+            connector = HeatConnector()
+        elif connector_type == "w":  # Work connector
+            connector = WorkConnector()
         else:
-            print("Incompatible connector types.")
+            raise ValueError(f"Unknown connector type: {connector_type}")
+
+        # Dynamically link the connectors
+        setattr(component1, output_port.split('-')[1], connector)
+        setattr(component2, input_port.split('-')[1], connector)
+
+        # Now the components are linked through the same connector instance
+        print(f"Linked {component1_name}.{output_port} to {component2_name}.{input_port}")
 
         # print(output_connector, input_connector)
 
@@ -89,6 +89,7 @@ class Cycle:
         for component in self.components.values():
             print(component)
             component.solve()
+            # print(component.defined)
 
     def set_guess(self):
         pass
@@ -101,44 +102,40 @@ if __name__ == "__main__":
     
     # Create components
     PUMP = PumpCstEff()
-    EVAP = HXSimpleMB()
-    COND = HXSimpleMB()
+    EVAP = HXPinchCst()
+    COND = HXPinchCst()
     EXP = ExpanderCstEff()
 
     # Set parameters
     PUMP.set_parameters(eta_is=0.6)
 
     EVAP.set_parameters(**{
-    'HX_type': 'evaporator',
-    'HX_D': 0.06, #Diamètre de port d'entré
-    'HX_A': 17.8, #Surface d'échange
-    'min_pinch': 2,
-    'Delta_T_sup_or_sub': 5
+        'Pinch': 2,
+        'Delta_T_sh_sc': 5,
+        'type_HX': 'evaporator'
     })
 
     COND.set_parameters(**{
-    'HX_type': 'condenser',
-    'HX_D': 0.06, #Diamètre de port d'entré
-    'HX_A': 17.8, #Surface d'échange
-    'min_pinch': 2,
-    'Delta_T_sup_or_sub': 5
+    'Pinch': 2,
+    'Delta_T_sh_sc': 5,
+    'type_HX': 'condenser'
     })
 
     EXP.set_parameters(eta_is=0.8)
 
     # Add components to the cycle
+    ORC.add_component(EXP, "Expander")
+    ORC.add_component(COND, "Condenser")
     ORC.add_component(PUMP, "Pump") # :!\ Est-ce que les noms des composants sont importants?
     ORC.add_component(EVAP, "Evaporator")
-    ORC.add_component(COND, "Condenser")
-    ORC.add_component(EXP, "Expander")
 
-    ORC.link_components("Pump", "ex", "Evaporator", "su_wf")
-    ORC.link_components("Evaporator", "ex_wf", "Expander", "su")
-    ORC.link_components("Expander", "ex", "Condenser", "su_wf")
-    ORC.link_components("Condenser", "ex_wf", "Pump", "su")
+    ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_wf") #Ici on pourrait même faire en sorte que le nom que l'on met ici ce mettent dans les composants.
+    ORC.link_components("Evaporator", "m-ex_wf", "Expander", "m-su")
+    ORC.link_components("Expander", "m-ex", "Condenser", "m-su_wf")
+    ORC.link_components("Condenser", "m-ex_wf", "Pump", "m-su")
 
 
-    ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_sf")
+    # ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_sf")
 
     # ORC.check_parametrized()
 
@@ -151,7 +148,8 @@ if __name__ == "__main__":
 
     "Condenser"
     ORC.components["Condenser"].su_sf.set_properties(T=30+273.15, fluid='Water', m_dot=0.4)
-    ORC.components["Condenser"].ex_sf.set_properties(T=40+273.15, fluid='Water')
+    ORC.components["Condenser"].su_sf.set_cp(4186)
+    ORC.components["Condenser"].ex_sf.set_properties(fluid='Water')
 
     "Pump"
     ORC.components["Pump"].su.set_properties(fluid='R245fa')
@@ -159,10 +157,16 @@ if __name__ == "__main__":
 
     "Evaporator"
     ORC.components["Evaporator"].su_sf.set_properties(T=150+273.15, fluid='Water', m_dot=0.4)
-    ORC.components["Evaporator"].ex_sf.set_properties(T=125+273.15, fluid='Water')
+    ORC.components["Evaporator"].su_sf.set_cp(4186)
+    ORC.components["Evaporator"].ex_sf.set_properties( fluid='Water')
+
+    
+
+    print(ORC.components["Expander"].ex.p)
+    print(ORC.components["Condenser"].su_wf.p)
 
     ORC.solve()
-    print(ORC.components)
+    # print(ORC.components)
 
 # class System:
 #     def __init__(self):

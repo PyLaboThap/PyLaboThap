@@ -79,6 +79,11 @@ class ExpanderCstEff(BaseComponent):
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
             h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
             self.ex.set_h(h_ex)
+            self.ex.set_fluid(self.su.fluid)
+            self.ex.set_p(self.ex.p)
+            self.ex.set_m_dot(self.su.m_dot)
+
+            self.defined = True
 
     def print_results(self):
         print("=== Expander Results ===")

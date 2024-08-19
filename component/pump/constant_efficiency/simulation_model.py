@@ -76,6 +76,8 @@ class PumpCstEff(BaseComponent):
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
             h_ex = self.su.h + (h_ex_is - self.su.h) / self.params['eta_is']
             self.ex.set_h(h_ex)
+            self.ex.set_fluid(self.su.fluid)
+            self.ex.set_m_dot(self.su.m_dot)
 
     def print_results(self):
         print("=== Expander Results ===")
