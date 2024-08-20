@@ -14,35 +14,41 @@ from component.volumetric_machine.expander.constant_isentropic_efficiency.simula
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 
-class Cycle:
 
-    # class Component:
-    #     def __init__(self, name, model):
-    #         self.name = name
-    #         self.model = model
-    #         self.next = None # Créer un dictionnaire qui a les mêmes keys que les exhausts du model
-    #         self.previous = None # Créer un dictionnaire qui a les mêmes keys que les supply du model
-    #     # sous-classe: utile quand tu veux que l'utilisateur n'utilise cette classe uniquement quand utiliser la classe Cycle
+# Second option:
+class Cycle:
+    class Component:
+        def __init__(self, name, model):
+            self.name = name
+            self.model = model
+            self.previous = {}  # Dictionary to store connections to previous components
+            self.next = {}  # Dictionary to store connections to next components
+
+        def add_previous(self, port, component):
+            self.previous[port] = component
+
+        def add_next(self, port, component):
+            self.next[port] = component
 
     def __init__(self):
-        self.components = {} #That's the chain element, ajouter previous, next,... FAIRE SOUS CLASSE
+        self.component_list = []  # List to store the components in the cycle
         self.connectors = {}
         self.fluid = None
 
-    def add_component(self, component, name):
-        self.components[name] = component
+    def add_component(self, model, name):
+        component = self.Component(name, model)
+        self.component_list.append(component)
 
-    
-    
-    # def add_connector(self, connector, name):
-    #     self.connectors[name] = connector
-    
-    # def set_connector(self, name, **kwargs):
-    #     self.connectors[name].set_properties(**kwargs)
+    def get_component(self, name):
+        # Retrieve a component by name
+        for component in self.component_list:
+            if component.name == name:
+                return component
+        raise ValueError(f"Component {name} not found")
 
     def link_components(self, component1_name, output_port, component2_name, input_port):
-        component1 = self.components[component1_name]
-        component2 = self.components[component2_name]
+        component1 = self.get_component(component1_name)
+        component2 = self.get_component(component2_name)
 
         # Determine connector type based on the port name prefix
         connector_type = output_port.split('-')[0]
@@ -57,49 +63,64 @@ class Cycle:
             raise ValueError(f"Unknown connector type: {connector_type}")
 
         # Dynamically link the connectors
-        setattr(component1, output_port.split('-')[1], connector)
-        setattr(component2, input_port.split('-')[1], connector)
+        setattr(component1.model, output_port.split('-')[1], connector)
+        setattr(component2.model, input_port.split('-')[1], connector)
 
-        # Now the components are linked through the same connector instance
+        # Update the component connections
+        component1.add_next(output_port, component2)
+        component2.add_previous(input_port, component1)
+
         print(f"Linked {component1_name}.{output_port} to {component2_name}.{input_port}")
 
-        # print(output_connector, input_connector)
+    def set_properties(self, **kwargs):
+        """
+        Set properties for a specific component's port.
+        Example usage: ORC.set_properties(T=117+273.15, fluid='R245fa', target='Condenser:su_wf')
+        """
+        target = kwargs.pop('target')
+        component_name, port_name = target.split(':')
+        component = self.get_component(component_name)
+
+        # Set the properties for the given port
+        port = getattr(component.model, port_name)
+        port.set_properties(**kwargs)
 
     def check_parametrized(self):
         """
-        Check for all components models if all the required parameters have been passed
-        """        
-        self.flag_not_parametrized = 0 # =1 if at least one component is not fully parametrized
-        for components in self.components.values():
-            if components.parametrized:
+        Check if all the required parameters have been passed for all components.
+        """
+        self.flag_not_parametrized = 0  # Set to 1 if at least one component is not fully parametrized
+        for component in self.component_list:
+            if component.model.parametrized:
                 pass
             else:
                 self.flag_not_parametrized = 1
-                print(f"Error: Parameters of {components} not completely known")
+                print(f"Error: Parameters of {component.name} are not completely known")
 
-        print("The cycle components are fully parametrized") if self.flag_not_parametrized == 0 else None
+        if self.flag_not_parametrized == 0:
+            print("The cycle components are fully parametrized")
 
     def solve(self):
-
         # First, check if all the components are parametrized
         self.check_parametrized()
         if self.flag_not_parametrized == 1:
             return
-        
-        for component in self.components.values():
-            print(component)
-            component.solve()
-            # print(component.defined)
+
+        # Solve the components in the cycle
+        for component in self.component_list:
+            component.model.check_calculable()
+            if component.model.calculable:
+                component.model.solve()
 
     def set_guess(self):
         pass
 
 
-
+# Example usage:
 if __name__ == "__main__":
     # Create a cycle
     ORC = Cycle()
-    
+
     # Create components
     PUMP = PumpCstEff()
     EVAP = HXPinchCst()
@@ -110,15 +131,15 @@ if __name__ == "__main__":
     PUMP.set_parameters(eta_is=0.6)
 
     EVAP.set_parameters(**{
-        'Pinch': 2,
+        'Pinch': 5,
         'Delta_T_sh_sc': 5,
         'type_HX': 'evaporator'
     })
 
     COND.set_parameters(**{
-    'Pinch': 2,
-    'Delta_T_sh_sc': 5,
-    'type_HX': 'condenser'
+        'Pinch': 5,
+        'Delta_T_sh_sc': 5,
+        'type_HX': 'condenser'
     })
 
     EXP.set_parameters(eta_is=0.8)
@@ -126,47 +147,34 @@ if __name__ == "__main__":
     # Add components to the cycle
     ORC.add_component(EXP, "Expander")
     ORC.add_component(COND, "Condenser")
-    ORC.add_component(PUMP, "Pump") # :!\ Est-ce que les noms des composants sont importants?
+    ORC.add_component(PUMP, "Pump")
     ORC.add_component(EVAP, "Evaporator")
 
-    ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_wf") #Ici on pourrait même faire en sorte que le nom que l'on met ici ce mettent dans les composants.
+    # Link components using specified ports
+    ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_wf")
     ORC.link_components("Evaporator", "m-ex_wf", "Expander", "m-su")
     ORC.link_components("Expander", "m-ex", "Condenser", "m-su_wf")
     ORC.link_components("Condenser", "m-ex_wf", "Pump", "m-su")
 
+    # Set the inputs using the new set_properties method
+    ORC.set_properties(T=117 + 273.15, fluid='R245fa', m_dot=0.06, target='Condenser:su_wf')
+    ORC.set_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_sf')
+    ORC.set_properties(cp=4186, target='Condenser:su_sf')
+    ORC.set_properties(fluid='Water', target='Condenser:ex_sf')
 
-    # ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_sf")
+    ORC.set_properties(fluid='R245fa', target='Pump:su')
+    ORC.set_properties(P=880273, fluid='R245fa', target='Pump:ex')
 
-    # ORC.check_parametrized()
+    ORC.set_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
+    ORC.set_properties(cp=4186, target='Evaporator:su_sf')
+    ORC.set_properties(fluid='Water', target='Evaporator:ex_sf')
 
-    # Changer wf/sf avec Hot/cold fluids -> ajouter un argument en + pour voir lequel est le wf.
-    # Set the inputs
-    #Exo ORC M&S
-    "Expander"
-    ORC.components["Expander"].su.set_properties(P=880273, T=145+273.15, fluid='R245fa', m_dot=0.06)
-    ORC.components["Expander"].ex.set_properties(P=267199, fluid='R245fa')
-
-    "Condenser"
-    ORC.components["Condenser"].su_sf.set_properties(T=30+273.15, fluid='Water', m_dot=0.4)
-    ORC.components["Condenser"].su_sf.set_cp(4186)
-    ORC.components["Condenser"].ex_sf.set_properties(fluid='Water')
-
-    "Pump"
-    ORC.components["Pump"].su.set_properties(fluid='R245fa')
-    ORC.components["Pump"].ex.set_properties(P=880273, fluid='R245fa')
-
-    "Evaporator"
-    ORC.components["Evaporator"].su_sf.set_properties(T=150+273.15, fluid='Water', m_dot=0.4)
-    ORC.components["Evaporator"].su_sf.set_cp(4186)
-    ORC.components["Evaporator"].ex_sf.set_properties( fluid='Water')
-
-    
-
-    print(ORC.components["Expander"].ex.p)
-    print(ORC.components["Condenser"].su_wf.p)
-
+    # Solve the cycle
     ORC.solve()
-    # print(ORC.components)
+
+    print(ORC.get_component("Expander").model.ex.p)
+
+
 
 # class System:
 #     def __init__(self):

@@ -75,15 +75,18 @@ class ExpanderCstEff(BaseComponent):
         self.check_parametrized()
 
         if self.calculable and self.parametrized:
+            try:
+                h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
+                h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
+                self.ex.set_h(h_ex)
+                self.ex.set_fluid(self.su.fluid)
+                self.ex.set_p(self.ex.p)
+                self.ex.set_m_dot(self.su.m_dot)
 
-            h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
-            h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
-            self.ex.set_h(h_ex)
-            self.ex.set_fluid(self.su.fluid)
-            self.ex.set_p(self.ex.p)
-            self.ex.set_m_dot(self.su.m_dot)
-
-            self.defined = True
+                self.defined = True
+            except:
+                print('Convergence error in expander model')
+                self.defined = False
 
     def print_results(self):
         print("=== Expander Results ===")

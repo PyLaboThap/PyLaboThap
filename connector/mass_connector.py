@@ -114,6 +114,8 @@ class MassConnector:
                 self.set_D(value)
             elif key == 'x':
                 self.set_x(value)
+            elif key == 'cp':
+                self.set_cp(value)
             else:
                 print(f"Error: Invalid property '{key}'")
 
