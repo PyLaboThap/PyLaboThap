@@ -13,16 +13,17 @@ from component.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
 from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
-
+from CoolProp.CoolProp import PropsSI
 
 # Second option:
 class Cycle:
     class Component:
-        def __init__(self, name, model):
+        def __init__(self, name, model, fluid=None):
             self.name = name
             self.model = model
-            self.previous = {}  # Dictionary to store connections to previous components
-            self.next = {}  # Dictionary to store connections to next components
+            self.previous = {}
+            self.next = {}
+            self.fluid = fluid
 
         def add_previous(self, port, component):
             self.previous[port] = component
@@ -30,98 +31,111 @@ class Cycle:
         def add_next(self, port, component):
             self.next[port] = component
 
-    def __init__(self):
-        self.component_list = []  # List to store the components in the cycle
-        self.connectors = {}
-        self.fluid = None
+        def link(self, output_port, target_component, input_port):
+            connector_type = output_port.split('-')[0]
+
+            if connector_type == "m":  # Mass connector
+                connector = MassConnector(fluid=self.fluid)
+            elif connector_type == "q":  # Heat connector
+                connector = HeatConnector()
+            elif connector_type == "w":  # Work connector
+                connector = WorkConnector()
+            else:
+                raise ValueError(f"Unknown connector type: {connector_type}")
+
+            setattr(self.model, output_port.split('-')[1], connector)
+            setattr(target_component.model, input_port.split('-')[1], connector)
+
+            self.add_next(output_port, target_component)
+            target_component.add_previous(input_port, self)
+
+            print(f"Linked {self.name}.{output_port} to {target_component.name}.{input_port}")
+
+        def set_properties(self, port_name, **kwargs):
+            port = getattr(self.model, port_name)
+            port.set_properties(**kwargs)
+
+        def solve(self):
+            self.model.check_calculable()
+            if self.model.calculable:
+                self.model.solve()
+
+    def __init__(self, fluid=None):
+        self.components = {}  # Store components using a dictionary for direct access
+        self.fixed_properties = {}
+        self.guesses = {}
+        self.fluid = fluid
 
     def add_component(self, model, name):
-        component = self.Component(name, model)
-        self.component_list.append(component)
+        component = Cycle.Component(name, model, self.fluid)
+        self.components[name] = component
 
     def get_component(self, name):
-        # Retrieve a component by name
-        for component in self.component_list:
-            if component.name == name:
-                return component
+        if name in self.components:
+            return self.components[name]
         raise ValueError(f"Component {name} not found")
 
     def link_components(self, component1_name, output_port, component2_name, input_port):
         component1 = self.get_component(component1_name)
         component2 = self.get_component(component2_name)
-
-        # Determine connector type based on the port name prefix
-        connector_type = output_port.split('-')[0]
-
-        if connector_type == "m":  # Mass connector
-            connector = MassConnector()
-        elif connector_type == "q":  # Heat connector
-            connector = HeatConnector()
-        elif connector_type == "w":  # Work connector
-            connector = WorkConnector()
-        else:
-            raise ValueError(f"Unknown connector type: {connector_type}")
-
-        # Dynamically link the connectors
-        setattr(component1.model, output_port.split('-')[1], connector)
-        setattr(component2.model, input_port.split('-')[1], connector)
-
-        # Update the component connections
-        component1.add_next(output_port, component2)
-        component2.add_previous(input_port, component1)
-
-        print(f"Linked {component1_name}.{output_port} to {component2_name}.{input_port}")
+        component1.link(output_port, component2, input_port)
 
     def set_properties(self, **kwargs):
-        """
-        Set properties for a specific component's port.
-        Example usage: ORC.set_properties(T=117+273.15, fluid='R245fa', target='Condenser:su_wf')
-        """
+        target = kwargs.pop('target')
+        component_name, port_name = target.split(':')
+        component = self.get_component(component_name)
+        component.set_properties(port_name, **kwargs)
+
+        if target not in self.fixed_properties:
+            self.fixed_properties[target] = {}
+        self.fixed_properties[target].update(kwargs)
+
+    def set_guess(self, **kwargs):
         target = kwargs.pop('target')
         component_name, port_name = target.split(':')
         component = self.get_component(component_name)
 
-        # Set the properties for the given port
-        port = getattr(component.model, port_name)
-        port.set_properties(**kwargs)
+        if target not in self.guesses:
+            self.guesses[target] = {}
+        self.guesses[target].update(kwargs)
 
-    def check_parametrized(self):
-        """
-        Check if all the required parameters have been passed for all components.
-        """
-        self.flag_not_parametrized = 0  # Set to 1 if at least one component is not fully parametrized
-        for component in self.component_list:
-            if component.model.parametrized:
-                pass
-            else:
-                self.flag_not_parametrized = 1
-                print(f"Error: Parameters of {component.name} are not completely known")
+        component.set_properties(port_name, **kwargs)
 
-        if self.flag_not_parametrized == 0:
-            print("The cycle components are fully parametrized")
+    def solve(self, variables_to_converge, tolerance=1e-5, max_iterations=100):
+        print('variable to converge', variables_to_converge)
+        for i in range(max_iterations):
+            self.solve_loop()
 
-    def solve(self):
-        # First, check if all the components are parametrized
-        self.check_parametrized()
-        if self.flag_not_parametrized == 1:
-            return
+            converged = True
+            for target, variable_name in variables_to_converge:
+                component_name, port_name = target.split(':')
+                component = self.get_component(component_name)
+                port = getattr(component.model, port_name)
 
-        # Solve the components in the cycle
-        for component in self.component_list:
-            component.model.check_calculable()
-            if component.model.calculable:
-                component.model.solve()
+                value = getattr(port, variable_name)
+                guess = self.guesses[target][variable_name]
 
-    def set_guess(self):
-        pass
+                if abs(value - guess) > tolerance:
+                    converged = False
+                    self.guesses[target][variable_name] = value
+                    port.set_properties(**{variable_name: value})
+
+            if converged:
+                print(f"Converged after {i + 1} iterations")
+                break
+        else:
+            print(f"Warning: Convergence not achieved after {max_iterations} iterations")
+
+    def solve_loop(self): # will have to be changed
+        for component in self.components.values():
+            component.solve()
 
 
 # Example usage:
 if __name__ == "__main__":
-    # Create a cycle
-    ORC = Cycle()
+    ORC = Cycle(fluid = 'R245fa')
 
-    # Create components
+    # Add components 
     PUMP = PumpCstEff()
     EVAP = HXPinchCst()
     COND = HXPinchCst()
@@ -129,50 +143,105 @@ if __name__ == "__main__":
 
     # Set parameters
     PUMP.set_parameters(eta_is=0.6)
-
-    EVAP.set_parameters(**{
-        'Pinch': 5,
-        'Delta_T_sh_sc': 5,
-        'type_HX': 'evaporator'
-    })
-
-    COND.set_parameters(**{
-        'Pinch': 5,
-        'Delta_T_sh_sc': 5,
-        'type_HX': 'condenser'
-    })
-
+    EVAP.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='evaporator')
+    COND.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='condenser')
     EXP.set_parameters(eta_is=0.8)
 
-    # Add components to the cycle
-    ORC.add_component(EXP, "Expander")
-    ORC.add_component(COND, "Condenser")
     ORC.add_component(PUMP, "Pump")
     ORC.add_component(EVAP, "Evaporator")
+    ORC.add_component(COND, "Condenser")
+    ORC.add_component(EXP, "Expander")
 
-    # Link components using specified ports
+    # Link components
     ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_wf")
     ORC.link_components("Evaporator", "m-ex_wf", "Expander", "m-su")
     ORC.link_components("Expander", "m-ex", "Condenser", "m-su_wf")
     ORC.link_components("Condenser", "m-ex_wf", "Pump", "m-su")
 
-    # Set the inputs using the new set_properties method
-    ORC.set_properties(T=117 + 273.15, fluid='R245fa', m_dot=0.06, target='Condenser:su_wf')
+    # Set the inputs using set_properties
+    # ORC.set_properties(T=117 + 273.15, fluid='R245fa', m_dot=0.06, target='Condenser:su_wf')
     ORC.set_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_sf')
     ORC.set_properties(cp=4186, target='Condenser:su_sf')
     ORC.set_properties(fluid='Water', target='Condenser:ex_sf')
 
-    ORC.set_properties(fluid='R245fa', target='Pump:su')
-    ORC.set_properties(P=880273, fluid='R245fa', target='Pump:ex')
+    # ORC.set_properties(fluid='R245fa', target='Pump:su')
+    # ORC.set_properties(P=880273, fluid='R245fa', target='Pump:ex')
 
-    ORC.set_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
+    # ORC.set_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
     ORC.set_properties(cp=4186, target='Evaporator:su_sf')
     ORC.set_properties(fluid='Water', target='Evaporator:ex_sf')
 
-    # Solve the cycle
-    ORC.solve()
+    # Set guesses
+    T_ev_guess = 120+273.15
+    P_ev_guess = PropsSI('P', 'T', T_ev_guess, 'Q', 0.5, 'R245fa')
 
-    print(ORC.get_component("Expander").model.ex.p)
+    T_cd_guess = 30+273.15
+    P_cd_guess = PropsSI('P', 'T', T_cd_guess, 'Q', 0.5, 'R245fa')
+    ORC.set_guess(target="Pump:su", h=500)  # Example guess
+    ORC.set_properties(T=T_ev_guess-5)
+
+    # Define the variables to converge on
+    ORC.solve([
+        ("Expander:ex", "h"),
+        ("Condenser:ex_wf", "h")
+    ])
+
+
+# # Example usage:
+# if __name__ == "__main__":
+#     # Create a cycle
+#     ORC = Cycle()
+
+#     # Create components
+#     PUMP = PumpCstEff()
+#     EVAP = HXPinchCst()
+#     COND = HXPinchCst()
+#     EXP = ExpanderCstEff()
+
+#     # Set parameters
+#     PUMP.set_parameters(eta_is=0.6)
+#     EVAP.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='evaporator')
+#     COND.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='condenser')
+#     EXP.set_parameters(eta_is=0.8)
+
+#     # Add components to the cycle
+#     ORC.add_component(EXP, "Expander")
+#     ORC.add_component(COND, "Condenser")
+#     ORC.add_component(PUMP, "Pump")
+#     ORC.add_component(EVAP, "Evaporator")
+
+#     # Link components
+#     ORC.link_components("Pump", "m-ex", "Evaporator", "m-su_wf")
+#     ORC.link_components("Evaporator", "m-ex_wf", "Expander", "m-su")
+#     ORC.link_components("Expander", "m-ex", "Condenser", "m-su_wf")
+#     ORC.link_components("Condenser", "m-ex_wf", "Pump", "m-su")
+
+#     # Set the inputs using set_properties
+#     ORC.set_properties(T=117 + 273.15, fluid='R245fa', m_dot=0.06, target='Condenser:su_wf')
+#     ORC.set_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_sf')
+#     ORC.set_properties(cp=4186, target='Condenser:su_sf')
+#     ORC.set_properties(fluid='Water', target='Condenser:ex_sf')
+
+#     ORC.set_properties(fluid='R245fa', target='Pump:su')
+#     ORC.set_properties(P=880273, fluid='R245fa', target='Pump:ex')
+
+#     ORC.set_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
+#     ORC.set_properties(cp=4186, target='Evaporator:su_sf')
+#     ORC.set_properties(fluid='Water', target='Evaporator:ex_sf')
+
+#     # Set initial guesses using set_guess
+#     ORC.set_guess(P=300000, T=120 + 273.15, target='Expander:ex')
+#     ORC.set_guess(P=800000, target='Pump:ex')
+
+#     # Converge on enthalpy (h) at Expander.ex and Condenser.ex
+#     ORC.converge([
+#         ("Expander", "ex", "h"),
+#         ("Condenser", "ex", "h")
+#     ])
+
+#     print(ORC.get_component("Expander").model.ex.p)
+
+
 
 
 

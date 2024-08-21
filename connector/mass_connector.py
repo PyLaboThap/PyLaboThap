@@ -10,13 +10,13 @@ Created on Wed Jan 10 14:09:18 2024
 from CoolProp.CoolProp import PropsSI
 
 class MassConnector:
-    def __init__(self):
+    def __init__(self, fluid=None):
 
         self.completely_known = False # True if all the properties and the mass flow rate are known
         self.state_known = False      # True if all the properties are known
         self.variables_input = []     # List of the variables used to define the state of the fluid
         
-        self.fluid = None           # Fluid name
+        self.fluid = fluid           # Fluid name
         self.m_dot = None           # Mass flow rate [kg/s]
         self.V_dot = None           # Volume flow rate [m^3/s]
         self.T = None               # Temperature [K]
