@@ -27,8 +27,8 @@ class HXPinchCst(BaseComponent):
             # Hot Fluid
             if self.su_wf.fluid is not None:
                 self.inputs['fluid_wf'] = self.su_wf.fluid
-            if self.su_wf.T is not None:
-                self.inputs['su_wf_T'] = self.su_wf.T
+            if self.su_wf.h is not None:
+                self.inputs['su_wf_h'] = self.su_wf.h
             if self.su_wf.m_dot is not None:
                 self.inputs['su_wf_m_dot'] = self.su_wf.m_dot
             if self.su_sf.fluid is not None:
@@ -46,12 +46,12 @@ class HXPinchCst(BaseComponent):
             # Working Fluid
             if 'fluid_wf' in self.inputs:
                 self.su_wf.set_fluid(self.inputs['fluid_wf'])
-            if 'su_wf_T' in self.inputs:
-                self.su_wf.set_T(self.inputs['su_wf_T'])
+            if 'su_wf_h' in self.inputs:
+                self.su_wf.set_h(self.inputs['su_wf_h'])
             if 'su_wf_m_dot' in self.inputs:
                 self.su_wf.set_m_dot(self.inputs['su_wf_m_dot'])
-            if 'su_wf_x' in self.inputs:
-                self.su_wf.set_x(self.inputs['su_wf_x'])
+            # if 'su_wf_x' in self.inputs:
+            #     self.su_wf.set_x(self.inputs['su_wf_x'])
             # Secondary Fluid
             if 'fluid_sf' in self.inputs:
                 self.su_sf.set_fluid(self.inputs['fluid_sf'])
@@ -62,7 +62,7 @@ class HXPinchCst(BaseComponent):
             if 'su_sf_m_dot' in self.inputs:
                 self.su_sf.set_m_dot(self.inputs['su_sf_m_dot'])
 
-        return['fluid_wf', 'su_wf_T', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
+        return['fluid_wf', 'su_wf_h', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
     
     def get_required_parameters(self):
         return [
@@ -104,7 +104,7 @@ class HXPinchCst(BaseComponent):
 
         "Refrigerant side"
         "Liquid zone"
-        h_ev_su = PropsSI('H', 'P', P_ev, 'T', self.su_wf.T, self.su_wf.fluid)
+        h_ev_su =  self.su_wf.h #PropsSI('H', 'P', P_ev, 'T', self.su_wf.T, self.su_wf.fluid)
         h_ev_l = PropsSI('H', 'P', P_ev, 'Q', 0, self.su_wf.fluid)
         Q_dot_ev_l = self.su_wf.m_dot*(h_ev_l-h_ev_su)
         "Two-phase zone"
@@ -135,12 +135,13 @@ class HXPinchCst(BaseComponent):
 
     def system_cond(self, x):
         P_cd = x[0]
+        print('P_cd', P_cd)
         T_cd = PropsSI('T', 'P', P_cd, 'Q', 0.5, self.su_wf.fluid)
-
+        print('T_cd', T_cd)
         "3. Condenser model"
         "3.1 Refrigerant side"
-        h_wf_su_cd = PropsSI('H', 'P', P_cd, 'T', self.su_wf.T, self.su_wf.fluid)
- 
+        h_wf_su_cd = self.su_wf.h # PropsSI('H', 'P', P_cd, 'T', self.su_wf.T, self.su_wf.fluid)
+        print('h_wf_su_cd', h_wf_su_cd)
         "3.1.1 Vapor zone"
         h_wf_cd_v = PropsSI('H', 'P', P_cd, 'Q', 1, self.su_wf.fluid)
         Q_dot_cd_v = self.su_wf.m_dot*(h_wf_su_cd-h_wf_cd_v)
@@ -169,13 +170,16 @@ class HXPinchCst(BaseComponent):
         res = Pinch_cd-self.params['Pinch']   
         self.Q = Q_dot_cd
         self.su_wf.set_p(P_cd)
+        print('P_cd', P_cd)
         return res
 
 
     def solve(self):
         self.check_calculable()
+        print('Je rentre dans l échangeur')
         if self.calculable and self.parametrized:
             if self.params['type_HX'] == 'evaporator':
+                print('je rentre dans l évapo')
                 if self.guesses != {}:
                     P_ev_guess = self.guesses['P_sat']
                 if self.guesses == {}:
@@ -188,10 +192,11 @@ class HXPinchCst(BaseComponent):
                     return
 
             elif self.params['type_HX'] == 'condenser':
+                print('coucou')
                 if self.guesses != {}:
                     P_cd_guess = self.guesses['P_sat']
                 if self.guesses == {}:
-                    P_cd_guess = PropsSI('P', 'T', self.su_wf.T-40, 'Q', 0.5, self.su_wf.fluid)
+                    P_cd_guess = PropsSI('P', 'T', self.su_wf.T-20, 'Q', 0.5, self.su_wf.fluid)
                 x = [P_cd_guess]
                 try:
                     fsolve(self.system_cond, x)

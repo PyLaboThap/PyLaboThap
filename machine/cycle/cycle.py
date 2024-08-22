@@ -44,7 +44,7 @@ class Cycle:
                 raise ValueError(f"Unknown connector type: {connector_type}")
 
             setattr(self.model, output_port.split('-')[1], connector)
-            setattr(target_component.model, input_port.split('-')[1], connector)
+            setattr(target_component.model, input_port.split('-')[1], connector) # Voir si ça fait juste référence ou si ça crée un nouvel objet
 
             self.add_next(output_port, target_component)
             target_component.add_previous(input_port, self)
@@ -80,7 +80,7 @@ class Cycle:
         component2 = self.get_component(component2_name)
         component1.link(output_port, component2, input_port)
 
-    def set_properties(self, **kwargs):
+    def set_cycle_properties(self, **kwargs):
         target = kwargs.pop('target')
         component_name, port_name = target.split(':')
         component = self.get_component(component_name)
@@ -94,12 +94,13 @@ class Cycle:
         target = kwargs.pop('target')
         component_name, port_name = target.split(':')
         component = self.get_component(component_name)
+        component.set_properties(port_name, **kwargs)
 
         if target not in self.guesses:
             self.guesses[target] = {}
         self.guesses[target].update(kwargs)
+        print(self.guesses)
 
-        component.set_properties(port_name, **kwargs)
 
     def solve(self, variables_to_converge, tolerance=1e-5, max_iterations=100):
         print('variable to converge', variables_to_converge)
@@ -128,6 +129,8 @@ class Cycle:
 
     def solve_loop(self): # will have to be changed
         for component in self.components.values():
+            # component.check_calculable()
+            # if component.calculable:
             component.solve()
 
 

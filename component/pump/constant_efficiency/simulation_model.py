@@ -70,7 +70,7 @@ class PumpCstEff(BaseComponent):
     def solve(self):
         self.check_calculable()
         self.check_parametrized()
-
+        print('Je rentre dans la pompe')
         if self.calculable and self.parametrized:
             try: 
                 h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
