@@ -5,48 +5,48 @@ import numpy as np
 "Evaporator test"
 
 #Exo ORC M&S
-# EVAP = HXPinchCst()
+EVAP = HXPinchCst()
 
-# EVAP.set_inputs(
-#     fluid_wf = 'R245fa',
-#     su_wf_T = 60+273.15,
-#     su_wf_m_dot = 0.4621,
-#     fluid_sf = 'Water',
-#     su_sf_T = 70+273.15,
-#     su_sf_cp = 4186,
-#     su_sf_m_dot = 2.425,
-# )
+EVAP.set_inputs(
+    fluid_wf = 'R245fa',
+    su_wf_h = 249154,
+    su_wf_m_dot = 0.0638,
+    fluid_sf = 'Water',
+    su_sf_T = 150+273.15,
+    su_sf_cp = 4186,
+    su_sf_m_dot = 0.4,
+)
 
-# EVAP.set_parameters(**{
-#     'Pinch': 2,
-#     'Delta_T_sh_sc': 5,
-#     'type_HX': 'evaporator'
-# })
+EVAP.set_parameters(**{
+    'Pinch': 5,
+    'Delta_T_sh_sc': 5,
+    'type_HX': 'evaporator'
+})
 
-# EVAP.solve()
+EVAP.solve()
 # EVAP.print_results()
 
 # "Condenser test"
 
-COND = HXPinchCst()
+# COND = HXPinchCst()
 
-COND.set_inputs(
-    fluid_wf = 'R245fa',
-    su_wf_T = 117.7+273.15,
-    su_wf_m_dot = 0.06,
-    fluid_sf = 'Water',
-    su_sf_T = 30+273.15,
-    su_sf_cp = 4187,
-    su_sf_m_dot = 0.4
-)
+# COND.set_inputs(
+#     fluid_wf = 'R245fa',
+#     su_wf_h = 512299,
+#     su_wf_m_dot = 0.06,
+#     fluid_sf = 'Water',
+#     su_sf_T = 30+273.15,
+#     su_sf_cp = 4187,
+#     su_sf_m_dot = 0.4
+# )
 
-COND.set_parameters(**{
-    'Pinch': 5,
-    'Delta_T_sh_sc': 5,
-    'type_HX': 'condenser'
-})
+# COND.set_parameters(**{
+#     'Pinch': 5,
+#     'Delta_T_sh_sc': 5,
+#     'type_HX': 'condenser'
+# })
 
-COND.solve()
-COND.print_results()
-print(COND.ex_wf.p)
-print(COND.ex_wf.h)
+# COND.solve()
+# # COND.print_results()
+# print(COND.Q)
+# print(COND.ex_wf.h)

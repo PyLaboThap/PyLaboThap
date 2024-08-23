@@ -70,8 +70,11 @@ class PumpCstEff(BaseComponent):
     def solve(self):
         self.check_calculable()
         self.check_parametrized()
-        print('Je rentre dans la pompe')
+        # print('Je rentre dans la pompe')
         if self.calculable and self.parametrized:
+            # print('P_su_pp = ', self.su.p)
+            print('Inlet pump')
+            print(self.su.print_resume())
             try: 
                 h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
                 h_ex = self.su.h + (h_ex_is - self.su.h)*self.params['eta_is']
@@ -82,6 +85,9 @@ class PumpCstEff(BaseComponent):
             except:
                 self.defined = False
                 print("Convergence problem in pump model")
+            # print('P_ex_pp = ', self.ex.p)
+            print('Outlet pump')
+            print(self.ex.print_resume())
 
 
     def print_results(self):

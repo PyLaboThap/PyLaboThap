@@ -73,20 +73,26 @@ class ExpanderCstEff(BaseComponent):
     def solve(self):
         self.check_calculable()
         self.check_parametrized()
-        print('Je rentre dans lexpanseur')
+        # print('Je rentre dans lexpanseur')
         if self.calculable and self.parametrized:
+            print('Inlet expander')
+            print(self.su.print_resume())
             try:
+                # print('P_su_exp = ', self.su.p)
                 h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
                 h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
                 self.ex.set_h(h_ex)
                 self.ex.set_fluid(self.su.fluid)
                 self.ex.set_p(self.ex.p)
                 self.ex.set_m_dot(self.su.m_dot)
+                # print('P_ex_exp = ', self.ex.p)
 
                 self.defined = True
             except:
                 print('Convergence error in expander model')
                 self.defined = False
+            print('Outlet expander')
+            print(self.ex.print_resume())
 
     def print_results(self):
         print("=== Expander Results ===")
