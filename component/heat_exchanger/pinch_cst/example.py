@@ -11,10 +11,10 @@ EVAP.set_inputs(
     fluid_wf = 'R245fa',
     su_wf_h = 249154,
     su_wf_m_dot = 0.0638,
-    fluid_sf = 'Water',
+    fluid_sf = 'Oil',
     su_sf_T = 150+273.15,
-    su_sf_cp = 4186,
-    su_sf_m_dot = 0.4,
+    su_sf_cp = 2000,
+    su_sf_m_dot = 0.363,
 )
 
 EVAP.set_parameters(**{

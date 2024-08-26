@@ -15,29 +15,52 @@ class ExpanderCstEff(BaseComponent):
         self.ex = MassConnector() # Mass_connector
         self.work_exp = WorkConnector()
 
+    def clear_intermediate_states(self):
+        """Clear all intermediate states by resetting the connectors."""
+        self.su.reset()
+        self.ex.reset()
+
     def get_required_inputs(self):
-        if self.inputs == {}:
-            if self.su.fluid is not None:
-                self.inputs['su_fluid'] = self.su.fluid
-            if self.su.T is not None:
-                self.inputs['su_T'] = self.su.T
-            elif self.su.h is not None:
-                self.inputs['su_h'] = self.su.h
-            if self.su.p is not None:
-                self.inputs['su_p'] = self.su.p
-            if self.ex.p is not None:
-                self.inputs['ex_p'] = self.ex.p
+
+        "This is a temporary fix to the problem"
+        # Always get fresh values from the connectors
+        inputs = {}
+        if self.su.fluid is not None:
+            inputs['su_fluid'] = self.su.fluid
+        if self.su.T is not None:
+            inputs['su_T'] = self.su.T
+        elif self.su.h is not None:
+            inputs['su_h'] = self.su.h
+        if self.su.p is not None:
+            inputs['su_p'] = self.su.p
+        if self.ex.p is not None:
+            inputs['ex_p'] = self.ex.p
+
+        # Now update the internal inputs dictionary
+        self.inputs = inputs
+
+        # if self.inputs == {}:
+        #     if self.su.fluid is not None:
+        #         self.inputs['su_fluid'] = self.su.fluid
+        #     if self.su.T is not None:
+        #         self.inputs['su_T'] = self.su.T
+        #     elif self.su.h is not None:
+        #         self.inputs['su_h'] = self.su.h
+        #     if self.su.p is not None:
+        #         self.inputs['su_p'] = self.su.p
+        #     if self.ex.p is not None:
+        #         self.inputs['ex_p'] = self.ex.p
         
-        if self.inputs != {}:
-            self.su.set_fluid(self.inputs['su_fluid'])
-            if 'su_T' in self.inputs:
-                self.su.set_T(self.inputs['su_T'])
-            elif 'su_h' in self.inputs:
-                self.su.set_h(self.inputs['su_h'])
-            if 'su_p' in self.inputs:
-                self.su.set_p(self.inputs['su_p'])
-            if 'ex_p' in self.inputs:
-                self.ex.set_p(self.inputs['ex_p'])
+        # if self.inputs != {}:
+        #     self.su.set_fluid(self.inputs['su_fluid'])
+        #     if 'su_T' in self.inputs:
+        #         self.su.set_T(self.inputs['su_T'])
+        #     elif 'su_h' in self.inputs:
+        #         self.su.set_h(self.inputs['su_h'])
+        #     if 'su_p' in self.inputs:
+        #         self.su.set_p(self.inputs['su_p'])
+        #     if 'ex_p' in self.inputs:
+        #         self.ex.set_p(self.inputs['ex_p'])
 
         return ['su_p', 'su_T', 'ex_p', 'su_fluid']
     
@@ -83,7 +106,7 @@ class ExpanderCstEff(BaseComponent):
                 h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
                 self.ex.set_h(h_ex)
                 self.ex.set_fluid(self.su.fluid)
-                self.ex.set_p(self.ex.p)
+                # self.ex.set_p(self.ex.p)
                 self.ex.set_m_dot(self.su.m_dot)
                 # print('P_ex_exp = ', self.ex.p)
 

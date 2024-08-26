@@ -21,46 +21,77 @@ class HXPinchCst(BaseComponent):
         self.Q_dot = HeatConnector()
         self.guesses = {}
 
+    def clear_intermediate_states(self):
+        """Clear all intermediate states by resetting the connectors."""
+        self.su_wf.reset()
+        self.su_sf.reset()
+        self.ex_wf.reset()
+        self.ex_sf.reset()
+        # self.Q_dot.reset()
+
     def get_required_inputs(self):
 
-        if self.inputs == {}:
-            # Hot Fluid
-            if self.su_wf.fluid is not None:
-                self.inputs['fluid_wf'] = self.su_wf.fluid
-            if self.su_wf.h is not None:
-                self.inputs['su_wf_h'] = self.su_wf.h
-            if self.su_wf.m_dot is not None:
-                self.inputs['su_wf_m_dot'] = self.su_wf.m_dot
-            if self.su_sf.fluid is not None:
-                self.inputs['fluid_sf'] = self.su_sf.fluid
-            if self.su_sf.T is not None:
-                self.inputs['su_sf_T'] = self.su_sf.T
-            if self.su_sf.cp is not None:
-                self.inputs['su_sf_cp'] = self.su_sf.cp
-            if self.su_sf.m_dot is not None:
-                self.inputs['su_sf_m_dot'] = self.su_sf.m_dot
-            if self.ex_sf.T is not None:
-                self.inputs['ex_sf_T'] = self.ex_sf.T
+        "This is a temporary fix to the problem"
+        # Always get fresh values from the connectors
+        inputs = {}
+        if self.su_wf.fluid is not None:
+            inputs['fluid_wf'] = self.su_wf.fluid
+        if self.su_wf.h is not None:
+            inputs['su_wf_h'] = self.su_wf.h
+        if self.su_wf.m_dot is not None:
+            inputs['su_wf_m_dot'] = self.su_wf.m_dot
+        if self.su_sf.fluid is not None:
+            inputs['fluid_sf'] = self.su_sf.fluid
+        if self.su_sf.T is not None:
+            inputs['su_sf_T'] = self.su_sf.T
+        if self.su_sf.cp is not None:
+            inputs['su_sf_cp'] = self.su_sf.cp
+        if self.su_sf.m_dot is not None:
+            inputs['su_sf_m_dot'] = self.su_sf.m_dot
+        if self.ex_sf.T is not None:
+            inputs['ex_sf_T'] = self.ex_sf.T
+
+        # Now update the internal inputs dictionary
+        self.inputs = inputs
+
+        # if self.inputs == {}:
+        #     # Hot Fluid
+        #     if self.su_wf.fluid is not None:
+        #         self.inputs['fluid_wf'] = self.su_wf.fluid
+        #     if self.su_wf.h is not None:
+        #         self.inputs['su_wf_h'] = self.su_wf.h
+        #     if self.su_wf.m_dot is not None:
+        #         self.inputs['su_wf_m_dot'] = self.su_wf.m_dot
+        #     if self.su_sf.fluid is not None:
+        #         self.inputs['fluid_sf'] = self.su_sf.fluid
+        #     if self.su_sf.T is not None:
+        #         self.inputs['su_sf_T'] = self.su_sf.T
+        #     if self.su_sf.cp is not None:
+        #         self.inputs['su_sf_cp'] = self.su_sf.cp
+        #     if self.su_sf.m_dot is not None:
+        #         self.inputs['su_sf_m_dot'] = self.su_sf.m_dot
+        #     if self.ex_sf.T is not None:
+        #         self.inputs['ex_sf_T'] = self.ex_sf.T
         
-        if self.inputs != {}:
-            # Working Fluid
-            if 'fluid_wf' in self.inputs:
-                self.su_wf.set_fluid(self.inputs['fluid_wf'])
-            if 'su_wf_h' in self.inputs:
-                self.su_wf.set_h(self.inputs['su_wf_h'])
-            if 'su_wf_m_dot' in self.inputs:
-                self.su_wf.set_m_dot(self.inputs['su_wf_m_dot'])
-            # if 'su_wf_x' in self.inputs:
-            #     self.su_wf.set_x(self.inputs['su_wf_x'])
-            # Secondary Fluid
-            if 'fluid_sf' in self.inputs:
-                self.su_sf.set_fluid(self.inputs['fluid_sf'])
-            if 'su_sf_T' in self.inputs:
-                self.su_sf.set_T(self.inputs['su_sf_T'])
-            if 'su_sf_cp' in self.inputs:
-                self.su_sf.set_cp(self.inputs['su_sf_cp'])
-            if 'su_sf_m_dot' in self.inputs:
-                self.su_sf.set_m_dot(self.inputs['su_sf_m_dot'])
+        # if self.inputs != {}:
+        #     # Working Fluid
+        #     if 'fluid_wf' in self.inputs:
+        #         self.su_wf.set_fluid(self.inputs['fluid_wf'])
+        #     if 'su_wf_h' in self.inputs:
+        #         self.su_wf.set_h(self.inputs['su_wf_h'])
+        #     if 'su_wf_m_dot' in self.inputs:
+        #         self.su_wf.set_m_dot(self.inputs['su_wf_m_dot'])
+        #     # if 'su_wf_x' in self.inputs:
+        #     #     self.su_wf.set_x(self.inputs['su_wf_x'])
+        #     # Secondary Fluid
+        #     if 'fluid_sf' in self.inputs:
+        #         self.su_sf.set_fluid(self.inputs['fluid_sf'])
+        #     if 'su_sf_T' in self.inputs:
+        #         self.su_sf.set_T(self.inputs['su_sf_T'])
+        #     if 'su_sf_cp' in self.inputs:
+        #         self.su_sf.set_cp(self.inputs['su_sf_cp'])
+        #     if 'su_sf_m_dot' in self.inputs:
+        #         self.su_sf.set_m_dot(self.inputs['su_sf_m_dot'])
 
         return['fluid_wf', 'su_wf_h', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
     
@@ -128,6 +159,7 @@ class HXPinchCst(BaseComponent):
         h_ev_ex = PropsSI('H', 'P', P_ev, 'T', self.T_wf_ex, self.su_wf.fluid)
         # print('h_ev_ex', h_ev_ex)
         Q_dot_ev_v = self.su_wf.m_dot*(h_ev_ex-h_ev_v)
+        # print('Q_dot_ev_v', Q_dot_ev_v)
 
         "Total heat transfer"
         Q_dot_ev = Q_dot_ev_l + Q_dot_ev_tp + Q_dot_ev_v
@@ -146,7 +178,7 @@ class HXPinchCst(BaseComponent):
         self.Q = Q_dot_ev
         self.su_wf.set_p(P_ev)
         # print('P_ev', P_ev)
-        print(res)
+        # print(res)
         return res
 
     def system_cond(self, x):

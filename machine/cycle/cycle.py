@@ -51,14 +51,21 @@ class Cycle:
 
             print(f"Linked {self.name}.{output_port} to {target_component.name}.{input_port}")
 
-        def set_properties(self, port_name, **kwargs):
+        def set_properties(self, port_name, **kwargs): #Je pense que ça vient d'cic!!!
             port = getattr(self.model, port_name)
+            # print("Update values for", port_name, ":", kwargs) # Non en fait on dirait c'est okay???
             port.set_properties(**kwargs)
 
         def solve(self):
+            if self.name == "Pump":
+                print(self.model.su.p, 'P_su') # Ici c'est toujours bon!
             self.model.check_calculable()
             if self.model.calculable:
                 self.model.solve()
+
+        def clear_intermediate_states(self):
+            print(f"Clearing intermediate states for {self.name}")
+            self.model.clear_intermediate_states()
 
     def __init__(self, fluid=None):
         self.components = {}  # Store components using a dictionary for direct access

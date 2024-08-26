@@ -26,7 +26,21 @@ class MassConnector:
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
         self.cp = None              # Specific heat capacity [J/kg/K]
-        
+
+    def reset(self):
+        self.completely_known = False
+        self.state_known = False
+        self.variables_input = []
+        self.m_dot = None
+        self.V_dot = None
+        self.T = None
+        self.p = None
+        self.h = None
+        self.s = None
+        self.D = None
+        self.x = None
+        self.cp = None
+    
         
     def check_completely_known(self):
         if self.fluid != None:
@@ -146,6 +160,7 @@ class MassConnector:
         self.check_completely_known()
         
     def set_T(self, value):
+        # print('set_T', value)
         if self.T != None: # If the temperature is already known, update the value and the corresponding variable in the list
             self.T = value
             for i, var in enumerate(self.variables_input):
@@ -159,6 +174,7 @@ class MassConnector:
             self.check_completely_known()
         
     def set_p(self, value):
+        # print('set_p', value)
         if self.p != None: # If the pressure is already known, update the value and the corresponding variable in the list
             self.p = value
             for i, var in enumerate(self.variables_input):
