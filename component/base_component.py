@@ -24,6 +24,8 @@ class BaseComponent:
         required_inputs = self.get_required_inputs()
         self.calculable = all(self.inputs.get(inp) is not None for inp in required_inputs)
 
+        return self.calculable
+
     def check_parametrized(self):
         required_params = self.get_required_parameters()
         self.parametrized = all(self.params.get(param) is not None for param in required_params)

@@ -9,8 +9,10 @@ class PumpCstEff(BaseComponent):
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
-        self.ex = MassConnector() # Mass_connector
+        self.ex = MassConnector()
         self.W_cp = WorkConnector()
+        # self.input = {}  # Store actual input values
+        self.inputs_provided = False  # Track if inputs have been set manually
 
     def clear_intermediate_states(self):
         """Clear all intermediate states by resetting the connectors."""
@@ -19,84 +21,76 @@ class PumpCstEff(BaseComponent):
 
     def get_required_inputs(self):
 
-        "This is a temporary fix to the problem"
-        "Actually the inputs are being evaluated two times, the first time with the good values and the second time with the first values that initialized the model"
-
-        # Always get fresh values from the connectors
-        inputs = {}
-        if self.su.fluid is not None:
-            inputs['su_fluid'] = self.su.fluid
-        if self.su.T is not None:
-            inputs['su_T'] = self.su.T
-        elif self.su.h is not None:
-            inputs['su_h'] = self.su.h
-        if self.su.p is not None:
-            inputs['su_p'] = self.su.p
-        if self.ex.p is not None:
-            inputs['ex_p'] = self.ex.p
-
-        # Now update the internal inputs dictionary
-        self.inputs = inputs
-
-        # # Set properties for the connectors
-        # self.su.set_fluid(inputs.get('su_fluid', None))
-        # if 'su_T' in inputs:
-        #     self.su.set_T(inputs['su_T'])
-        # elif 'su_h' in inputs:
-        #     self.su.set_h(inputs['su_h'])
-        # self.su.set_p(inputs.get('su_p', None))
-        # self.ex.set_p(inputs.get('ex_p', None))
-
-        return ['su_p', 'su_T', 'ex_p', 'su_fluid']
-
-        # if self.inputs == {}:
+        self.sync_inputs()
+        # # If inputs have been provided manually, use those values
+        # if self.inputs_provided:
+        #     self.su.set_fluid(self.input_values.get('su_fluid'))
+        #     if 'su_T' in self.input_values:
+        #         self.su.set_T(self.input_values['su_T'])
+        #     elif 'su_h' in self.input_values:
+        #         self.su.set_h(self.input_values['su_h'])
+        #     self.su.set_p(self.input_values.get('su_p'))
+        #     self.ex.set_p(self.input_values.get('ex_p'))
+        # else:
+        #     # Populate input_values from connector properties
         #     if self.su.fluid is not None:
-        #         self.inputs['su_fluid'] = self.su.fluid
+        #         self.input_values['su_fluid'] = self.su.fluid
         #     if self.su.T is not None:
-        #         print('Je rentre dans le if self.su.T')
-        #         self.inputs['su_T'] = self.su.T
+        #         self.input_values['su_T'] = self.su.T
         #     elif self.su.h is not None:
-        #         self.inputs['su_h'] = self.su.h
+        #         self.input_values['su_h'] = self.su.h
         #     if self.su.p is not None:
-        #         print('Je rentre dans le if self.su.T')
-        #         self.inputs['su_p'] = self.su.p
+        #         self.input_values['su_p'] = self.su.p
         #     if self.ex.p is not None:
-        #         self.inputs['ex_p'] = self.ex.p
-        
-        # if self.inputs != {}:
-        #     ('je recalcule une deuxième fois')
-        #     self.su.set_fluid(self.inputs['su_fluid'])
-        #     if 'su_T' in self.inputs:
-        #         self.su.set_T(self.inputs['su_T'])
-        #         ('je recalcule une deuxième fois')
-        #     elif 'su_h' in self.inputs:
-        #         self.su.set_h(self.inputs['su_h'])
-        #     if 'su_p' in self.inputs:
-        #         self.su.set_p(self.inputs['su_p'])
-        #     if 'ex_p' in self.inputs:
-        #         self.ex.set_p(self.inputs['ex_p'])
+        #         self.input_values['ex_p'] = self.ex.p
 
-        # return ['su_p', 'su_T', 'ex_p', 'su_fluid']
+        # Return a list of required inputs
+        return ['su_p', 'su_T', 'ex_p', 'su_fluid']
     
+    def sync_inputs(self):
+        """Synchronize the inputs dictionary with the connector states."""
+        if self.su.fluid is not None:
+            self.inputs['su_fluid'] = self.su.fluid
+        if self.su.T is not None:
+            self.inputs['su_T'] = self.su.T
+        elif self.su.h is not None:
+            self.inputs['su_h'] = self.su.h
+        if self.su.p is not None:
+            self.inputs['su_p'] = self.su.p
+        if self.ex.p is not None:
+            self.inputs['ex_p'] = self.ex.p
+
+    def set_inputs(self, **kwargs):
+        """Set inputs directly through a dictionary and update connector properties."""
+        self.inputs.update(kwargs)
+
+        # Update the connectors based on the new inputs
+        if 'su_fluid' in self.inputs:
+            self.su.set_fluid(self.inputs['su_fluid'])
+        if 'su_T' in self.inputs:
+            self.su.set_T(self.inputs['su_T'])
+        elif 'su_h' in self.inputs:
+            self.su.set_h(self.inputs['su_h'])
+        if 'su_p' in self.inputs:
+            self.su.set_p(self.inputs['su_p'])
+        if 'ex_p' in self.inputs:
+            self.ex.set_p(self.inputs['ex_p'])
+
     def get_required_parameters(self):
-        return [
-            'eta_is',
-        ]
-    
+        return ['eta_is']
+
     def print_setup(self):
         print("=== Pump Setup ===")
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
 
-
         print("\nInputs:")
-        for input in self.get_required_inputs():
-            if input in self.inputs:
-                print(f"  - {input}: {self.inputs[input]}")
+        for input_name in self.get_required_inputs():
+            if input_name in self.input_values:
+                print(f"  - {input_name}: {self.input_values[input_name]}")
             else:
-                print(f"  - {input}: Not set")
-
+                print(f"  - {input_name}: Not set")
 
         print("\nParameters:")
         for param in self.get_required_parameters():
@@ -104,33 +98,35 @@ class PumpCstEff(BaseComponent):
                 print(f"  - {param}: {self.params[param]}")
             else:
                 print(f"  - {param}: Not set")
-
         print("======================")
 
     def solve(self):
+        # print(self.input_values)
         self.check_calculable()
         self.check_parametrized()
+        print(self.calculable)
         if self.calculable and self.parametrized:
-            # print('P_su_pp = ', self.su.p)
-            print('Inlet pump')
-            print(self.su.print_resume())
-            try: 
+            try:
+                print('Inlet pump:')
+                print(self.su.print_resume())
+                
+                # Calculate the outlet enthalpy based on efficiency
                 h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
-                h_ex = self.su.h + (h_ex_is - self.su.h)*self.params['eta_is']
+                h_ex = self.su.h + (h_ex_is - self.su.h) * self.params['eta_is']
                 self.ex.set_h(h_ex)
                 self.ex.set_fluid(self.su.fluid)
                 self.ex.set_m_dot(self.su.m_dot)
+                
                 self.defined = True
-            except:
+            except Exception as e:
                 self.defined = False
-                print("Convergence problem in pump model")
-            print('P_ex_pp = ', self.ex.p)
-            print('Outlet pump')
+                print(f"Convergence problem in pump model: {e}")
+
+            print('Outlet pump:')
             print(self.ex.print_resume())
 
-
     def print_results(self):
-        print("=== Expander Results ===")
+        print("=== Pump Results ===")
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")

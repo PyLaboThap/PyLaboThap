@@ -118,9 +118,7 @@ class RC(Cycle):
             # En ce moment mon problème, c'est que à la deuxième itération, les guess reviennent à leur valeur initiale et on refait une boucle avec les mêmes valeurs
             # Calculate initial residuals (based on guesses or previous iteration)
             residuals_i = self.get_residuals()
-            pump = self.get_component("Pump")
-            print(pump.model.su.p, 'pump.model.su.p')
-            print(pump.model.ex.p, 'pump.model.ex.p')
+
             # Solve the cycle starting from the Pump recursively
             visited = set()  # Reset visited components for each iteration
             self.recursive_solve(self.get_component("Pump"), visited)
@@ -133,20 +131,6 @@ class RC(Cycle):
             # Store the calculated pressures to use as inputs for the next iteration
             self.store_pressures()
 
-            # Clear intermediate states before the next iteration
-            self.clear_intermediate_states()
-
-            self.set_cycle_properties(m_dot = 0.06, target='Pump:su')
-
-            self.set_cycle_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_sf')
-            self.set_cycle_properties(cp=4186, target='Condenser:su_sf')
-            self.set_cycle_properties(fluid='Water', target='Condenser:ex_sf')
-
-            self.set_cycle_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
-            self.set_cycle_properties(cp=4186, target='Evaporator:su_sf')
-            self.set_cycle_properties(fluid='Water', target='Evaporator:ex_sf')
-
-            # Re-set cycle guesses with the updated pressures
             self.set_cycle_guesses()
 
             iteration += 1
@@ -172,8 +156,7 @@ class RC(Cycle):
 
         subcooling = 5
         superheating = 5
-        print(P_cd_guess, 'P_cd_guess')
-        print(P_ev_guess, 'P_ev_guess')
+        
         T_su_pp = PropsSI('T', 'P', P_cd_guess, 'Q', 0, self.fluid) - subcooling
         self.set_cycle_properties(target="Pump:su", T=T_su_pp, P=P_cd_guess)
 
@@ -246,123 +229,6 @@ class RC(Cycle):
         # print(residual_h_ex_cd < self.tolerance)
         # print(self.tolerance, 'tolerance')
         return residual_h_ex_ev < self.tolerance and residual_h_ex_cd < self.tolerance
-
-
-# class RC(Cycle):
-#     def __init__(self, fluid=None):
-#         super().__init__(fluid)
-#         self.tolerance = 1e-6  # Convergence tolerance for residuals
-
-#     def solve(self):
-#         # Set initial guesses for pressures and temperatures
-#         self.set_cycle_guesses() # Là on pourrait donner les guesses
-#         # print(self.get_component("Pump").model.calculable)
-#         # Start solving the cycle from the first component (Pump)
-#         # self.recursive_solve(self.get_component("Pump"))
-#         # print('should solve a first time then?')
-#         visited = set()  # Use a set to track visited components
-#         # Check the residuals (enthalpies at key points) and decide if another pass is needed
-#         # converged = self.check_residuals()
-#         iteration = 0
-#         max_iterations = 100
-#         converged = False
-#         while not converged and iteration < max_iterations:
-#             # If not converged, update guesses and solve again
-#             print(f"Iteration {iteration}: Not converged, updating guesses and solving again.")
-#             # print('P_su_pp = ', self.get_component("Pump").model.su.p)
-#             # print('P_ex_pp = ', self.get_component("Pump").model.ex.p)
-#             residuals_i = self.get_residuals()
-#             visited = set()  # Reset visited components for the new iteration
-#             self.recursive_solve(self.get_component("Pump"), visited) # ici get_component il faut mettre strat key
-#             residuals_f = self.get_residuals()
-#             # print('P_su_pp = ', self.get_component("Pump").model.su.p)
-#             # print('P_ex_pp = ', self.get_component("Pump").model.ex.p)
-#             # print(residuals_i, residuals_f)
-#             converged = self.check_residuals(residuals_i, residuals_f)
-#             iteration += 1
-
-#         if converged:
-#             print("Cycle solved successfully.")
-#         else:
-#             print("Cycle did not converge within the maximum number of iterations.")
-
-#     def set_cycle_guesses(self):
-#         # Define guesses for pressures
-#         T_ev_guess = 120 + 273.15
-#         P_ev_guess = PropsSI('P', 'T', T_ev_guess, 'Q', 0.5, 'R245fa')
-
-#         T_cd_guess = 35 + 273.15
-#         P_cd_guess = PropsSI('P', 'T', T_cd_guess, 'Q', 0.5, 'R245fa')
-
-#         subcooling = 5  # Adjust as needed
-#         superheating = 5
-
-#         T_su_pp = PropsSI('T', 'P', P_cd_guess, 'Q', 0, self.fluid) - subcooling
-#         self.set_guess(target="Pump:su", T=T_su_pp, P=P_cd_guess)
-
-#         self.set_guess(target="Pump:ex", P=P_ev_guess)
-#         T_ex_ev = PropsSI('T', 'P', P_ev_guess, 'Q', 1, self.fluid) + superheating
-#         self.set_guess(target="Evaporator:ex_wf", P=P_ev_guess, T=T_ex_ev)
-#         self.set_guess(target="Expander:ex", P=P_cd_guess)
-
-#     def recursive_solve(self, component, visited):
-#         # If the component has already been visited, return to avoid infinite loop
-#         if component in visited:
-#             return
-
-#         # Mark the component as visited
-#         visited.add(component)
-
-#         # Check if the component is calculable and hasn't been solved yet
-#         print(f"Solving {component.name}")
-#         component.solve()
-
-#         # Recursively solve the next connected components
-#         for next_component in component.next.values():
-#             self.recursive_solve(next_component, visited)
-
-#     def get_residuals(self):
-#         # Get the components that define the residuals (Evaporator and Condenser)
-#         evaporator = self.get_component("Evaporator")
-#         condenser = self.get_component("Condenser")
-
-#         # Calculate the residuals
-#         h_ex_ev = evaporator.model.ex_wf.h #Maybe find a way to say those come from the guesses and the other ones from the model
-#         h_ex_cd = condenser.model.ex_wf.h
-
-#         return h_ex_ev, h_ex_cd
-
-#     def check_residuals(self, residuals_i, residuals_f):
-#         # For the first iteration, store the initial enthalpies as the reference
-#         # if not hasattr(self, 'h_ex_ev_initial'):
-#         #     self.h_ex_ev_initial = h_ex_ev
-#         #     self.h_ex_cd_initial = h_ex_cd
-#         # print(residuals_i, residuals_f, 'residuals')
-#         residual_h_ex_ev = abs(residuals_i[0] - residuals_f[0])
-#         residual_h_ex_cd = abs(residuals_i[1] - residuals_f[1])
-
-#         print(F"Residual Evaporator: {residual_h_ex_ev}, Residual Condenser: {residual_h_ex_cd}")
-#         # print(f"Residual Evaporator: {residual_h_ex_ev}, Residual Condenser: {residual_h_ex_cd}")
-#         # Check if the residuals are within the tolerance
-#         # print(residual_h_ex_ev < self.tolerance)
-#         # print(residual_h_ex_cd < self.tolerance)
-#         # print(self.tolerance, 'tolerance')
-#         return residual_h_ex_ev < self.tolerance and residual_h_ex_cd < self.tolerance
-#     # def check_residuals(self):
-
-
-#         # For the first iteration, store the initial enthalpies as the reference
-#         if not hasattr(self, 'h_ex_ev_initial'):
-#             self.h_ex_ev_initial = h_ex_ev
-#             self.h_ex_cd_initial = h_ex_cd
-
-#         residual_h_ex_ev = abs(self.h_ex_ev_initial - h_ex_ev)
-#         residual_h_ex_cd = abs(self.h_ex_cd_initial - h_ex_cd)
-
-#         print(F"Residual Evaporator: {residual_h_ex_ev}, Residual Condenser: {residual_h_ex_cd}")
-#         # print(f"Residual Evaporator: {residual_h_ex_ev}, Residual Condenser: {residual_h_ex_cd}")
-#         # Check if the residuals are within the tolerance
-#         return residual_h_ex_ev < self.tolerance and residual_h_ex_cd < self.tolerance
 
 
 # Example usage of ORC
