@@ -147,6 +147,7 @@ class MassConnector:
                 self.fluid = value
             except:
                 print("Error: Incorrect fluid name:", value)
+        self.check_completely_known()
 
 
     def set_m_dot(self, value):
@@ -167,11 +168,10 @@ class MassConnector:
                 if var[0] == 'T':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:              # If the temperature is not known, set the value and add the variable to the list
             self.T = value
             self.variables_input = self.variables_input+[['T',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_p(self, value):
         # print('set_p', value)
@@ -181,11 +181,10 @@ class MassConnector:
                 if var[0] == 'P':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:             # If the pressure is not known, set the value and add the variable to the list
             self.p = value
             self.variables_input = self.variables_input+[['P',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_h(self, value):
         if self.h != None: # If the specific enthalpy is already known, update the value and the corresponding variable in the list
@@ -194,11 +193,10 @@ class MassConnector:
                 if var[0] == 'H':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:            # If the specific enthalpy is not known, set the value and add the variable to the list
             self.h = value
             self.variables_input = self.variables_input+[['H',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_s(self, value):
         if self.s != None: # If the specific entropy is already known, update the value and the corresponding variable in the list
@@ -207,11 +205,10 @@ class MassConnector:
                 if var[0] == 'S':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:           # If the specific entropy is not known, set the value and add the variable to the list
             self.s = value
             self.variables_input = self.variables_input+[['S',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_D(self, value):
         if self.D != None: # If the mass density is already known, update the value and the corresponding variable in the list
@@ -220,11 +217,10 @@ class MassConnector:
                 if var[0] == 'D':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:           # If the mass density is not known, set the value and add the variable to the list
             self.D = value
             self.variables_input = self.variables_input+[['D',value]]
-            self.check_completely_known()
+        self.check_completely_known()
             
     def set_x(self, value):
         if self.x != None: # If the quality is already known, update the value and the corresponding variable in the list
@@ -233,11 +229,10 @@ class MassConnector:
                 if var[0] == 'Q':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:          # If the quality is not known, set the value and add the variable to the list
             self.x = value
             self.variables_input = self.variables_input+[['Q',value]]
-            self.check_completely_known()
+        self.check_completely_known()
 
     def set_cp(self, value):
         if self.cp != None: # If the cp is already known, update the value and the corresponding variable in the list

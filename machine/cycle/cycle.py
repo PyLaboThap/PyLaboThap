@@ -14,25 +14,24 @@ from component.volumetric_machine.expander.constant_isentropic_efficiency.simula
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 from CoolProp.CoolProp import PropsSI
-
-# Second option:
 class Cycle:
     class Component:
         def __init__(self, name, model, fluid=None):
             self.name = name
             self.model = model
-            self.previous = {}
-            self.next = {}
+            self.previous = {}  # Dictionary to store preceding components by connector
+            self.next = {}  # Dictionary to store succeeding components by connector
             self.fluid = fluid
 
-        def add_previous(self, port, component):
-            self.previous[port] = component
+        def add_previous(self, connector, component):
+            self.previous[connector] = component 
 
-        def add_next(self, port, component):
-            self.next[port] = component
+        def add_next(self, connector, component):
+            self.next[connector] = component
 
-        def link(self, output_port, target_component, input_port):
-            connector_type = output_port.split('-')[0]
+        def link(self, output_connector, target_component, input_connector):
+            # Determine the type of connector based on the output connector
+            connector_type = output_connector.split('-')[0]
 
             if connector_type == "m":  # Mass connector
                 connector = MassConnector(fluid=self.fluid)
@@ -43,96 +42,71 @@ class Cycle:
             else:
                 raise ValueError(f"Unknown connector type: {connector_type}")
 
-            setattr(self.model, output_port.split('-')[1], connector)
-            setattr(target_component.model, input_port.split('-')[1], connector) # Voir si ça fait juste référence ou si ça crée un nouvel objet
+            # Set the connector in both the source and target components
+            setattr(self.model, output_connector.split('-')[1], connector)
+            setattr(target_component.model, input_connector.split('-')[1], connector)
 
-            self.add_next(output_port, target_component)
-            target_component.add_previous(input_port, self)
+            # Add the connection to the tracking dictionaries
+            self.add_next(output_connector, target_component)
+            target_component.add_previous(input_connector, self)
 
-            print(f"Linked {self.name}.{output_port} to {target_component.name}.{input_port}")
+            print(f"Linked {self.name}.{output_connector} to {target_component.name}.{input_connector}")
 
-        def set_properties(self, port_name, **kwargs): #Je pense que ça vient d'cic!!!
-            port = getattr(self.model, port_name)
-            # print("Update values for", port_name, ":", kwargs) # Non en fait on dirait c'est okay???
-            port.set_properties(**kwargs)
+        def set_properties(self, connector_name, **kwargs):
+            # Set properties for a specific connector
+            connector = getattr(self.model, connector_name)
+            connector.set_properties(**kwargs)
 
         def solve(self):
+            # Solve the component if it is calculable
             self.model.check_calculable()
             if self.model.calculable:
                 self.model.solve()
 
-        def clear_intermediate_states(self):
-            print(f"Clearing intermediate states for {self.name}")
-            self.model.clear_intermediate_states()
 
     def __init__(self, fluid=None):
-        self.components = {}  # Store components using a dictionary for direct access
+        self.components = {}  # Store components using a dictionary for easy access
         self.fixed_properties = {}
         self.guesses = {}
         self.fluid = fluid
 
     def add_component(self, model, name):
+        # Add a component to the cycle
         component = Cycle.Component(name, model, self.fluid)
         self.components[name] = component
 
     def get_component(self, name):
+        # Retrieve a component by name
         if name in self.components:
             return self.components[name]
-        raise ValueError(f"Component {name} not found")
+        raise ValueError(f"Component '{name}' not found")
 
-    def link_components(self, component1_name, output_port, component2_name, input_port):
+    def link_components(self, component1_name, output_connector, component2_name, input_connector):
+        # Link two components through specified connectors
         component1 = self.get_component(component1_name)
         component2 = self.get_component(component2_name)
-        component1.link(output_port, component2, input_port)
+        component1.link(output_connector, component2, input_connector)
 
     def set_cycle_properties(self, **kwargs):
+        # Set properties for a specific component and connector
         target = kwargs.pop('target')
-        component_name, port_name = target.split(':')
+        component_name, connector_name = target.split(':')
         component = self.get_component(component_name)
-        component.set_properties(port_name, **kwargs)
+        component.set_properties(connector_name, **kwargs)
 
+        # Update the fixed properties for the cycle
         if target not in self.fixed_properties:
             self.fixed_properties[target] = {}
         self.fixed_properties[target].update(kwargs)
 
-    def set_guess(self, **kwargs):
+    def set_cycle_guess(self, **kwargs):
+        # Set initial guesses for a specific component and connector
         target = kwargs.pop('target')
-        component_name, port_name = target.split(':')
+        component_name, connector_name = target.split(':')
         component = self.get_component(component_name)
-        component.set_properties(port_name, **kwargs)
+        component.set_properties(connector_name, **kwargs)
 
+        # Update the guesses for the cycle
         if target not in self.guesses:
             self.guesses[target] = {}
         self.guesses[target].update(kwargs)
-
-    
-
-
-    def solve(self, variables_to_converge, tolerance=1e-5, max_iterations=100):
-        print('variable to converge', variables_to_converge)
-        for i in range(max_iterations):
-            self.solve_loop()
-
-            converged = True
-            for target, variable_name in variables_to_converge:
-                component_name, port_name = target.split(':')
-                component = self.get_component(component_name)
-                port = getattr(component.model, port_name)
-
-                value = getattr(port, variable_name)
-                guess = self.guesses[target][variable_name]
-
-                if abs(value - guess) > tolerance:
-                    converged = False
-                    self.guesses[target][variable_name] = value
-                    port.set_properties(**{variable_name: value})
-
-            if converged:
-                print(f"Converged after {i + 1} iterations")
-                break
-        else:
-            print(f"Warning: Convergence not achieved after {max_iterations} iterations")
-
-    def solve_loop(self): # will have to be changed
-        for component in self.components.values():
-            component.solve()
