@@ -10,13 +10,13 @@ Created on Wed Jan 10 14:09:18 2024
 from CoolProp.CoolProp import PropsSI
 
 class MassConnector:
-    def __init__(self):
+    def __init__(self, fluid=None):
 
         self.completely_known = False # True if all the properties and the mass flow rate are known
         self.state_known = False      # True if all the properties are known
         self.variables_input = []     # List of the variables used to define the state of the fluid
         
-        self.fluid = None           # Fluid name
+        self.fluid = fluid           # Fluid name
         self.m_dot = None           # Mass flow rate [kg/s]
         self.V_dot = None           # Volume flow rate [m^3/s]
         self.T = None               # Temperature [K]
@@ -25,7 +25,22 @@ class MassConnector:
         self.s = None               # Specific entropy [J/kg/K]
         self.D = None               # Mass density [kg/m^3]
         self.x = None               # Quality [kg/kg]
-        
+        self.cp = None              # Specific heat capacity [J/kg/K]
+
+    def reset(self):
+        self.completely_known = False
+        self.state_known = False
+        self.variables_input = []
+        self.m_dot = None
+        self.V_dot = None
+        self.T = None
+        self.p = None
+        self.h = None
+        self.s = None
+        self.D = None
+        self.x = None
+        self.cp = None
+    
         
     def check_completely_known(self):
         if self.fluid != None:
@@ -53,6 +68,7 @@ class MassConnector:
                 self.h = PropsSI('H', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.s = PropsSI('S', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.D = PropsSI('D', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
+                self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.state_known = True
             except:
                 print("Error: This pair of inputs is not yet supported.")
@@ -65,6 +81,7 @@ class MassConnector:
                 self.h = PropsSI('H', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.s = PropsSI('S', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.D = PropsSI('D', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
+                self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                 self.state_known = True
             except:
                 try:
@@ -77,6 +94,7 @@ class MassConnector:
                         self.T = PropsSI('T', 'Q', self.x, 'H', self.h, self.fluid)
                         self.s = PropsSI('S', 'Q', self.x, 'H', self.h, self.fluid)
                         self.D = PropsSI('D', 'Q', self.x, 'H', self.h, self.fluid)
+                        self.cp = PropsSI('CPMASS', self.variables_input[0][0], self.variables_input[0][1], self.variables_input[1][0], self.variables_input[1][1], self.fluid)
                         self.state_known = True
                 except:
                     print("Error: This pair of inputs is not yet supported.")
@@ -110,6 +128,8 @@ class MassConnector:
                 self.set_D(value)
             elif key == 'x':
                 self.set_x(value)
+            elif key == 'cp':
+                self.set_cp(value)
             else:
                 print(f"Error: Invalid property '{key}'")
 
@@ -127,6 +147,7 @@ class MassConnector:
                 self.fluid = value
             except:
                 print("Error: Incorrect fluid name:", value)
+        self.check_completely_known()
 
 
     def set_m_dot(self, value):
@@ -140,30 +161,30 @@ class MassConnector:
         self.check_completely_known()
         
     def set_T(self, value):
+        # print('set_T', value)
         if self.T != None: # If the temperature is already known, update the value and the corresponding variable in the list
             self.T = value
             for i, var in enumerate(self.variables_input):
                 if var[0] == 'T':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:              # If the temperature is not known, set the value and add the variable to the list
             self.T = value
             self.variables_input = self.variables_input+[['T',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_p(self, value):
+        # print('set_p', value)
         if self.p != None: # If the pressure is already known, update the value and the corresponding variable in the list
             self.p = value
             for i, var in enumerate(self.variables_input):
                 if var[0] == 'P':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:             # If the pressure is not known, set the value and add the variable to the list
             self.p = value
             self.variables_input = self.variables_input+[['P',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_h(self, value):
         if self.h != None: # If the specific enthalpy is already known, update the value and the corresponding variable in the list
@@ -172,11 +193,10 @@ class MassConnector:
                 if var[0] == 'H':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:            # If the specific enthalpy is not known, set the value and add the variable to the list
             self.h = value
             self.variables_input = self.variables_input+[['H',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_s(self, value):
         if self.s != None: # If the specific entropy is already known, update the value and the corresponding variable in the list
@@ -185,11 +205,10 @@ class MassConnector:
                 if var[0] == 'S':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:           # If the specific entropy is not known, set the value and add the variable to the list
             self.s = value
             self.variables_input = self.variables_input+[['S',value]]
-            self.check_completely_known()
+        self.check_completely_known()
         
     def set_D(self, value):
         if self.D != None: # If the mass density is already known, update the value and the corresponding variable in the list
@@ -198,11 +217,10 @@ class MassConnector:
                 if var[0] == 'D':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:           # If the mass density is not known, set the value and add the variable to the list
             self.D = value
             self.variables_input = self.variables_input+[['D',value]]
-            self.check_completely_known()
+        self.check_completely_known()
             
     def set_x(self, value):
         if self.x != None: # If the quality is already known, update the value and the corresponding variable in the list
@@ -211,11 +229,16 @@ class MassConnector:
                 if var[0] == 'Q':
                     self.variables_input[i][1] = value
                     break
-            self.check_completely_known()
         else:          # If the quality is not known, set the value and add the variable to the list
             self.x = value
             self.variables_input = self.variables_input+[['Q',value]]
-            self.check_completely_known()
+        self.check_completely_known()
+
+    def set_cp(self, value):
+        if self.cp != None: # If the cp is already known, update the value and the corresponding variable in the list
+            self.cp = value
+        else:          # If the quality is not known, set the value and add the variable to the list
+            self.cp = value # We don't want to calculate in this case
             
             
     def print_resume(self, unit_T='K', unit_p='Pa'):
