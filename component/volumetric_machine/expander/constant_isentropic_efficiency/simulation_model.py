@@ -110,13 +110,13 @@ class ExpanderCstEff(BaseComponent):
         self.ex.set_h(h_ex)
         self.ex.set_fluid(self.su.fluid)
         self.ex.set_m_dot(self.su.m_dot)
-        self.W_exp.set_work(w_exp)
+        self.W_exp.set_w(w_exp)
 
     def print_results(self):
         print("=== Expander Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
-        print(f"  - w_exp: {self.W_exp.work} [J/kg]")
+        print(f"  - w_exp: {self.W_exp.w} [J/kg]")
         print("=========================")
 
     def print_states_connectors(self):
@@ -126,5 +126,5 @@ class ExpanderCstEff(BaseComponent):
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
         print("=========================")
         print("Work connector:")
-        print(f"  - W_exp: w={self.W_exp.work} [J/kg]")
+        print(f"  - W_exp: w={self.W_exp.w} [J/kg]")
         print("=========================")

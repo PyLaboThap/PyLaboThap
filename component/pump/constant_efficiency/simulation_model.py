@@ -102,13 +102,13 @@ class PumpCstEff(BaseComponent):
         self.ex.set_h(h_ex)
         self.ex.set_fluid(self.su.fluid)
         self.ex.set_m_dot(self.su.m_dot)
-        self.W_pp.set_work(w_pp)
+        self.W_pp.set_w(w_pp)
 
     def print_results(self):
         print("=== Pump Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
-        print(f"  - w_pp: {self.W_pp.work} [J/kg]")
+        print(f"  - w_pp: {self.W_pp.w} [J/kg]")
         print("=========================")
 
     def print_states_connectors(self):
@@ -118,5 +118,5 @@ class PumpCstEff(BaseComponent):
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
         print("=========================")
         print("Work connector:")
-        print(f"  - W_pp: w={self.W_pp.work} [J/kg]")
+        print(f"  - W_pp: w={self.W_pp.w} [J/kg]")
         print("=========================")
