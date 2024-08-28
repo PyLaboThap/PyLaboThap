@@ -8,5 +8,5 @@ recent_files = ['Connectors\\Example\\Test_connectors.py', 'Components\\Expander
 
 [main]
 version = 0.2.0
-recent_files = []
+recent_files = ['..\\..\\..\\Desktop\\Travail\\Uliege 2023-2024\\Decagone\\Codes\\Charge Sensitive Model\\Python_Library\\Component\\Heat_Exchanger\\Finite_Difference_Model\\Cross_Flow_Tube_and_Fins\\example_main.py', 'correlations\\thermal_conductivity.py', 'machine\\cycle\\ORC.py', 'component\\heat_exchanger\\moving_boundary\\charge_sensitive\\simulation_model.py']
 
