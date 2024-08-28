@@ -7,12 +7,18 @@ Created on Fri June 19 2024
 """
 
 from CoolProp.CoolProp import PropsSI
-from connectors.mass_connector import MassConnector
+from connector.mass_connector import MassConnector
 
 # Create an instance of the Mass_connector class
 point = MassConnector()
 point.set_properties(T=500, m_dot=0.5, fluid = 'INCOMP::DowQ', P=101325)
 point.print_resume(unit_T='C', unit_p='bar')
+
+point2 = MassConnector()
+point2.set_fluid('R1233zd(E)')
+point2.set_T(500)
+point2.set_cp(2000)
+print(point2.cp)
 # point.set_T(70+273.15)
 # point.print_resume(unit_T='C', unit_p='bar')
 # # Set the pressure at 200000 Pa

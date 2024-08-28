@@ -59,10 +59,3 @@ class WorkConnector:
         print("Speed: " + str(self.speed) + " [rpm]")
         print("Torque: " + str(self.torque) + " [Nm]")
         print("Power: " + str(self.power) + " [W]")
-
-
-# # Example usage
-# wc = Work_connector()
-# wc.set_speed(3000)   # 3000 rpm
-# wc.set_torque(10)    # 10 Nm
-# wc.print_resume()
