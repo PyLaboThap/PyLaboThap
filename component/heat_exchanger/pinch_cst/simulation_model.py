@@ -251,7 +251,7 @@ class HXPinchCst(BaseComponent):
         self.ex_sf.set_T(self.T_sf_ex)
 
         "Heat conector"
-        self.Q_dot.set_heat(self.Q)
+        self.Q_dot.set_Q_dot(self.Q)
 
 
     def print_results(self):

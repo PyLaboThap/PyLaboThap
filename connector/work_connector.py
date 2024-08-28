@@ -7,55 +7,41 @@ class WorkConnector:
         """
         self.variables_input = []
         
-        self.work = None              # Work [J]
-        self.speed = None             # Speed [rpm]
-        self.torque = None            # Torque [Nm]
-        self.power = None             # Power [W]
+        self.w = None              # Specific work [J/kg]
+        self.W_dot = None          # Work power [W]
+        self.N = None              # Speed [rpm]
+        self.T = None            # Torque [Nm]
 
 
     def calculate_properties(self):
-        if self.variables_input:
-            try:
-                # Example calculations (for demonstration purposes only)
-                if self.torque is not None and self.speed is not None:
-                    self.power = self.torque * (self.speed * 2 * 3.141592653589793 / 60)  # Power in Watts
-                elif self.power is not None and self.speed is not None:
-                    self.torque = self.power / (self.speed * 2 * 3.141592653589793 / 60)  # Torque in Nm
-                elif self.speed is not None and self.work is not None:
-                    self.power = self.work / (self.speed * 2 * 3.141592653589793 / 60)  # Power in Watts
-            except:
-                print("Error: Calculation failed")
+        pass
 
-    def set_work(self, value):
-        self.work = value
-        self.variables_input = self.variables_input + [['work', value]]
+    def set_w(self, value):
+        self.w = value
+        self.variables_input = self.variables_input + [['w', value]]
         self.calculate_properties()
 
-    def set_speed(self, value):
-        self.speed = value
-        self.variables_input = self.variables_input + [['speed', value]]
+    def set_W_dot(self, value):
+        self.W_dot = value
+        self.variables_input = self.variables_input + [['W_dot', value]]
         self.calculate_properties()
 
-    def set_torque(self, value):
-        self.torque = value
-        self.variables_input = self.variables_input + [['torque', value]]
+    def set_N(self, value):
+        self.N = value
+        self.variables_input = self.variables_input + [['N', value]]
         self.calculate_properties()
 
-    def set_power(self, value):
-        self.power = value
-        self.variables_input = self.variables_input + [['power', value]]
+    def set_T(self, value):
+        self.T = value
+        self.variables_input = self.variables_input + [['T', value]]
         self.calculate_properties()
 
-    def set_efficiency(self, value):
-        self.efficiency = value
-        self.variables_input = self.variables_input + [['efficiency', value]]
-        self.calculate_properties()
 
     def print_resume(self):
         """
         Print a summary of the work connector properties
         """
-        print("Work: " + str(self.work) + " [J]")
-        print("Speed: " + str(self.speed) + " [rpm]")
-        print("Torque: " + str(self.torque) + " [Nm]")
-        print("Power: " + str(self.power) + " [W]")
+        print("Work: " + str(self.w) + " [J]")
+        print("Speed: " + str(self.W_dot) + " [rpm]")
+        print("Torque: " + str(self.N) + " [Nm]")
+        print("Power: " + str(self.T) + " [W]")

@@ -88,7 +88,9 @@ class HeatExchangerMB(BaseComponent):
         else:
             print("Heat exchanger types implemented for this model are : 'Plate', 'Shell&Tube', 'Tube&Fins'.")
 
-    def get_required_inputs(self):
+        
+    
+    def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
         """
         Hot side required inputs : 
             
@@ -104,56 +106,64 @@ class HeatExchangerMB(BaseComponent):
             - Csu_fluid      : Cold supply fluid
             - Csu_m_dot      : Cold supply flow rate
         """
-        
-        if self.inputs == {}:
-            # Hot Fluid
-            if self.su['H'].T is not None:
-                self.inputs['Hsu_T'] = self.su['H'].T
-            elif self.su['H'].h is not None:
-                self.inputs['Hsu_h'] = self.su['H'].h
-            if self.su['H'].p is not None:
-                self.inputs['Hsu_p'] = self.su['H'].p
-            if self.su['H'].fluid is not None:
-                self.inputs['Hsu_fluid'] = self.su['H'].fluid
-            if self.su['H'].m_dot is not None:
-                self.inputs['Hsu_m_dot'] = self.su['H'].m_dot
-                
-            # Cold Fluid                
-            if self.su['C'].T is not None:
-                self.inputs['Csu_T'] = self.su['C'].T
-            elif self.su['C'].h is not None:
-                self.inputs['Csu_h'] = self.su['C'].h
-            if self.su['C'].p is not None:
-                self.inputs['Csu_p'] = self.su['C'].p
-            if self.su['C'].fluid is not None:
-                self.inputs['Csu_fluid'] = self.su['C'].fluid
-            if self.su['C'].m_dot is not None:
-                self.inputs['Csu_m_dot'] = self.su['C'].m_dot
-                
-        if self.inputs != {}:
-            # Hot Fluid
-            self.su['H'].set_fluid(self.inputs['Hsu_fluid'])
-            if 'Hsu_T' in self.inputs:
-                self.su['H'].set_T(self.inputs['Hsu_T'])
-            elif 'Hsu_h' in self.inputs:
-                self.su['H'].set_h(self.inputs['Hsu_h'])
-            if 'Hsu_p' in self.inputs:
-                self.su['H'].set_p(self.inputs['Hsu_p'])
-            if 'Hsu_m_dot' in self.inputs:
-                self.su['H'].set_m_dot(self.inputs['Hsu_m_dot'])
+        self.sync_inputs()
+        # Return a list of required inputs
+        return['Hsu_p', 'Hsu_T', 'Hsu_m_dot', 'Hsu_fluid', 'Csu_p', 'Csu_T', 'Csu_m_dot', 'Csu_fluid']
+    
+    def sync_inputs(self):
+        """Synchronize the inputs dictionary with the connector states."""
+        # Hot Fluid
+        if self.su['H'].T is not None:
+            self.inputs['Hsu_T'] = self.su['H'].T
+        elif self.su['H'].h is not None:
+            self.inputs['Hsu_h'] = self.su['H'].h
+        if self.su['H'].p is not None:
+            self.inputs['Hsu_p'] = self.su['H'].p
+        if self.su['H'].fluid is not None:
+            self.inputs['Hsu_fluid'] = self.su['H'].fluid
+        if self.su['H'].m_dot is not None:
+            self.inputs['Hsu_m_dot'] = self.su['H'].m_dot
+            
+        # Cold Fluid                
+        if self.su['C'].T is not None:
+            self.inputs['Csu_T'] = self.su['C'].T
+        elif self.su['C'].h is not None:
+            self.inputs['Csu_h'] = self.su['C'].h
+        if self.su['C'].p is not None:
+            self.inputs['Csu_p'] = self.su['C'].p
+        if self.su['C'].fluid is not None:
+            self.inputs['Csu_fluid'] = self.su['C'].fluid
+        if self.su['C'].m_dot is not None:
+            self.inputs['Csu_m_dot'] = self.su['C'].m_dot
 
-            # Cold Fluid
-            self.su['C'].set_fluid(self.inputs['Csu_fluid'])
-            if 'Csu_T' in self.inputs:
-                self.su['C'].set_T(self.inputs['Csu_T'])
-            elif 'Csu_h' in self.inputs:
-                self.su['C'].set_h(self.inputs['Csu_h'])
-            if 'Csu_p' in self.inputs:
-                self.su['C'].set_p(self.inputs['Csu_p'])
-            if 'Csu_m_dot' in self.inputs:
-                self.su['C'].set_m_dot(self.inputs['Csu_m_dot'])
+    def set_inputs(self, **kwargs):
+        """Set inputs directly through a dictionary and update connector properties."""
+        self.inputs.update(kwargs) # This line merges the keyword arguments ('kwargs') passed to the 'set_inputs()' method into the eisting 'self.inputs' dictionary.
 
-        return ['Hsu_p', 'Hsu_T', 'Hsu_m_dot', 'Hsu_fluid', 'Csu_p', 'Csu_T', 'Csu_m_dot', 'Csu_fluid']
+        # Update the connectors based on the new inputs
+        # Hot Fluid
+        self.su['H'].set_fluid(self.inputs['Hsu_fluid'])
+        if 'Hsu_T' in self.inputs:
+            self.su['H'].set_T(self.inputs['Hsu_T'])
+        elif 'Hsu_h' in self.inputs:
+            self.su['H'].set_h(self.inputs['Hsu_h'])
+        if 'Hsu_p' in self.inputs:
+            self.su['H'].set_p(self.inputs['Hsu_p'])
+        if 'Hsu_m_dot' in self.inputs:
+            self.su['H'].set_m_dot(self.inputs['Hsu_m_dot'])
+
+        # Cold Fluid
+        self.su['C'].set_fluid(self.inputs['Csu_fluid'])
+        if 'Csu_T' in self.inputs:
+            self.su['C'].set_T(self.inputs['Csu_T'])
+        elif 'Csu_h' in self.inputs:
+            self.su['C'].set_h(self.inputs['Csu_h'])
+        if 'Csu_p' in self.inputs:
+            self.su['C'].set_p(self.inputs['Csu_p'])
+        if 'Csu_m_dot' in self.inputs:
+            self.su['C'].set_m_dot(self.inputs['Csu_m_dot'])
+
+        return['fluid_wf', 'su_wf_h', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
 
     def get_required_parameters(self):
         """
