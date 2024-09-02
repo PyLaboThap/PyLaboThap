@@ -8,6 +8,7 @@ from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 from machine.cycle.cycle import Cycle
 
+from machine.cycle.circuit import Circuit
 from machine.cycle.source import Source
 from machine.cycle.sink import Sink
 
@@ -17,7 +18,7 @@ from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 class System:
     def __init__(self):
-        self.cycle = Cycle()
+        self.cycle = Circuit()
         self.source = Source()
         self.sink = Sink()
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     # River = Sink()
     # Example usage in the main script
     # Create a cycle
-    ORC = Cycle()
+    ORC = Circuit()
     
     # Create components
     Pump = PumpCstEff()
