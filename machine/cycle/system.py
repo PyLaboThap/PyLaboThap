@@ -7,7 +7,6 @@ from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
-from machine.cycle.cycle import Cycle
 from machine.cycle.source import Source
 from machine.cycle.sink import Sink
 
