@@ -14,7 +14,8 @@ from component.volumetric_machine.expander.constant_isentropic_efficiency.simula
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 from CoolProp.CoolProp import PropsSI
-class Cycle:
+
+class Circuit:
     class Component:
         def __init__(self, name, model, fluid=None):
             self.name = name
@@ -63,47 +64,47 @@ class Cycle:
             if self.model.calculable:
                 self.model.solve()
 
-    class Source():
-        def __init__(self, name, target_component, input_port):
-            self.name = name
-            self.properties = MassConnector()
-            self.next = {}
-            self.previous = {}
-            self.link(target_component, input_port)
-        def set_properties(self, port_name, **kwargs):
-            port = getattr(self.model, port_name)
-            port.set_properties(**kwargs)
-        def link(self, target_component, input_port):
-            connector_type = input_port.split('-')[0]
+    # class Source():
+    #     def __init__(self, name, target_component, input_port):
+    #         self.name = name
+    #         self.properties = MassConnector()
+    #         self.next = {}
+    #         self.previous = {}
+    #         self.link(target_component, input_port)
+    #     def set_properties(self, port_name, **kwargs):
+    #         port = getattr(self.model, port_name)
+    #         port.set_properties(**kwargs)
+    #     def link(self, target_component, input_port):
+    #         connector_type = input_port.split('-')[0]
  
-            if connector_type != "m":  # Mass connector
-                print("Source shall be connected by a mass connector")
-                return
-            else:
-                setattr(target_component.model, input_port.split('-')[1], self.properties) # Voir si ça fait juste référence ou si ça crée un nouvel objet    
-                self.next[target_component.name] = target_component.model
-                target_component.add_previous(input_port, self)
+    #         if connector_type != "m":  # Mass connector
+    #             print("Source shall be connected by a mass connector")
+    #             return
+    #         else:
+    #             setattr(target_component.model, input_port.split('-')[1], self.properties) # Voir si ça fait juste référence ou si ça crée un nouvel objet    
+    #             self.next[target_component.name] = target_component.model
+    #             target_component.add_previous(input_port, self)
  
-    class Sink():
-        def __init__(self, name, target_component, output_port):
-            self.name = name
-            self.properties = MassConnector()
-            self.previous = {}
-            self.next = {}
-            self.link(target_component, output_port)
+    # class Sink():
+    #     def __init__(self, name, target_component, output_port):
+    #         self.name = name
+    #         self.properties = MassConnector()
+    #         self.previous = {}
+    #         self.next = {}
+    #         self.link(target_component, output_port)
  
-        def set_properties(self, port_name, **kwargs):
-            port = getattr(self.model, port_name)
-            port.set_properties(**kwargs)
+    #     def set_properties(self, port_name, **kwargs):
+    #         port = getattr(self.model, port_name)
+    #         port.set_properties(**kwargs)
  
-        def link(self, target_component, output_port):
-            connector_type = output_port.split('-')[0]
-            if connector_type != "m":  # Mass connector
-                print("Source shall be connected by a mass connector")
-                return
-            else:                
-                self.previous[target_component.name] = target_component.model
-                target_component.add_next(output_port, self)
+    #     def link(self, target_component, output_port):
+    #         connector_type = output_port.split('-')[0]
+    #         if connector_type != "m":  # Mass connector
+    #             print("Source shall be connected by a mass connector")
+    #             return
+    #         else:                
+    #             self.previous[target_component.name] = target_component.model
+    #             target_component.add_next(output_port, self)
 
 
     def __init__(self, fluid=None):
@@ -115,7 +116,7 @@ class Cycle:
 
     def add_component(self, model, name):
         # Add a component to the cycle
-        component = Cycle.Component(name, model, self.fluid)
+        component = Circuit.Component(name, model, self.fluid)
         self.components[name] = component
 
     def get_component(self, name):
