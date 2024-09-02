@@ -25,6 +25,7 @@ EVAP.set_parameters(**{
 
 EVAP.solve()
 EVAP.print_results()
+EVAP.print_states_connectors()
 
 # "Condenser test"
 
@@ -48,3 +49,4 @@ COND.set_parameters(**{
 
 COND.solve()
 COND.print_results()
+COND.print_states_connectors()
