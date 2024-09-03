@@ -1,42 +1,35 @@
-
-import sys
-sys.path.append('C:/Users/Basile/Documents/GitHub/LaboThapLibrary')
-
 from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
 from component.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
-from component.heat_exchanger.moving_boundary.charge_sensitive.simulation_model import HeatExchangerMB
-from component.heat_exchanger.moving_boundary.charge_sensitive.modules.geometry_plate_hx_swep import PlateGeomSWEP
 from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
 from component.pump.constant_efficiency.simulation_model import PumpCstEff
-from machine.circuit import Circuit
+from machine.cycle.circuit import Circuit
+
 
 from CoolProp.CoolProp import PropsSI
-from scipy.optimize import minimize
-from scipy.optimize import fsolve
-
-from scipy.optimize import minimize
 import numpy as np
+
+
 
 class RC(Circuit):
     def __init__(self, fluid=None):
         super().__init__(fluid)
         self.tolerance = 1e-6  # Convergence tolerance for residuals
         self.prev_pressures = {}  # Store pressures between iterations
-        self.prev_residuals = []  # Store residuals from the previous iteration
+        self.prev_residuals = None  # Store residuals from the previous iteration
         self.residuals_var = []  # Store the residuals to check
-        self.n_it = 0
 
     def solve(self, start_key="Pump"):
-        # self.set_cycle_guesses()
+        self.set_cycle_guesses()
 
-        max_iterations = 100
+        iteration = 0
+        max_iterations = 10
         converged = False
 
-        while not converged and self.n_it < max_iterations:
-            print(f"Iteration {self.n_it}: Solving the cycle.")
+        while not converged and iteration < max_iterations:
+            print(f"Iteration {iteration}: Solving the cycle.")
 
             # Calculate residuals before solving
             self.prev_residuals = self.get_residuals()
@@ -52,10 +45,9 @@ class RC(Circuit):
             self.update_guesses()
 
             # Check if the residuals are within the tolerance
-            if self.n_it > 0:
-                converged = self.check_residuals(final_residuals)
+            converged = self.check_residuals(final_residuals)
 
-            self.n_it += 1
+            iteration += 1
 
         if converged:
             print("Cycle solved successfully.")
@@ -73,7 +65,6 @@ class RC(Circuit):
         for guess, value in guesses.items():
             component_name, prop = guess.split(':')
             connector_name, prop_name = prop.split('-')
-
             self.set_cycle_guess(target=f"{component_name}:{connector_name}", **{prop_name: value})
 
     def update_guesses(self):
@@ -83,8 +74,8 @@ class RC(Circuit):
         evaporator = self.get_component("Evaporator")
         condenser = self.get_component("Condenser")
 
-        self.prev_pressures['P_ev'] = evaporator.model.ex_C.p
-        self.prev_pressures['P_cd'] = condenser.model.ex_H.p
+        self.prev_pressures['P_ev'] = evaporator.model.ex_wf.p
+        self.prev_pressures['P_cd'] = condenser.model.ex_wf.p
 
         # Update the guesses with the latest pressure values
         self.guesses.update({
@@ -98,12 +89,6 @@ class RC(Circuit):
         """
         if not self.prev_residuals:
             return False  # No previous residuals to compare to
-    
-        # Output residuals for debugging
-        
-        # for i, (f, p) in enumerate(zip(final_residuals, self.prev_residuals)):
-        #     key = self.residuals_var[i]
-        #     print(f"Key: {key}, Final Residual (f): {f}, Previous Residual (p): {p}")
 
         residual_diff = [abs(f - p) for f, p in zip(final_residuals, self.prev_residuals)]
         
@@ -117,7 +102,6 @@ class RC(Circuit):
         """
         Calculate the residuals based on the specified variables.
         """
-        
         residuals = [] # Store the calculated residuals
         for residual_target in self.residuals_var: # Iterate over the residuals to calculate
             component_name, connector_prop = residual_target.split(':') # Split the target into component and connector
@@ -129,6 +113,21 @@ class RC(Circuit):
 
         return residuals
 
+    def set_cycle_guesses(self):
+        # This method is now mainly for setting up the initial conditions, with updates handled in `update_guesses`.
+        P_ev_guess = self.prev_pressures.get('P_ev', PropsSI('P', 'T', 90 + 273.15, 'Q', 0.5, self.fluid))
+        P_cd_guess = self.prev_pressures.get('P_cd', PropsSI('P', 'T', 25 + 273.15, 'Q', 0.5, self.fluid))
+
+        subcooling = self.parameters['SC_cd']
+        superheating = self.parameters['SH_ev']
+
+        T_su_pp = PropsSI('T', 'P', P_cd_guess, 'Q', 0, self.fluid) - subcooling
+        self.set_cycle_properties(target="Pump:su", T=T_su_pp, P=P_cd_guess)
+
+        T_ex_ev = PropsSI('T', 'P', P_ev_guess, 'Q', 1, self.fluid) + superheating
+        self.set_cycle_properties(target="Evaporator:ex_wf", P=P_ev_guess, T=T_ex_ev)
+        self.set_cycle_properties(target="Expander:ex", P=P_cd_guess)
+
     def recursive_solve(self, component, visited):
         # Prevent infinite loops by skipping already visited components
         if component in visited:
@@ -137,15 +136,13 @@ class RC(Circuit):
         # Mark the component as visited and solve it
         visited.add(component)
         print(f"Solving {component.name}")
-
         if isinstance(component, Circuit.Component):
             component.solve()
-            # component.model.print_states_connectors()
-            component.model.print_results()
 
         # Recursively solve connected components
         for next_component in component.next.values():
             self.recursive_solve(next_component, visited)
+
 
 # Example usage of the Rankine Cycle (RC)
 if __name__ == "__main__":
@@ -163,28 +160,28 @@ if __name__ == "__main__":
     COND.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='condenser')
     EXP.set_parameters(eta_is=0.8)
 
-    # Add components to the cycles
+    # Add components to the cycle
     orc_cycle.add_component(PUMP, "Pump")
     orc_cycle.add_component(EVAP, "Evaporator")
     orc_cycle.add_component(EXP, "Expander")
     orc_cycle.add_component(COND, "Condenser")
 
     # Link components
-    orc_cycle.link_components("Pump", "m-ex", "Evaporator", "m-su_C")
-    orc_cycle.link_components("Evaporator", "m-ex_C", "Expander", "m-su")
-    orc_cycle.link_components("Expander", "m-ex", "Condenser", "m-su_H")
-    orc_cycle.link_components("Condenser", "m-ex_H", "Pump", "m-su")
+    orc_cycle.link_components("Pump", "m-ex", "Evaporator", "m-su_wf")
+    orc_cycle.link_components("Evaporator", "m-ex_wf", "Expander", "m-su")
+    orc_cycle.link_components("Expander", "m-ex", "Condenser", "m-su_wf")
+    orc_cycle.link_components("Condenser", "m-ex_wf", "Pump", "m-su")
 
     # Set the cycle properties
     orc_cycle.set_cycle_properties(m_dot=0.06, target='Pump:su')
 
-    orc_cycle.set_cycle_properties(T=40 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_C', P = 4e5)
-    orc_cycle.set_cycle_properties(cp=4186, target='Condenser:su_C')
-    orc_cycle.set_cycle_properties(fluid='Water', target='Condenser:ex_C')
+    orc_cycle.set_cycle_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_sf')
+    orc_cycle.set_cycle_properties(cp=4186, target='Condenser:su_sf')
+    orc_cycle.set_cycle_properties(fluid='Water', target='Condenser:ex_sf')
 
-    orc_cycle.set_cycle_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_H', P = 4e5)
-    orc_cycle.set_cycle_properties(cp=4186, target='Evaporator:su_H')
-    orc_cycle.set_cycle_properties(fluid='Water', target='Evaporator:ex_H')
+    orc_cycle.set_cycle_properties(T=150 + 273.15, fluid='Water', m_dot=0.4, target='Evaporator:su_sf')
+    orc_cycle.set_cycle_properties(cp=4186, target='Evaporator:su_sf')
+    orc_cycle.set_cycle_properties(fluid='Water', target='Evaporator:ex_sf')
 
     # Set parameters for the cycle
     SC_cd = 5
@@ -195,24 +192,18 @@ if __name__ == "__main__":
     T_ev_guess = 120 + 273.15
     P_ev_guess = PropsSI('P', 'T', T_ev_guess, 'Q', 0.5, 'R245fa')
 
-    print("P_ev_guess", P_ev_guess)
-
-    T_cd_guess = 30 + 273.15
+    T_cd_guess = 3 + 273.15
     P_cd_guess = PropsSI('P', 'T', T_cd_guess, 'Q', 0.5, 'R245fa')
-
-    print("P_cd_guess", P_cd_guess)
 
     # Define guesses and residuals
     guesses = {
-        "Evaporator:su_C-P": P_ev_guess,
-        "Condenser:ex_H-P": P_cd_guess,
-        "Pump:su-T": T_cd_guess - SC_cd,
-        "Expander:ex-P": P_cd_guess
+        "Evaporator:su_wf-P": P_ev_guess,
+        "Condenser:ex_wf-P": P_cd_guess,
     }
 
     residuals_var = [
-        "Evaporator:ex_C-h",
-        "Condenser:ex_H-h"
+        "Evaporator:ex_wf-h",
+        "Condenser:ex_wf-h"
     ]
 
     orc_cycle.set_cycle_guesses_residuals(guesses, residuals_var)
@@ -220,168 +211,3 @@ if __name__ == "__main__":
     # Solve the cycle
     orc_cycle.solve()
 
-    # Example usage of ORC
-# if __name__ == "__main__":
-#     orc_cycle = RC(fluid='Cyclopentane')
- 
-#     #%%
-#     "EVAPORATOR PARAMETERS"
-#     EVAP = HeatExchangerMB('Plate')
-#     "Geometry Loading"
-#     EVAP_geom = PlateGeomSWEP()
-#     EVAP_geom.set_parameters("B20Hx24/1P") 
-#     Corr_H = {"1P" : "Gnielinski", "2P" : "Han_cond_BPHEX"}
-#     Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
- 
-#     EVAP.set_parameters(
-#         A_c = EVAP_geom.A_c, A_h = EVAP_geom.A_h, h = EVAP_geom.h, l = EVAP_geom.l, l_v = EVAP_geom.l_v, # 5
-#         C_CS = EVAP_geom.C_CS, C_Dh = EVAP_geom.C_Dh, C_V_tot = EVAP_geom.C_V_tot, C_canal_t = EVAP_geom.C_canal_t, C_n_canals = EVAP_geom.C_n_canals, # 10
-#         H_CS = EVAP_geom.H_CS, H_Dh = EVAP_geom.H_Dh, H_V_tot = EVAP_geom.H_V_tot, H_canal_t = EVAP_geom.H_canal_t, H_n_canals = EVAP_geom.H_n_canals, # 15
-#         casing_t = EVAP_geom.casing_t, chevron_angle = EVAP_geom.chevron_angle, fooling = EVAP_geom.fooling, # 18
-#         n_plates = EVAP_geom.n_plates, plate_cond = EVAP_geom.plate_cond, plate_pitch_co = EVAP_geom.plate_pitch_co, t_plates = EVAP_geom.t_plates, w = EVAP_geom.w, # 23
-#         Flow_Type = 'CounterFlow', H_DP_ON = True, C_DP_ON = True, n_disc = 50) # 27
-#     EVAP.set_htc(htc_type = 'Correlation', Corr_H = Corr_H, Corr_C = Corr_C) # 'User-Defined' or 'Correlation' # 28
- 
-#     orc_cycle.add_component(EVAP, "Evaporator")
- 
-#     #%%
-#     "PUMP PARAMETERS"
- 
-#     PUMP = PumpCstEff()
- 
-#     # Set parameters
-#     PUMP.set_parameters(eta_is=0.6)
-#     orc_cycle.add_component(PUMP, "Pump")
-#     #%%
-#     "EXPANDER PARAMETERS"
-#     EXP = ExpanderCstEff()
-#     EXP.set_parameters(eta_is=0.9)
- 
-#     orc_cycle.add_component(EXP, "Expander")
-#     #%%
-#     "CONDENSER PARAMETERS"
-#     COND = HeatExchangerMB('Plate')
-#     "Geometry Loading"
-#     COND_geom = PlateGeomSWEP()
-#     COND_geom.set_parameters("B20Hx24/1P")
-#     Corr_H = {"1P" : "Gnielinski", "2P" : "Han_cond_BPHEX"}
-#     Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
- 
-#     COND.set_parameters(
-#         A_c = EVAP_geom.A_c, A_h = EVAP_geom.A_h, h = EVAP_geom.h, l = EVAP_geom.l, l_v = EVAP_geom.l_v, # 5
-#         C_CS = EVAP_geom.C_CS, C_Dh = EVAP_geom.C_Dh, C_V_tot = EVAP_geom.C_V_tot, C_canal_t = EVAP_geom.C_canal_t, C_n_canals = EVAP_geom.C_n_canals, # 10
-#         H_CS = EVAP_geom.H_CS, H_Dh = EVAP_geom.H_Dh, H_V_tot = EVAP_geom.H_V_tot, H_canal_t = EVAP_geom.H_canal_t, H_n_canals = EVAP_geom.H_n_canals, # 15
-#         casing_t = EVAP_geom.casing_t, chevron_angle = EVAP_geom.chevron_angle, fooling = EVAP_geom.fooling, # 18
-#         n_plates = EVAP_geom.n_plates, plate_cond = EVAP_geom.plate_cond, plate_pitch_co = EVAP_geom.plate_pitch_co, t_plates = EVAP_geom.t_plates, w = EVAP_geom.w, # 23
-#         Flow_Type = 'CounterFlow', H_DP_ON = True, C_DP_ON = True, n_disc = 50) # 27
-#     COND.set_htc(htc_type = 'Correlation', Corr_H = Corr_H, Corr_C = Corr_C) # 'User-Defined' or 'Correlation' # 28
- 
-#     orc_cycle.add_component(COND, "Condenser")
- 
-#     #%% Sources and sinks
-#     Source_T66 = orc_cycle.Source('T66', orc_cycle.get_component('Evaporator'), 'm-su_H')
-#     Sink_T66 = orc_cycle.Sink('T66', orc_cycle.get_component('Evaporator'), 'm-ex_H')
-#     # orc_cycle.set_solve_start('T66', Source_T66)
- 
-#     Source_Water = orc_cycle.Source('Water', orc_cycle.get_component('Condenser'), 'm-su_C')    
-#     Sink_Water = orc_cycle.Sink('Water', orc_cycle.get_component('Condenser'), 'm-ex_C')    
-#     # orc_cycle.set_solve_start('Water', Source_Water)
-
-#     #%%    
- 
-#     # Link components
-#     orc_cycle.link_components("Pump", "m-ex", "Evaporator", "m-su_C")
-#     orc_cycle.link_components("Evaporator", "m-ex_C", "Expander", "m-su")
-#     orc_cycle.link_components("Expander", "m-ex", "Condenser", "m-su_H")
-#     orc_cycle.link_components("Condenser", "m-ex_H", "Pump", "m-su")
- 
-#     # Set the inputs using set_properties
-#     orc_cycle.set_cycle_properties(m_dot = 0.014, target='Pump:su')
- 
-#     orc_cycle.set_cycle_properties(T=12 + 273.15, P = 5*1e5, fluid='Water', m_dot=0.2, target="Condenser:su_C")
-#     orc_cycle.set_cycle_properties(T=243 + 273.15, P = 5*1e5, fluid='INCOMP::T66', m_dot=0.4, target='Evaporator:su_H')
- 
-#     # Define guesses for pressures
-#     P_ev_guess = 31.5*1e5
-#     P_cd_guess = 1e5
-
-#     orc_cycle.set_cycle_parameters(SH_ev = 5, SC_cd = 5)
-#     # SC_cd = 5
- 
-#     guesses = {
-#         "Evaporator:su_C-P": P_ev_guess,
-#         "Condenser:ex_H-P": P_cd_guess,
-#         "Condenser:su_H-P": P_cd_guess
-#         }
- 
-#     # Define the residuals to converge on
-#     residuals_var = [
-#         ("Evaporator:ex_C-h"),
-#         ("Condenser:ex_H-h")
-#     ]
- 
-#     orc_cycle.set_cycle_guesses_residuals(guesses,residuals_var)
- 
-#     # Solve the cycle with the defined guesses and residuals
-#     orc_cycle.solve()
-
-
-#%%
-
-
-import matplotlib.pyplot as plt
-
-T_ev_in = orc_cycle.components['Evaporator'].model.su_C.T
-T_ev_out = orc_cycle.components['Evaporator'].model.ex_C.T
-
-T_exp_out = orc_cycle.components['Expander'].model.ex.T
-
-s_ev_in = orc_cycle.components['Evaporator'].model.su_C.s
-s_ev_out = orc_cycle.components['Evaporator'].model.ex_C.s
-
-T_cd_in = orc_cycle.components['Condenser'].model.su_H.T
-T_cd_out = orc_cycle.components['Condenser'].model.ex_H.T
-
-s_cd_in = orc_cycle.components['Condenser'].model.su_H.s
-s_cd_out = orc_cycle.components['Condenser'].model.ex_H.s
-
-plt.figure()
-
-plt.plot([T_ev_in-273.15,T_ev_out-273.15],[s_ev_in,s_ev_out])
-plt.plot([T_ev_out-273.15,T_cd_in-273.15],[s_ev_out,s_cd_in])
-plt.plot([T_cd_in-273.15,T_cd_out-273.15],[s_cd_in,s_cd_out])
-plt.plot([T_cd_out-273.15,T_ev_in-273.15],[s_cd_out,s_ev_in])
-
-print("----------------------")
-
-print("Evap wf su T", T_ev_in)
-print("Evap wf ex T", T_ev_out)
-
-print("----------------------")
-
-print("Exp wf ex T", T_exp_out)
-
-print("----------------------")
-
-
-# print("Evap wf su s", s_ev_in)
-# print("Evap wf ex s", s_ev_out)
-
-print("Evap wf su P", orc_cycle.components['Evaporator'].model.su_C.p)
-print("Cond wf su P", orc_cycle.components['Condenser'].model.su_H.p)
-
-print("----------------------")
-
-print("Cond wf su T", T_cd_in)
-print("Cond wf ex T", T_cd_out)
-
-print("Cond sf T", orc_cycle.components['Condenser'].model.su_C.T)
-
-print("----------------------")
-
-# print("Cond wf su s", s_cd_in)
-# print("Cond wf ex s", s_cd_out)
-
-plt.show()
-
-# %%
