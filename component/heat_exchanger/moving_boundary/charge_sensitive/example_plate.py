@@ -18,57 +18,32 @@ from modules.geometry_plate_hx_swep import PlateGeomSWEP
 
 #%%
 
-import time
-start_time = time.time()   
+# import time
+# start_time = time.time()   
 
-"------------ Plate HX -------------------------------------------------------------------------------------------------"
+# "------------ Plate HX -------------------------------------------------------------------------------------------------"
 
 "HTX Instanciation"
 
 HX = HeatExchangerMB('Plate')
 
-"Setting inputs"
+# "Setting inputs"
 
-# ---------------------------------------------------------------------------------------------------------
+# # ---------------------------------------------------------------------------------------------------------
 
-# Condenser Case
-HX.set_inputs(
-    # First fluid
-    Hsu_fluid = 'Cyclopentane',
-    Hsu_T = 139 + 273.15, # K
-    Hsu_p = 0.77*1e5, # Pa
-    Hsu_m_dot = 0.014, # kg/s
-
-    # Second fluid
-    Csu_fluid = 'Water',
-    Csu_T = 12 + 273.15, # K
-    Csu_p = 5*1e5, # Pa
-    Csu_m_dot = 0.2, # kg/s  # Make sure to include fluid information
-)
-
-"Geometry Loading"
-
-HX_geom = PlateGeomSWEP()
-HX_geom.set_parameters("B20Hx24/1P") 
-
-Corr_H = {"1P" : "Gnielinski", "2P" : "Han_cond_BPHEX"}
-Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
-
-# ---------------------------------------------------------------------------------------------------------
-
-# # Evaporator Case
+# # Condenser Case
 # HX.set_inputs(
 #     # First fluid
-#     Hsu_fluid = 'INCOMP::T66',
-#     Hsu_T = 243 + 273.15, # K
-#     Hsu_p = 5*1e5, # Pa
-#     Hsu_m_dot = 0.4, # kg/s
+#     Hsu_fluid = 'Cyclopentane',
+#     Hsu_T = 139 + 273.15, # K
+#     Hsu_p = 0.77*1e5, # Pa
+#     Hsu_m_dot = 0.014, # kg/s
 
 #     # Second fluid
-#     Csu_fluid = 'Cyclopentane',
-#     Csu_T = 41 + 273.15, # K
-#     Csu_p = 36*1e5, # Pa
-#     Csu_m_dot = 0.014, # kg/s  # Make sure to include fluid information
+#     Csu_fluid = 'Water',
+#     Csu_T = 12 + 273.15, # K
+#     Csu_p = 5*1e5, # Pa
+#     Csu_m_dot = 0.2, # kg/s  # Make sure to include fluid information
 # )
 
 # "Geometry Loading"
@@ -78,6 +53,31 @@ Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
 
 # Corr_H = {"1P" : "Gnielinski", "2P" : "Han_cond_BPHEX"}
 # Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
+
+# ---------------------------------------------------------------------------------------------------------
+
+# Evaporator Case
+HX.set_inputs(
+    # First fluid
+    Hsu_fluid = 'INCOMP::T66',
+    Hsu_T = 243 + 273.15, # K
+    Hsu_p = 5*1e5, # Pa
+    Hsu_m_dot = 0.4, # kg/s
+
+    # Second fluid
+    Csu_fluid = 'Cyclopentane',
+    Csu_T = 41 + 273.15, # K
+    Csu_p = 31.5*1e5, # Pa
+    Csu_m_dot = 0.014, # kg/s  # Make sure to include fluid information
+)
+
+"Geometry Loading"
+
+HX_geom = PlateGeomSWEP()
+HX_geom.set_parameters("B20Hx24/1P") 
+
+Corr_H = {"1P" : "Gnielinski", "2P" : "Han_cond_BPHEX"}
+Corr_C = {"1P" : "Gnielinski", "2P" : "Han_Boiling_BPHEX_HTC"}
 
 # ---------------------------------------------------------------------------------------------------------
 
@@ -117,22 +117,23 @@ HX.set_parameters(
     
     Flow_Type = 'CounterFlow', H_DP_ON = True, C_DP_ON = True, n_disc = 50) # 27
 
-# UD_H_HTC = {'Liquid':100,
-#             'Vapor' : 100,
-#             'Two-Phase' : 1000,
-#             'Vapor-wet' : 100,
-#             'Dryout' : 1000,
-#             'Transcritical' : 200}
+UD_H_HTC = {'Liquid':100,
+            'Vapor' : 100,
+            'Two-Phase' : 1000,
+            'Vapor-wet' : 100,
+            'Dryout' : 1000,
+            'Transcritical' : 200}
 
-# UD_C_HTC = {'Liquid':100,
-#             'Vapor' : 100,
-#             'Two-Phase' : 1000,
-#             'Vapor-wet' : 100,
-#             'Dryout' : 10000,
-#             'Transcritical' : 200}
+UD_C_HTC = {'Liquid':100,
+            'Vapor' : 100,
+            'Two-Phase' : 1000,
+            'Vapor-wet' : 100,
+            'Dryout' : 10000,
+            'Transcritical' : 200}
 
-HX.set_htc(htc_type = 'Correlation', Corr_H = Corr_H, Corr_C = Corr_C) # 'User-Defined' or 'Correlation' # 28
-# HX.set_HTC(htc_type = 'User-Defined', UD_H_HTC = UD_H_HTC, UD_C_HTC = UD_C_HTC) # 'User-Defined' or 'Correlation'
+# HX.set_htc(htc_type = 'Correlation', Corr_H = Corr_H, Corr_C = Corr_C) # 'User-Defined' or 'Correlation' # 28
+HX.set_htc(htc_type = 'User-Defined', UD_H_HTC = UD_H_HTC, UD_C_HTC = UD_C_HTC) # 'User-Defined' or 'Correlation'
 
 "Solve the component"
 HX.solve()
+HX.plot_cells()

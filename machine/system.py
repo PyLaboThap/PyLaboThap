@@ -7,9 +7,9 @@ from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
-from machine.circuit import Cycle
-from machine.boundary_conditions.mass_source import Source
-from machine.boundary_conditions.mass_sink import Sink
+from machine.circuit import Circuit
+from machine.boundary_conditions.mass_source import MassSource
+from machine.boundary_conditions.mass_sink import MassSink
 
 from component.heat_exchanger.epsilon_NTU.simulation_model import HXeNTU
 from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
@@ -17,10 +17,9 @@ from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
 class System:
     def __init__(self):
-        self.cycle = Cycle()
-        self.source = Source()
-        self.sink = Sink()
-
+        self.cycle = Circuit()
+        self.source = MassSource()
+        self.sink = MassSink()
 
 
 if __name__ == "__main__":
@@ -40,7 +39,7 @@ if __name__ == "__main__":
     # River = Sink()
     # Example usage in the main script
     # Create a cycle
-    ORC = Cycle()
+    ORC = Circuit()
     
     # Create components
     Pump = PumpCstEff()

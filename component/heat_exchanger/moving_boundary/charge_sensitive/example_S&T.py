@@ -33,57 +33,57 @@ HX = HeatExchangerMB('Shell&Tube')
 
 # -------------------------------------------------------------------------------------------------------------
 
-# # DECAGONE Evaporator case
-# HX.set_inputs(
-#     # First fluid
-#     Hsu_fluid = 'INCOMP::T66',
-#     Hsu_T = 310 + 273.15, # K
-#     Hsu_p = 3.25*1e5, # Pa
-#     Hsu_m_dot = 19.42, # kg/s
-
-#     # Second fluid
-#     Csu_fluid = 'Cyclopentane',
-#     Csu_T = 95.1 + 273.15, # K
-#     Csu_p = 31.5*1e5, # Pa
-#     Csu_m_dot = 13.84, # kg/s  # Make sure to include fluid information
-# )
-
-# "Geometry Loading"
-
-# HX_geom = ShellAndTubeGeom()
-# HX_geom.set_parameters("DECAGONE_EVAP_Equ") 
-
-# "Correlation Loading"
-
-# Corr_H = {"1P" : "Shell_Bell_Delaware_HTC", "2P" : "Shell_Bell_Delaware_HTC"}
-# Corr_C = {"1P" : "Gnielinski", "2P" : "Boiling_curve"}
-
-# -------------------------------------------------------------------------------------------------------------
-
-# Sam HTX case
+# DECAGONE Evaporator case
 HX.set_inputs(
     # First fluid
-    Hsu_fluid = 'Water',
-    Hsu_T = 90 + 273.15, # K
-    Hsu_p = 3*1e5, # Pa
-    Hsu_m_dot = 5.5188, # kg/s
+    Hsu_fluid = 'INCOMP::S800',
+    Hsu_T = 310 + 273.15, # K
+    Hsu_p = 3.25*1e5, # Pa
+    Hsu_m_dot = 19.42, # kg/s
 
     # Second fluid
-    Csu_fluid = 'Water',
-    Csu_T = 10 + 273.15, # K
-    Csu_p = 1e5, # Pa
-    Csu_m_dot = 80, # kg/s  # Make sure to include fluid information
+    Csu_fluid = 'Cyclopentane',
+    Csu_T = 95.1 + 273.15, # K
+    Csu_p = 31.5*1e5, # Pa
+    Csu_m_dot = 13.84, # kg/s  # Make sure to include fluid information
 )
 
 "Geometry Loading"
 
 HX_geom = ShellAndTubeGeom()
-HX_geom.set_parameters("Valid_Sam") 
+HX_geom.set_parameters("DECAGONE_EVAP_Equ") 
 
 "Correlation Loading"
 
 Corr_H = {"1P" : "Shell_Bell_Delaware_HTC", "2P" : "Shell_Bell_Delaware_HTC"}
 Corr_C = {"1P" : "Gnielinski", "2P" : "Boiling_curve"}
+
+# -------------------------------------------------------------------------------------------------------------
+
+# Sam HTX case
+# HX.set_inputs(
+#     # First fluid
+#     Hsu_fluid = 'Water',
+#     Hsu_T = 90 + 273.15, # K
+#     Hsu_p = 3*1e5, # Pa
+#     Hsu_m_dot = 5.5188, # kg/s
+
+#     # Second fluid
+#     Csu_fluid = 'Water',
+#     Csu_T = 10 + 273.15, # K
+#     Csu_p = 1e5, # Pa
+#     Csu_m_dot = 80, # kg/s  # Make sure to include fluid information
+# )
+
+# "Geometry Loading"
+
+# HX_geom = ShellAndTubeGeom()
+# HX_geom.set_parameters("Valid_Sam") 
+
+# "Correlation Loading"
+
+# Corr_H = {"1P" : "Shell_Bell_Delaware_HTC", "2P" : "Shell_Bell_Delaware_HTC"}
+# Corr_C = {"1P" : "Gnielinski", "2P" : "Boiling_curve"}
 
 # -------------------------------------------------------------------------------------------------------------
 
@@ -147,3 +147,5 @@ HX.set_htc(htc_type = 'Correlation', Corr_H = Corr_H, Corr_C = Corr_C) # 'User-D
 
 "Solve the component"
 HX.solve()
+
+HX.plot_cells()
