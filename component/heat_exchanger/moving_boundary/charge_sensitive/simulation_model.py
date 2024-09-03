@@ -22,6 +22,9 @@ import numpy as np
 import scipy.optimize
 from scipy.interpolate import interp1d
 
+import os, sys
+sys.path.append(os.path.abspath(".."))
+
 # Internal Toolbox 
 from modules.f_lmtd2 import f_lmtd2
 from modules.propsfluid import propsfluid
@@ -75,11 +78,11 @@ class HeatExchangerMB(BaseComponent):
         
         super().__init__()
         
-        self.su = {'H' : MassConnector(),
-                   'C' : MassConnector()}
+        self.su_H = MassConnector()
+        self.su_C = MassConnector()
         
-        self.ex = {'H' : MassConnector(),
-                   'C' : MassConnector()} # Mass_connector
+        self.ex_H = MassConnector()
+        self.ex_C = MassConnector() # Mass_connector
         
         self.Q_dot = HeatConnector()
         
@@ -88,7 +91,7 @@ class HeatExchangerMB(BaseComponent):
         else:
             print("Heat exchanger types implemented for this model are : 'Plate', 'Shell&Tube', 'Tube&Fins'.")
 
-        
+    #%%    
     
     def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
         """
@@ -112,29 +115,70 @@ class HeatExchangerMB(BaseComponent):
     
     def sync_inputs(self):
         """Synchronize the inputs dictionary with the connector states."""
+        if self.su_wf.fluid is not None:
+            self.inputs['fluid_wf'] = self.su_wf.fluid
+        if self.su_wf.h is not None:
+            self.inputs['su_wf_h'] = self.su_wf.h
+        if self.su_wf.m_dot is not None:
+            self.inputs['su_wf_m_dot'] = self.su_wf.m_dot
+        if self.su_sf.fluid is not None:
+            self.inputs['fluid_sf'] = self.su_sf.fluid
+        if self.su_sf.T is not None:
+            self.inputs['su_sf_T'] = self.su_sf.T
+        if self.su_sf.cp is not None:
+            self.inputs['su_sf_cp'] = self.su_sf.cp
+        if self.su_sf.m_dot is not None:
+            self.inputs['su_sf_m_dot'] = self.su_sf.m_dot
+
+    def set_inputs(self, **kwargs):
+        """Set inputs directly through a dictionary and update connector properties."""
+        self.inputs.update(kwargs) # This line merges the keyword arguments ('kwargs') passed to the 'set_inputs()' method into the eisting 'self.inputs' dictionary.
+
+        # Update the connectors based on the new inputs
+        if 'fluid_wf' in self.inputs:
+            self.su_wf.set_fluid(self.inputs['fluid_wf'])
+        if 'su_wf_h' in self.inputs:
+            self.su_wf.set_h(self.inputs['su_wf_h'])
+        if 'su_wf_m_dot' in self.inputs:
+            self.su_wf.set_m_dot(self.inputs['su_wf_m_dot'])
+        if 'fluid_sf' in self.inputs:
+            self.su_sf.set_fluid(self.inputs['fluid_sf'])
+        if 'su_sf_T' in self.inputs:
+            self.su_sf.set_T(self.inputs['su_sf_T'])
+        if 'su_sf_cp' in self.inputs:
+            self.su_sf.set_cp(self.inputs['su_sf_cp'])
+        if 'su_sf_m_dot' in self.inputs:
+            self.su_sf.set_m_dot(self.inputs['su_sf_m_dot'])
+
+        return['fluid_wf', 'su_wf_h', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
+    
+    #%%
+
+    def sync_inputs(self):
+        """Synchronize the inputs dictionary with the connector states."""
         # Hot Fluid
-        if self.su['H'].T is not None:
-            self.inputs['Hsu_T'] = self.su['H'].T
-        elif self.su['H'].h is not None:
-            self.inputs['Hsu_h'] = self.su['H'].h
-        if self.su['H'].p is not None:
-            self.inputs['Hsu_p'] = self.su['H'].p
-        if self.su['H'].fluid is not None:
-            self.inputs['Hsu_fluid'] = self.su['H'].fluid
-        if self.su['H'].m_dot is not None:
-            self.inputs['Hsu_m_dot'] = self.su['H'].m_dot
+        if self.su_H.T is not None:
+            self.inputs['Hsu_T'] = self.su_H.T
+        elif self.su_H.h is not None:
+            self.inputs['Hsu_h'] = self.su_H.h
+        if self.su_H.p is not None:
+            self.inputs['Hsu_p'] = self.su_H.p
+        if self.su_H.fluid is not None:
+            self.inputs['Hsu_fluid'] = self.su_H.fluid
+        if self.su_H.m_dot is not None:
+            self.inputs['Hsu_m_dot'] = self.su_H.m_dot
             
         # Cold Fluid                
-        if self.su['C'].T is not None:
-            self.inputs['Csu_T'] = self.su['C'].T
-        elif self.su['C'].h is not None:
-            self.inputs['Csu_h'] = self.su['C'].h
-        if self.su['C'].p is not None:
-            self.inputs['Csu_p'] = self.su['C'].p
-        if self.su['C'].fluid is not None:
-            self.inputs['Csu_fluid'] = self.su['C'].fluid
-        if self.su['C'].m_dot is not None:
-            self.inputs['Csu_m_dot'] = self.su['C'].m_dot
+        if self.su_C.T is not None:
+            self.inputs['Csu_T'] = self.su_C.T
+        elif self.su_C.h is not None:
+            self.inputs['Csu_h'] = self.su_C.h
+        if self.su_C.p is not None:
+            self.inputs['Csu_p'] = self.su_C.p
+        if self.su_C.fluid is not None:
+            self.inputs['Csu_fluid'] = self.su_C.fluid
+        if self.su_C.m_dot is not None:
+            self.inputs['Csu_m_dot'] = self.su_C.m_dot
 
     def set_inputs(self, **kwargs):
         """Set inputs directly through a dictionary and update connector properties."""
@@ -142,26 +186,26 @@ class HeatExchangerMB(BaseComponent):
 
         # Update the connectors based on the new inputs
         # Hot Fluid
-        self.su['H'].set_fluid(self.inputs['Hsu_fluid'])
+        self.su_H.set_fluid(self.inputs['Hsu_fluid'])
         if 'Hsu_T' in self.inputs:
-            self.su['H'].set_T(self.inputs['Hsu_T'])
+            self.su_H.set_T(self.inputs['Hsu_T'])
         elif 'Hsu_h' in self.inputs:
-            self.su['H'].set_h(self.inputs['Hsu_h'])
+            self.su_H.set_h(self.inputs['Hsu_h'])
         if 'Hsu_p' in self.inputs:
-            self.su['H'].set_p(self.inputs['Hsu_p'])
+            self.su_H.set_p(self.inputs['Hsu_p'])
         if 'Hsu_m_dot' in self.inputs:
-            self.su['H'].set_m_dot(self.inputs['Hsu_m_dot'])
+            self.su_H.set_m_dot(self.inputs['Hsu_m_dot'])
 
         # Cold Fluid
-        self.su['C'].set_fluid(self.inputs['Csu_fluid'])
+        self.su_C.set_fluid(self.inputs['Csu_fluid'])
         if 'Csu_T' in self.inputs:
-            self.su['C'].set_T(self.inputs['Csu_T'])
+            self.su_C.set_T(self.inputs['Csu_T'])
         elif 'Csu_h' in self.inputs:
-            self.su['C'].set_h(self.inputs['Csu_h'])
+            self.su_C.set_h(self.inputs['Csu_h'])
         if 'Csu_p' in self.inputs:
-            self.su['C'].set_p(self.inputs['Csu_p'])
+            self.su_C.set_p(self.inputs['Csu_p'])
         if 'Csu_m_dot' in self.inputs:
-            self.su['C'].set_m_dot(self.inputs['Csu_m_dot'])
+            self.su_C.set_m_dot(self.inputs['Csu_m_dot'])
 
         return['fluid_wf', 'su_wf_h', 'su_wf_m_dot', 'fluid_sf', 'su_sf_T', 'su_sf_cp', 'su_sf_m_dot']
 
@@ -209,8 +253,8 @@ class HeatExchangerMB(BaseComponent):
     def print_setup(self):
         print("=== Heat Exchanger Setup ===")
         print("Connectors:")
-        print(f"  - H_su: fluid={self.su['H'].fluid}, T={self.su['H'].T}, p={self.su['H'].p}, m_dot={self.su['H'].m_dot}")
-        print(f"  - C_su: fluid={self.su['C'].fluid}, T={self.su['C'].T}, p={self.su['C'].p}, m_dot={self.su['C'].m_dot}")
+        print(f"  - H_su: fluid={self.su_H.fluid}, T={self.su_H.T}, p={self.su_H.p}, m_dot={self.su_H.m_dot}")
+        print(f"  - C_su: fluid={self.su_C.fluid}, T={self.su_C.T}, p={self.su_C.p}, m_dot={self.su_C.m_dot}")
 
         print("\nInputs:")
         for input in self.get_required_inputs():
@@ -302,8 +346,8 @@ class HeatExchangerMB(BaseComponent):
                     
             if self.C.Correlation_2phase == "Boiling_curve": # Compute the fluid boiling curve beforehand
                 try:
-                    T_sat = CP.PropsSI('T','P', self.su['C'].p,'Q',0,self.su['C'].fluid)
-                    (h_boil, DT_vect) = boiling_curve(self.params['Tube_OD'], self.su['C'].fluid, T_sat, self.su['C'].p)
+                    T_sat = CP.PropsSI('T','P', self.su_C.p,'Q',0,self.su_C.fluid)
+                    (h_boil, DT_vect) = boiling_curve(self.params['Tube_OD'], self.su_C.fluid, T_sat, self.su_C.p)
                     self.C_f_boiling = interp1d(DT_vect,h_boil)
                 except:
                     self.C_f_boiling = interp1d([0,10000],[20000,20000])
@@ -652,11 +696,11 @@ class HeatExchangerMB(BaseComponent):
             
         "1) Main Input variables"
         
-        self.H_su = self.su['H']
-        self.C_su = self.su['C']
+        self.H_su = self.su_H
+        self.C_su = self.su_C
             
-        self.H_ex = self.ex['H']
-        self.C_ex = self.ex['C']   
+        self.H_ex = self.ex_H
+        self.C_ex = self.ex_C  
             
         self.h_incomp_flag = (self.H_su.fluid.find("INCOMP") != -1)
                 
@@ -817,20 +861,20 @@ class HeatExchangerMB(BaseComponent):
             if and_solve:
                 
                 # Hot side
-                self.ex['H'].set_fluid(self.H_su.fluid)
-                self.ex['H'].set_T(self.Tvec_h[0])
-                self.ex['H'].set_p(self.pvec_h[0])
-                self.ex['H'].set_m_dot(self.H_su.m_dot)
+                self.ex_H.set_fluid(self.H_su.fluid)
+                self.ex_H.set_T(self.Tvec_h[0])
+                self.ex_H.set_p(self.pvec_h[0])
+                self.ex_H.set_m_dot(self.H_su.m_dot)
                 
-                self.H_ex = self.ex['H']
+                self.H_ex = self.ex_H
                     
                 # Cold side
-                self.ex['C'].set_fluid(self.C_su.fluid)
-                self.ex['C'].set_T(self.Tvec_c[-1]) # Example temperature [K]
-                self.ex['C'].set_p(self.pvec_c[-1]) # Example Pressure [Pa]
-                self.ex['C'].set_m_dot(self.C_su.m_dot) 
+                self.ex_C.set_fluid(self.C_su.fluid)
+                self.ex_C.set_T(self.Tvec_c[-1]) # Example temperature [K]
+                self.ex_C.set_p(self.pvec_c[-1]) # Example Pressure [Pa]
+                self.ex_C.set_m_dot(self.C_su.m_dot) 
         
-                self.C_ex = self.ex['C']
+                self.C_ex = self.ex_C
                                             
                 self.defined = True
                 return Q

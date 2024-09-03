@@ -1,6 +1,9 @@
-from component.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
-import numpy as np
 
+import component.heat_exchanger.pinch_cst
+from component.heat_exchanger.pinch_cst import simulation_model
+
+from simulation_model import HXPinchCst
+import numpy as np
 
 "Evaporator test"
 

@@ -15,7 +15,6 @@ class ExpanderCstEff(BaseComponent):
         self.ex = MassConnector() # Mass_connector
         self.W_exp = WorkConnector()
 
-
     def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
             self.sync_inputs()
             # Return a list of required inputs
@@ -80,43 +79,51 @@ class ExpanderCstEff(BaseComponent):
 
     def solve(self):
         # Perform checks to ensure the model can be calculated and has parameters
-        self.check_calculable()
-        self.check_parametrized()
+        # self.check_calculable()
+        # self.check_parametrized()
 
-        if not (self.calculable and self.parametrized):
-            self.solved = False
-            return
+        # if not (self.calculable and self.parametrized):
+        #     self.solved = False
+        #     print("ExpanderCstEff could not be solved. It is not calculable and/or not parametrized")
+        #     return
 
         try:
             """EXPANDER MODEL"""
+
             # Calculate the outlet enthalpy based on isentropic efficiency
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
             h_ex = self.su.h - (self.su.h - h_ex_is) / self.params['eta_is']
             w_exp = self.su.h - h_ex
+            self.ex.set_m_dot(self.su.m_dot)
+            W_dot_exp = self.su.m_dot*w_exp
 
             # Update connectors after the calculations
-            self.update_connectors(h_ex, w_exp)
+            self.update_connectors(h_ex, w_exp, self.ex.p, W_dot_exp)
 
             # Mark the model as solved if successful
             self.solved = True
+        
         except Exception as e:
             # Handle any errors that occur during solving
             self.solved = False
             print(f"Convergence problem in expander model: {e}")
 
 
-    def update_connectors(self, h_ex, w_exp):
+    def update_connectors(self, h_ex, w_exp, p_ex, W_dot_exp):
         """Update the connectors with the calculated values."""
-        self.ex.set_h(h_ex)
         self.ex.set_fluid(self.su.fluid)
+        self.ex.set_h(h_ex)
+        self.ex.set_p(p_ex)
         self.ex.set_m_dot(self.su.m_dot)
         self.W_exp.set_w(w_exp)
+        self.W_exp.set_W_dot(W_dot_exp)
 
     def print_results(self):
         print("=== Expander Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
         print(f"  - w_exp: {self.W_exp.w} [J/kg]")
+        print(f"  - W_dot_exp: {self.W_exp.W_dot} [W]")
         print("=========================")
 
     def print_states_connectors(self):
@@ -127,4 +134,5 @@ class ExpanderCstEff(BaseComponent):
         print("=========================")
         print("Work connector:")
         print(f"  - W_exp: w={self.W_exp.w} [J/kg]")
+        print(f"  - W_dot_exp: {self.W_exp.W_dot} [W]")
         print("=========================")
