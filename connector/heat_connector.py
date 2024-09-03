@@ -13,10 +13,10 @@ class HeatConnector:
     def calculate_properties(self):
         pass
 
-    def set_q(self, value):
-        self.q = value
-        self.variables_input = self.variables_input + [['q', value]]
-        self.calculate_properties()
+    # def set_q(self, value):
+    #     self.q = value
+    #     self.variables_input = self.variables_input + [['q', value]]
+    #     self.calculate_properties()
 
     def set_Q_dot(self, value):
         self.Q_dot = value
