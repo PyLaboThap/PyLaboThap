@@ -31,9 +31,9 @@ class WorkConnector:
         self.variables_input = self.variables_input + [['N', value]]
         self.calculate_properties()
 
-    def set_T(self, value):
-        self.T = value
-        self.variables_input = self.variables_input + [['T', value]]
+    def set_Torque(self, value):
+        self.Torque = value
+        self.variables_input = self.variables_input + [['Torque', value]]
         self.calculate_properties()
 
 
