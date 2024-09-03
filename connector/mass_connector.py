@@ -41,7 +41,6 @@ class MassConnector:
         self.x = None
         self.cp = None
     
-        
     def check_completely_known(self):
         if self.fluid != None:
             if len(self.variables_input)>2:

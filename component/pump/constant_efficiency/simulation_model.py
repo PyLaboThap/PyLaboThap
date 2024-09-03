@@ -85,9 +85,10 @@ class PumpCstEff(BaseComponent):
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
             h_ex = self.su.h + (h_ex_is - self.su.h) * self.params['eta_is']
             w_pp = h_ex - self.su.h
+            W_dot_pp = self.su.m_dot*w_pp
 
             """Update connectors after the calculations"""
-            self.update_connectors(h_ex, w_pp)
+            self.update_connectors(h_ex, w_pp, W_dot_pp)
 
             # Mark the model as solved if successful
             self.solved = True
@@ -97,18 +98,20 @@ class PumpCstEff(BaseComponent):
             print(f"Convergence problem in pump model: {e}")
 
         
-    def update_connectors(self, h_ex, w_pp):
+    def update_connectors(self, h_ex, w_pp, W_dot_pp):
         """Update the connectors with the calculated values."""
         self.ex.set_h(h_ex)
         self.ex.set_fluid(self.su.fluid)
         self.ex.set_m_dot(self.su.m_dot)
         self.W_pp.set_w(w_pp)
+        self.W_pp.set_W_dot(W_dot_pp)
 
     def print_results(self):
         print("=== Pump Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
         print(f"  - w_pp: {self.W_pp.w} [J/kg]")
+        print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")
 
     def print_states_connectors(self):
@@ -119,4 +122,5 @@ class PumpCstEff(BaseComponent):
         print("=========================")
         print("Work connector:")
         print(f"  - W_pp: w={self.W_pp.w} [J/kg]")
+        print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")
