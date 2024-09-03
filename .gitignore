@@ -14,4 +14,4 @@ __pycache__/
 *.pyd
 
 # Ignore Jupyter Notebook checkpoints
-*.ipynb
+notebook.ipynb
