@@ -1,7 +1,4 @@
 
-import sys
-sys.path.append('C:/Users/Basile/Documents/GitHub/LaboThapLibrary')
-
 from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
