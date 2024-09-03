@@ -6,6 +6,29 @@ from connector.heat_connector import HeatConnector
 from CoolProp.CoolProp import PropsSI
 
 class CompressorCstEff(BaseComponent):
+    """
+    Component: Compressor
+    Model: Constant isentropic efficiency
+    -----------------------------------------------------------
+    Connectors:
+        su (MassConnector): Mass connector for the suction side.
+        ex (MassConnector): Mass connector for the exhaust side.
+        W_cp (WorkConnector): Work connector.
+    -----------------------------------------------------------
+    Parameters:
+        eta_is: Isentropic efficiency.
+    -----------------------------------------------------------
+    Inputs:
+        su_p: Suction side pressure.
+        su_T: Suction side temperature.
+        ex_p: Exhaust side pressure.
+        su_fluid: Suction side fluid.
+    -----------------------------------------------------------
+    Ouputs:
+        h_ex: Exhaust side specific enthalpy.
+        T_ex: Exhaust side temperature.
+    """
+
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
