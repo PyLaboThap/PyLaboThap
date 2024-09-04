@@ -6,9 +6,9 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'LaboThapLibrary'
+project = 'PyLaboThap'
 copyright = '2024, Basile Chaudoire, Elise Neven'
-author = 'Basile Chaudoire, Elise Neven'
+author = 'Elise Neven, Basile Chaudoire'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------
@@ -19,6 +19,10 @@ extensions = ['sphinx.ext.autodoc'] # https://www.sphinx-doc.org/en/master/usage
 templates_path = ['_templates']
 exclude_patterns = []
 
+import os
+import sys
+# Update this path to the directory containing your library source code
+sys.path.insert(0, os.path.abspath('../library'))
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -27,9 +31,4 @@ exclude_patterns = []
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
-
-import os
-import sys
-# Update this path to the directory containing your library source code
-sys.path.insert(0, os.path.abspath('../library'))
 
