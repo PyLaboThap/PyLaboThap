@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constant Isentropic Efficiency &mdash; PyLaboThap Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            PyLaboThap
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user_guide/installation_and_setup.html">Installation and Setup</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">PyLaboThap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Constant Isentropic Efficiency</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../../_sources/documentation/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="constant-isentropic-efficiency">
+<h1>Constant Isentropic Efficiency<a class="headerlink" href="#constant-isentropic-efficiency" title="Link to this heading"></a></h1>
+<p>Details about the constant isentropic efficiency model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.</span></span><span class="sig-name descname"><span class="pre">CompressorCstEff</span></span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseComponent</span></code></p>
+<p>Component: Compressor
+Model: Constant isentropic efficiency
+———————————————————–
+Connectors:</p>
+<blockquote>
+<div><p>su (MassConnector): Mass connector for the suction side.
+ex (MassConnector): Mass connector for the exhaust side.
+W_cp (WorkConnector): Work connector.</p>
+</div></blockquote>
+<blockquote>
+<div><p>su_T: Suction side temperature.
+ex_p: Exhaust side pressure.
+su_fluid: Suction side fluid.</p>
+</div></blockquote>
+<blockquote>
+<div><p>T_ex: Exhaust side temperature.</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_inputs">
+<span class="sig-name descname"><span class="pre">get_required_inputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.get_required_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_parameters">
+<span class="sig-name descname"><span class="pre">get_required_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.get_required_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.print_setup">
+<span class="sig-name descname"><span class="pre">print_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.print_setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.print_setup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.solve" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.print_results">
+<span class="sig-name descname"><span class="pre">print_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff.print_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.print_results" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model',</span> <span class="pre">'__doc__':</span> <span class="pre">'\n</span>&#160;&#160;&#160; <span class="pre">Component:</span> <span class="pre">Compressor\n</span>&#160;&#160;&#160; <span class="pre">Model:</span> <span class="pre">Constant</span> <span class="pre">isentropic</span> <span class="pre">efficiency\n</span>&#160;&#160;&#160; <span class="pre">-----------------------------------------------------------\n</span>&#160;&#160;&#160; <span class="pre">Connectors:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">su</span> <span class="pre">(MassConnector):</span> <span class="pre">Mass</span> <span class="pre">connector</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">suction</span> <span class="pre">side.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ex</span> <span class="pre">(MassConnector):</span> <span class="pre">Mass</span> <span class="pre">connector</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">exhaust</span> <span class="pre">side.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">W_cp</span> <span class="pre">(WorkConnector):</span> <span class="pre">Work</span> <span class="pre">connector.\n</span>&#160;&#160;&#160; <span class="pre">-----------------------------------------------------------\n</span>&#160;&#160;&#160; <span class="pre">Parameters:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">eta_is:</span> <span class="pre">Isentropic</span> <span class="pre">efficiency.\n</span>&#160;&#160;&#160; <span class="pre">-----------------------------------------------------------\n</span>&#160;&#160;&#160; <span class="pre">Inputs:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">su_p:</span> <span class="pre">Suction</span> <span class="pre">side</span> <span class="pre">pressure.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">su_T:</span> <span class="pre">Suction</span> <span class="pre">side</span> <span class="pre">temperature.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ex_p:</span> <span class="pre">Exhaust</span> <span class="pre">side</span> <span class="pre">pressure.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">su_fluid:</span> <span class="pre">Suction</span> <span class="pre">side</span> <span class="pre">fluid.\n</span>&#160;&#160;&#160; <span class="pre">-----------------------------------------------------------\n</span>&#160;&#160;&#160; <span class="pre">Ouputs:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">h_ex:</span> <span class="pre">Exhaust</span> <span class="pre">side</span> <span class="pre">specific</span> <span class="pre">enthalpy.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">T_ex:</span> <span class="pre">Exhaust</span> <span class="pre">side</span> <span class="pre">temperature.\n</span>&#160;&#160;&#160; <span class="pre">',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.__init__&gt;,</span> <span class="pre">'get_required_inputs':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.get_required_inputs&gt;,</span> <span class="pre">'get_required_parameters':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.get_required_parameters&gt;,</span> <span class="pre">'print_setup':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.print_setup&gt;,</span> <span class="pre">'solve':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.solve&gt;,</span> <span class="pre">'print_results':</span> <span class="pre">&lt;function</span> <span class="pre">CompressorCstEff.print_results&gt;,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__dict__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model'</span></em><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__module__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.__weakref__" title="Link to this definition"></a></dt>
+<dd><p>list of weak references to the object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.check_calculable">
+<span class="sig-name descname"><span class="pre">check_calculable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.check_calculable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.check_parametrized">
+<span class="sig-name descname"><span class="pre">check_parametrized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.check_parametrized" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_guesses">
+<span class="sig-name descname"><span class="pre">get_required_guesses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.get_required_guesses" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_guesses">
+<span class="sig-name descname"><span class="pre">set_guesses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">guesses</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_guesses" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_parameters">
+<span class="sig-name descname"><span class="pre">set_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff.set_parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Basile Chaudoire, Elise Neven.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
