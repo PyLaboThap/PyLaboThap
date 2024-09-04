@@ -63,12 +63,9 @@ class Circuit:
             self.model.check_calculable()
             if self.model.calculable:
                 self.model.solve()
-<<<<<<<< HEAD:machine/circuit.py
             else:
                 print(f"{self.name} is not calculable")
                 self.model.print_states_connectors()
-========
->>>>>>>> 49d9a248be6a3caf262648be9a5cc1911b7a9172:machine/closed_machine/circuit.py
 
     # class Source():
     #     def __init__(self, name, target_component, input_port):
@@ -82,7 +79,6 @@ class Circuit:
     #         port.set_properties(**kwargs)
     #     def link(self, target_component, input_port):
     #         connector_type = input_port.split('-')[0]
-<<<<<<<< HEAD:machine/circuit.py
  
     #         if connector_type != "m":  # Mass connector
     #             print("Source shall be connected by a mass connector")
@@ -104,29 +100,6 @@ class Circuit:
     #         port = getattr(self.model, port_name)
     #         port.set_properties(**kwargs)
  
-========
- 
-    #         if connector_type != "m":  # Mass connector
-    #             print("Source shall be connected by a mass connector")
-    #             return
-    #         else:
-    #             setattr(target_component.model, input_port.split('-')[1], self.properties) # Voir si ça fait juste référence ou si ça crée un nouvel objet    
-    #             self.next[target_component.name] = target_component.model
-    #             target_component.add_previous(input_port, self)
- 
-    # class Sink():
-    #     def __init__(self, name, target_component, output_port):
-    #         self.name = name
-    #         self.properties = MassConnector()
-    #         self.previous = {}
-    #         self.next = {}
-    #         self.link(target_component, output_port)
- 
-    #     def set_properties(self, port_name, **kwargs):
-    #         port = getattr(self.model, port_name)
-    #         port.set_properties(**kwargs)
- 
->>>>>>>> 49d9a248be6a3caf262648be9a5cc1911b7a9172:machine/closed_machine/circuit.py
     #     def link(self, target_component, output_port):
     #         connector_type = output_port.split('-')[0]
     #         if connector_type != "m":  # Mass connector
