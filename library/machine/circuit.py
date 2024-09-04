@@ -9,10 +9,6 @@ from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
-from component.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
-from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
-from component.pump.constant_efficiency.simulation_model import PumpCstEff
-
 from CoolProp.CoolProp import PropsSI
 
 class Circuit:
