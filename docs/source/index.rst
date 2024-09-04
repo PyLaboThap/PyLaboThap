@@ -4,7 +4,8 @@
    contain the root `toctree` directive.
 
 Welcome to PyLaboThap's documentation!
-=====================================
+======================================
+
 
 .. toctree::
    :maxdepth: 2
@@ -12,6 +13,5 @@ Welcome to PyLaboThap's documentation!
 
    user_guide/installation_and_setup
    documentation/component/component
-   documentation/machine/machine
 
 
