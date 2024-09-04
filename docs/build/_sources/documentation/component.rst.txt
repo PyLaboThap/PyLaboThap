@@ -7,6 +7,5 @@ This section includes details on the components of the PyLaboThap library.
    :maxdepth: 2
    :caption: Components:
 
-   steady_state
-   volumetric_machine
-   compressor/constant_isentropic_efficiency
+   component/steady_state
+

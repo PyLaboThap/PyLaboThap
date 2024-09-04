@@ -11,7 +11,7 @@ Welcome to PyLaboThap's documentation!
    :caption: Contents:
 
    user_guide/installation_and_setup
-   documentation/components
-   documentation/machine
+   documentation/component/component
+   documentation/machine/machine
 
 

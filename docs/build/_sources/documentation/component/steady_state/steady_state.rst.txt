@@ -7,4 +7,4 @@ Information about steady state components.
    :maxdepth: 2
    :caption: Steady State Components:
 
-   volumetric_machine
+   volumetric_machine/volumetric_machine

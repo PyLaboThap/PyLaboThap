@@ -7,4 +7,4 @@ Details about volumetric machines.
    :maxdepth: 2
    :caption: Volumetric Machine Components:
 
-   compressor
+   compressor/compressor
