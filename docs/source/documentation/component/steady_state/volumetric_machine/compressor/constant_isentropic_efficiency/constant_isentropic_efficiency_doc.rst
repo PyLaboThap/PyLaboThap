@@ -3,16 +3,12 @@ Constant Isentropic Efficiency Compressor model
 
 .. raw:: html
 
-   <div class="side-by-side">
-       .. image:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_in_out.png
-          :alt: Description of the plot
-          :width: 45%
-
-       .. image:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_connectors.png
-          :alt: Description of the plot
-          :width: 45%
+   <div class="side-by-side"> 
+       <img src="../../../../../../../figures/component/constant_isentropic_efficiency_compressor_in_out.png" 
+            alt="Description of the plot">
+       <img src="../../../../../../../figures/component/constant_isentropic_efficiency_compressor_connectors.png" 
+            alt="Description of the plot">
    </div>
-
 
 Model description
 -----------------
@@ -25,7 +21,5 @@ The constant isentropic efficiency model is a simple model based on the definiti
 
 References
 ----------
-
-
 
 
