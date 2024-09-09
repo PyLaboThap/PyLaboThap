@@ -4,12 +4,12 @@ Constant Isentropic Efficiency Compressor model
 .. figure:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_in_out.png
    :alt: Description of the plot
    :align: left
-   :width: 45%
+   :width: 40%
 
 .. figure:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_connectors.png
    :alt: Description of the plot
    :align: right
-   :width: 45%
+   :width: 40%
 
 Model description
 -----------------
