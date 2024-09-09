@@ -5,12 +5,12 @@ Constant Isentropic Efficiency Compressor model
 
    <div style="display: flex; justify-content: space-between;">
        <div style="flex: 1; margin-right: 10px;">
-           <img src="../figures/component/constant_isentropic_efficiency_compressor_in_out.png" 
+           <img src="figures/component/constant_isentropic_efficiency_compressor_in_out.png" 
                 alt="Description of the plot" 
                 style="width: 100%;">
        </div>
        <div style="flex: 1; margin-left: 10px;">
-           <img src="../figures/component/constant_isentropic_efficiency_compressor_connectors.png" 
+           <img src="figures/component/constant_isentropic_efficiency_compressor_connectors.png" 
                 alt="Description of the plot" 
                 style="width: 100%;">
        </div>
