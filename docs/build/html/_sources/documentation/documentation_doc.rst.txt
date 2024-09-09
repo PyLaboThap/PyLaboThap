@@ -1,0 +1,10 @@
+Documentation
+=============
+
+This section includes documentation of the PyLaboThap library.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Components:
+
+   component/component_doc
