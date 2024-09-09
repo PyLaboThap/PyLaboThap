@@ -11,4 +11,3 @@ This section describes the installation and setup of the PyLaboThap library.
    :maxdepth: 2
    :caption: Related Guides:
 
-   ../documentation/component/component_doc

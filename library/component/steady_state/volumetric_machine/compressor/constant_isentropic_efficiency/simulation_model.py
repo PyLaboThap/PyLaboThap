@@ -5,6 +5,10 @@ from connector.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
 
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import os
+
 class CompressorCstEff(BaseComponent):
     """
     Component: Compressor
@@ -110,3 +114,75 @@ class CompressorCstEff(BaseComponent):
         print(f"  - h_ex: {self.ex.h}")
         print(f"  - T_ex: {self.ex.T}")
         print("=========================")
+
+
+    def plot_component(self):
+        """
+        Plot a visual representation of the component with connectors as inputs/outputs and parameters.
+        """
+        # Create figure and axis
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Draw the block (component)
+        block = patches.FancyBboxPatch((0.4, 0.5), 0.3, 0.3, boxstyle="round,pad=0.1", 
+                                        edgecolor="black", facecolor="#D4E9C7", zorder=2)
+        ax.add_patch(block)
+        ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
+                verticalalignment='center', fontsize=14, fontweight='bold')
+
+        # Define positions for inputs, outputs, and parameters
+        input_pos = [0.2, 0.65]  # Position for input
+        output_pos = [0.8, 0.65]  # Position for output
+        param_pos = [0.55, 0.25]  # Position for parameters
+
+        # Inputs
+        inputs = self.get_required_inputs()
+        if inputs:
+            ax.text(input_pos[0] - 0.1, input_pos[1] + 0.2, 'Inputs', fontsize=12, fontweight='bold', color='black')
+            ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
+                        fontsize=12, color='black',
+                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+
+            # List all inputs next to the arrow
+            for i, input_name in enumerate(inputs):
+                y = input_pos[1] + (i - len(inputs) / 2) * 0.1
+                ax.text(input_pos[0] - 0.15, y, input_name, fontsize=12, color='black', verticalalignment='center')
+
+        # Outputs
+        outputs = ['h_ex', 'T_ex']  # Modify this depending on your outputs
+        if outputs:
+            ax.text(output_pos[0] + 0.05, output_pos[1] + 0.2, 'Outputs', fontsize=12, fontweight='bold', color='black')
+            ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
+                        fontsize=12, color='black',
+                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+
+            # List all outputs next to the arrow
+            for i, output_name in enumerate(outputs):
+                y = output_pos[1] + (i - len(outputs) / 2) * 0.1
+                ax.text(output_pos[0] + 0.15, y, output_name, fontsize=12, color='black', verticalalignment='center')
+
+        # Parameters
+        params = self.get_required_parameters()
+        if params:
+            ax.text(param_pos[0], param_pos[1], 'Parameters', fontsize=12, fontweight='bold', color='black', horizontalalignment='center')
+            ax.annotate('', xy=(0.55, param_pos[1] + 0.1), xytext=(0.55, param_pos[1] + 0.05),
+                        fontsize=12, color='black',
+                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+
+            # List all parameters below "Parameters"
+            for i, param_name in enumerate(params):
+                y = param_pos[1] - 0.1 * (i + 1)
+                ax.text(param_pos[0], y, param_name, fontsize=12, color='black', verticalalignment='center', horizontalalignment='center')
+
+        # Plot formatting
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')  # Hide axis
+
+        # Save the plot as a PNG file
+        output_dir = '../docs/figures/component'  # Update this to your desired folder path
+        os.makedirs(output_dir, exist_ok=True)  # Create the folder if it doesn't exist
+        file_path = os.path.join(output_dir, 'constant_isentropic_efficiency_compressor_in_out.png')
+        plt.savefig(file_path, format='png', bbox_inches='tight')  # Save the figure
+
+        plt.show()
