@@ -1,7 +1,5 @@
 # Ignore virtual environment
 myenv/
-__pycache__/
-*.pyc
 
 # Optional: ignore IDE-specific files
 .vscode/
