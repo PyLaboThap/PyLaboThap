@@ -20,4 +20,5 @@ CP.print_setup()
 
 CP.solve()
 CP.print_results()
-CP.plot_component()
+CP.plot_component_comp_cst_eff()
+CP.plot_connectors_comp_cst_eff()
