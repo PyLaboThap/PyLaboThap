@@ -1,16 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug 13 14:50:11 2021
-
-@author: jvega
-"""
 import numpy as np
 from scipy.optimize import fsolve
-import math
+import matplotlib.pyplot as plt
 
-#%%
-
-def f_lmtd2(R,P,params,C_r):
+def f_lmtd2(R,P,params):
     """
     Input
     -----
@@ -84,11 +76,13 @@ def f_lmtd2(R,P,params,C_r):
         epsilon = P
         Pbis = P
         Rbis = R
+        C_r = R
     else: # Cdot_max = Cdot_c
         epsilon = P*R
         Pbis = P*R
         Rbis = 1/R
-    
+        C_r = 1/R
+        
     if params['Flow_Type'] == 'Shell&Tube':
         f = lambda x: res_NTU_shell_and_tube(x, epsilon, C_r,params)
     
@@ -110,7 +104,7 @@ def f_lmtd2(R,P,params,C_r):
         elif P <= 1e-04:
             F = 1
         else:
-            F = epsilon*math.log((Pbis-1)/(Rbis*Pbis -1))/NTU/Pbis/(Rbis-1);
+            F = epsilon*np.log((Pbis-1)/(Rbis*Pbis -1))/NTU/Pbis/(Rbis-1);
         flag = flag_ntu
     else:
 
@@ -118,3 +112,45 @@ def f_lmtd2(R,P,params,C_r):
         flag = flag_ntu
         
     return F
+
+def find_UA(Q_dot, T_c_i, T_c_o, T_h_i, T_h_o, flow = 'CounterFlow', params = None):
+    
+    if flow == "ParallelFlow":
+        if T_c_o == T_c_i or T_h_o == T_h_i:
+            DTA = T_h_i - T_c_o
+            DTB = T_h_o - T_c_i
+        else:
+            DTA = T_h_i - T_c_i
+            DTB = T_h_o - T_c_o
+
+        LMTD = (DTA - DTB)/np.log(DTA/DTB)
+        UA = Q_dot/LMTD
+        return UA    
+
+    DTA = T_h_i - T_c_o
+    DTB = T_h_o - T_c_i
+
+    LMTD = (DTA - DTB)/np.log(DTA/DTB)
+    
+    if T_c_o == T_c_i or T_h_o == T_h_i or flow == "CounterFlow":
+        F = 1
+
+    else: 
+        R = (T_h_i - T_h_o)/(T_c_o - T_c_i) 
+        P = (T_c_o - T_c_i)/(T_h_i - T_c_i) 
+
+        if flow == "CrossFlow": # unmixed
+            F = f_lmtd2(R,P,params)
+        elif flow == "Shell&Tube": 
+            F = f_lmtd2(R,P,params)
+        elif flow == "ParallelFlow":
+            F = f_lmtd2(R,P,params)
+        else:
+            print("That flow configuration is not implemented.")
+
+    F = min(1,F)
+
+    UA = Q_dot/(LMTD*F)
+
+    return UA
+

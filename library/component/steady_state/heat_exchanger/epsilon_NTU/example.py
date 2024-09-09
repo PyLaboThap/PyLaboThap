@@ -1,4 +1,4 @@
-from component.heat_exchanger.epsilon_NTU.simulation_model import HXeNTU
+from library.component.steadystate.heat_exchanger.epsilon_NTU.simulation_model import HXeNTU
 import numpy as np
 
 HX = HXeNTU()
