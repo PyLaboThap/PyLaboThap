@@ -1,18 +1,14 @@
 
-import sys
+from connector.mass_connector import MassConnector
+from connector.work_connector import WorkConnector
+from connector.heat_connector import HeatConnector
 
-from library.connector.mass_connector import MassConnector
-from library.connector.work_connector import WorkConnector
-from library.connector.heat_connector import HeatConnector
-
-from library.component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.simulation_model import HeatExchangerMB
-from library.component.steadystate.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
-from library.component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.modules.geometry_plate_hx_swep import PlateGeomSWEP
-from library.component.steadystate.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
-from library.component.steadystate.pump.constant_efficiency.simulation_model import PumpCstEff
+from component.steadystate.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
+from component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.simulation_model import HeatExchangerMB
+from component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.modules.geometry_plate_hx_swep import PlateGeomSWEP
+from component.steadystate.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
+from component.steadystate.pump.constant_efficiency.simulation_model import PumpCstEff
 from machine.circuit import Circuit
-
-from circuit import Circuit
 
 from CoolProp.CoolProp import PropsSI
 from scipy.optimize import minimize

@@ -1,15 +1,17 @@
 
-import sys
+import __init__
 
-from library.connector.mass_connector import MassConnector
-from library.connector.work_connector import WorkConnector
-from library.connector.heat_connector import HeatConnector
+from connector.mass_connector import MassConnector
+from connector.work_connector import WorkConnector
+from connector.heat_connector import HeatConnector
 
-from library.component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.simulation_model import HeatExchangerMB
-from library.component.steadystate.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
-from library.component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.modules.geometry_plate_hx_swep import PlateGeomSWEP
-from library.component.steadystate.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
-from library.component.steadystate.pump.constant_efficiency.simulation_model import PumpCstEff
+from component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.simulation_model import HeatExchangerMB
+from component.steadystate.heat_exchanger.pinch_cst.simulation_model import HXPinchCst
+from component.steadystate.heat_exchanger.moving_boundary.charge_sensitive.modules.geometry_plate_hx_swep import PlateGeomSWEP
+from component.steadystate.heat_exchanger.efficiency_cst.simulation_model import HXEffCst
+
+from component.steadystate.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
+from component.steadystate.pump.constant_efficiency.simulation_model import PumpCstEff
 from machine.circuit import Circuit
 
 from circuit import Circuit
@@ -21,7 +23,7 @@ from scipy.optimize import fsolve
 from scipy.optimize import minimize
 import numpy as np
 
-class RC(Circuit):
+class RC_recup(Circuit):
     def __init__(self, fluid=None):
         super().__init__(fluid)
         self.tolerance = 1e-6  # Convergence tolerance for residuals
@@ -107,6 +109,26 @@ class RC(Circuit):
 
         residual_diff = [abs(f - p) for f, p in zip(final_residuals, self.prev_residuals)]
         
+        print("!!!!!!!!!!")
+
+        first_law_res = 0
+
+        for comp in self.components:
+            if comp != 'Recuperator':
+                try:
+                    self.components[comp].model.Q_dot
+                    if comp == 'Evaporator':
+                        first_law_res += self.components[comp].model.Q_dot.Q_dot
+                    elif comp == 'Condenser':
+                        first_law_res -= self.components[comp].model.Q_dot.Q_dot
+                except:
+                    if comp == 'Pump':
+                        first_law_res += self.components[comp].model.W_pp.W_dot
+                    elif comp == 'Expander':
+                        first_law_res -= self.components[comp].model.W_exp.W_dot
+
+        print(f"First Law residual {first_law_res}")
+
         # Output residuals for debugging
         for i, diff in enumerate(residual_diff):
             print(f"Residual {self.residuals_var[i]}: {diff}")
@@ -135,7 +157,9 @@ class RC(Circuit):
             return
 
         # Mark the component as visited and solve it
-        visited.add(component)
+        if component.name != "Recuperator":
+            visited.add(component)
+        
         print(f"Solving {component.name}")
 
         if isinstance(component, Circuit.Component):
@@ -221,34 +245,40 @@ class RC(Circuit):
 
 # Example usage of the Rankine Cycle (RC)
 if __name__ == "__main__":
-    orc_cycle = RC(fluid='Cyclopentane')
+    orc_cycle = RC_recup(fluid='Cyclopentane')
 
     # Add components
     PUMP = PumpCstEff()
     EVAP = HXPinchCst()
     EXP = ExpanderCstEff()
     COND = HXPinchCst()
+    RECUP = HXEffCst()
 
     # Set component parameters
     PUMP.set_parameters(eta_is=0.6)
     EVAP.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='evaporator')
     COND.set_parameters(Pinch=5, Delta_T_sh_sc=5, type_HX='condenser')
     EXP.set_parameters(eta_is=0.8)
+    RECUP.set_parameters(eta = 0.8)
 
     # Add components to the cycles
     orc_cycle.add_component(PUMP, "Pump")
     orc_cycle.add_component(EVAP, "Evaporator")
     orc_cycle.add_component(EXP, "Expander")
     orc_cycle.add_component(COND, "Condenser")
+    orc_cycle.add_component(RECUP, "Recuperator")
 
     # Link components
-    orc_cycle.link_components("Pump", "m-ex", "Evaporator", "m-su_C")
+    orc_cycle.link_components("Pump", "m-ex", "Recuperator", "m-su_C")
+    orc_cycle.link_components("Recuperator", "m-ex_C", "Evaporator", "m-su_C")
     orc_cycle.link_components("Evaporator", "m-ex_C", "Expander", "m-su")
-    orc_cycle.link_components("Expander", "m-ex", "Condenser", "m-su_H")
+    orc_cycle.link_components("Expander", "m-ex", "Recuperator", "m-su_H")
+    orc_cycle.link_components("Recuperator", "m-ex_H", "Condenser", "m-su_H")
     orc_cycle.link_components("Condenser", "m-ex_H", "Pump", "m-su")
 
     # Set the cycle properties
     orc_cycle.set_cycle_properties(m_dot=0.06, target='Pump:su')
+    orc_cycle.set_cycle_properties(m_dot=0.06, target='Expander:ex')
 
     orc_cycle.set_cycle_properties(T=30 + 273.15, fluid='Water', m_dot=0.4, target='Condenser:su_C', P = 4e5)
     orc_cycle.set_cycle_properties(cp=4186, target='Condenser:su_C')
@@ -267,24 +297,25 @@ if __name__ == "__main__":
     T_ev_guess = 120 + 273.15
     P_ev_guess = PropsSI('P', 'T', T_ev_guess, 'Q', 0.5, 'R245fa')
 
-    print("P_ev_guess", P_ev_guess)
-
     T_cd_guess = 30 + 273.15
     P_cd_guess = PropsSI('P', 'T', T_cd_guess, 'Q', 0.5, 'R245fa')
 
-    print("P_cd_guess", P_cd_guess)
+    T_recup_h_guess = T_ev_guess - 20
 
     # Define guesses and residuals
     guesses = {
-        "Evaporator:su_C-P": P_ev_guess,
+        "Pump:ex-P": P_ev_guess,
         "Condenser:ex_H-P": P_cd_guess,
         "Pump:su-T": T_cd_guess - SC_cd,
-        "Expander:ex-P": P_cd_guess
+        "Expander:ex-P": P_cd_guess,
+        "Recuperator:su_H-T" : T_recup_h_guess
     }
 
     residuals_var = [
-        "Evaporator:ex_C-h",
-        "Condenser:ex_H-h"
+        "Recuperator:su_C-h",
+        "Recuperator:su_H-h",
+        "Recuperator:ex_C-h",
+        "Recuperator:ex_H-h"
     ]
 
     orc_cycle.set_cycle_guesses_residuals(guesses, residuals_var)
