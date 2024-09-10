@@ -14,7 +14,7 @@ class MassConnector:
     A class to handle and calculate fluid properties based on given state variables.
 
     Attributes:
-    -----------
+    ^^^^^^^^^^^
     fluid : str, optional
         The name of the fluid.
     m_dot : float, optional
@@ -43,7 +43,7 @@ class MassConnector:
         A list of the state variables used to define the fluid state. Each entry is a list of [variable_name, value].
 
     Methods:
-    --------
+    ^^^^^^^^
     __init__(self, fluid=None):
         Initializes the MassConnector object with optional fluid.
     
@@ -96,7 +96,7 @@ class MassConnector:
         Prints a summary of the current properties in specified units.
 
     Exceptions:
-    ------------
+    ^^^^^^^^^^^
     ValueError
         Raised if an unsupported fluid name is used or if required variables for property calculation are missing.
     """

@@ -1,25 +1,43 @@
 class WorkConnector:
+    """
+    A class to handle transfer of work power.
+
+    Attributes:
+    ^^^^^^^^^^^
+    W_dot : float, optional
+        Work power in W.
+    variables_input : list of lists
+        A list of the variables used to define the work connector. Each entry is a list of [variable_name, value].
+
+    Methods:
+    ^^^^^^^^
+    __init__(self):
+        Initializes the WorkConnector object with.
+
+    set_W_dot(self, value):
+        Sets the work power and updates the list of known variables.
+
+    set_N(self, value):
+        Sets the speed and updates the list of known variables.
+    
+    set_C(self, value):
+        Sets the torque and updates the list of known variables.
+
+    print_resume(self):
+        Print a summary of the work connector properties.
+    """
+
     def __init__(self):
-        """
-        Parameters
-        ----------
-        /
-        """
+
         self.variables_input = []
         
-        self.w = None              # Specific work [J/kg]
         self.W_dot = None          # Work power [W]
         self.N = None              # Speed [rpm]
-        self.T = None            # Torque [Nm]
+        self.C = None            # Torque [Nm]
 
 
     def calculate_properties(self):
         pass
-
-    def set_w(self, value):
-        self.w = value
-        self.variables_input = self.variables_input + [['w', value]]
-        self.calculate_properties()
 
     def set_W_dot(self, value):
         self.W_dot = value
@@ -31,9 +49,9 @@ class WorkConnector:
         self.variables_input = self.variables_input + [['N', value]]
         self.calculate_properties()
 
-    def set_T(self, value):
-        self.T = value
-        self.variables_input = self.variables_input + [['T', value]]
+    def set_C(self, value):
+        self.C = value
+        self.variables_input = self.variables_input + [['C', value]]
         self.calculate_properties()
 
 
@@ -41,7 +59,6 @@ class WorkConnector:
         """
         Print a summary of the work connector properties
         """
-        print("Work: " + str(self.w) + " [J]")
-        print("Speed: " + str(self.W_dot) + " [rpm]")
-        print("Torque: " + str(self.N) + " [Nm]")
-        print("Power: " + str(self.T) + " [W]")
+        print("Work power: " + str(self.W_dot) + " [W]")
+        print("Speed: " + str(self.N) + " [rpm]")
+        print("Torque: " + str(self.C) + " [Nm]")

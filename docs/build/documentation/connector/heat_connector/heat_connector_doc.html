@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mass Connector &mdash; PyLaboThap Documentation</title>
+  <title>Heat Connector &mdash; PyLaboThap Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=173837f2" />
@@ -22,7 +22,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Mass Connector" href="../work_connector/work_connector_doc.html" />
+    <link rel="next" title="Work Connector" href="../work_connector/work_connector_doc.html" />
     <link rel="prev" title="Mass Connector" href="../mass_connector/mass_connector_doc.html" /> 
 </head>
 
@@ -63,8 +63,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../connector_doc.html">Connector</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../connector_doc.html#example">Example</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../mass_connector/mass_connector_doc.html">Mass Connector</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Mass Connector</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../work_connector/work_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Heat Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../work_connector/work_connector_doc.html">Work Connector</a></li>
 </ul>
 </li>
 </ul>
@@ -89,7 +89,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../documentation_doc.html">Documentation</a></li>
           <li class="breadcrumb-item"><a href="../connector_doc.html">Connector</a></li>
-      <li class="breadcrumb-item active">Mass Connector</li>
+      <li class="breadcrumb-item active">Heat Connector</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation/connector/heat_connector/heat_connector_doc.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -99,9 +99,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="mass-connector">
-<h1>Mass Connector<a class="headerlink" href="#mass-connector" title="Link to this heading"></a></h1>
-<p>This section includes details on the mass connectors of the PyLaboThap library.</p>
+  <section id="heat-connector">
+<h1>Heat Connector<a class="headerlink" href="#heat-connector" title="Link to this heading"></a></h1>
+<p>This section includes details on the <em>‘HeatConnector’</em> Class of the PyLaboThap library.</p>
+<p>The <em>‘HeatConnector’</em> class links components by transferring heat power between them.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="connector.heat_connector.HeatConnector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">connector.heat_connector.</span></span><span class="sig-name descname"><span class="pre">HeatConnector</span></span><a class="reference internal" href="../../../_modules/connector/heat_connector.html#HeatConnector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#connector.heat_connector.HeatConnector" title="Link to this definition"></a></dt>
+<dd><p>A class to handle transfer of heat power.</p>
+<section id="attributes">
+<h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Q_dot<span class="classifier">float, optional</span></dt><dd><p>Heat power in W.</p>
+</dd>
+<dt>variables_input<span class="classifier">list of lists</span></dt><dd><p>A list of the variables used to define the heat connector. Each entry is a list of [variable_name, value].</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h2>Methods:<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>__init__(self):</dt><dd><p>Initializes the HeatConnector object with.</p>
+</dd>
+<dt>set_Q_dot(self, value):</dt><dd><p>Sets the heat power and updates the list of known variables.</p>
+</dd>
+<dt>print_resume(self):</dt><dd><p>Print a summary of the heat connector properties.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 
@@ -109,7 +136,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../mass_connector/mass_connector_doc.html" class="btn btn-neutral float-left" title="Mass Connector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../work_connector/work_connector_doc.html" class="btn btn-neutral float-right" title="Mass Connector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../work_connector/work_connector_doc.html" class="btn btn-neutral float-right" title="Work Connector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
