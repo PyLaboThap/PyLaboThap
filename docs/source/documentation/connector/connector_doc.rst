@@ -22,11 +22,11 @@ The compressor is connected with connectors:
 
 .. raw:: html
 
-   <div style="display: flex; align-items: flex-start;">
-       <div style="flex: 1; margin-right: 20px;">
-           <img src="../../../figures/connector/compressor_example.png" alt="Connectors for a compressor model." style="width: 80%;">
+   <div class="side-by-side">
+       <div class="image">
+           <img src="../../../figures/connector/compressor_example.png" alt="Connectors for a compressor model.">
        </div>
-       <div style="flex: 1;">
+       <div class="text">
            <ul>
                <li><strong>Two mass connectors</strong>: supply and exhaust mass flow that can be connected to an evaporator and a condenser, for example.</li>
                <li><strong>One heat connector</strong>: heat flow is connected to the ambient air.</li>
@@ -34,7 +34,6 @@ The compressor is connected with connectors:
            </ul>
        </div>
    </div>
-
 
 
 .. toctree::

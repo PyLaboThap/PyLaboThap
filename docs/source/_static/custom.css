@@ -1,8 +1,31 @@
+/* Flex container for side-by-side elements */
 .side-by-side {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px; /* Space between elements */
 }
 
+/* Specific styles for side-by-side images */
 .side-by-side img {
-    width: 48%;
+    width: 48%; /* Adjust width as needed */
+}
+
+/* Styles for side-by-side text */
+.side-by-side .text {
+    flex: 1; /* Make sure the text takes up the remaining space */
+    display: flex;
+    flex-direction: column;
+}
+
+.side-by-side .text ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 0;
+}
+
+/* Optional: Adjust image styles if you need specific adjustments */
+.side-by-side .image img {
+    width: 100%;
+    height: auto;
 }
