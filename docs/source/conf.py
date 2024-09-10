@@ -16,16 +16,8 @@ extensions = [
     'sphinx.ext.napoleon',  # For Google/NumPy style docstrings
     'sphinx.ext.viewcode',  # Add links to highlighted source code
     'sphinx.ext.todo',      # Support for TODO notes
+    'sphinx.ext.mathjax',  # For mathematical equations
 ]
-
-autodoc_default_options = {
-    'members': True,
-    'undoc-members': True,
-    'private-members': True,
-    'special-members': True,
-    'inherited-members': True,
-    'show-inheritance': True,
-}
 
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'description'
@@ -36,9 +28,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**/.ipynb_checkpoints']
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
 def setup(app):
     app.add_css_file('custom.css')
-    
+
 html_title = "PyLaboThap Documentation"
 
 html_theme_options = {
@@ -52,9 +45,4 @@ html_theme_options = {
 # -- Options for mathematical equations ------------------------------------------------
 
 # MathJax settings
-extensions = [
-    'sphinx.ext.mathjax',
-]
-
 mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
-

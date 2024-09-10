@@ -61,9 +61,12 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../connector_doc.html">Connector</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Mass Connector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../heat_connector/heat_connector_doc.html">Mass Connector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../work_connector/work_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../connector_doc.html#example">Example</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Mass Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../heat_connector/heat_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../work_connector/work_connector_doc.html">Mass Connector</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -98,7 +101,97 @@
              
   <section id="mass-connector">
 <h1>Mass Connector<a class="headerlink" href="#mass-connector" title="Link to this heading"></a></h1>
-<p>This section includes details on the mass connectors of the PyLaboThap library.</p>
+<p>This section includes details on the <em>‘MassConnector’</em> Class of the PyLaboThap library.</p>
+<p>The <em>MassConnector</em> class links components by transferring mass flow and thermodynamic properties between them. If two thermodynamic properties are provided, the class automatically calculates the remaining properties.</p>
+<p>The class has two key flags:</p>
+<ul class="simple">
+<li><p><strong>state_known</strong>: This boolean flag indicates whether all thermodynamic properties are known.</p></li>
+<li><p><strong>state_completely_known</strong>: This boolean flag indicates whether both the mass flow rate and all thermodynamic properties are known.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../../../_images/MassConnector.png"><img alt="Connectors description." src="../../../_images/MassConnector.png" style="width: 100%;" /></a>
+<dl class="py class">
+<dt class="sig sig-object py" id="connector.mass_connector.MassConnector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">connector.mass_connector.</span></span><span class="sig-name descname"><span class="pre">MassConnector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/connector/mass_connector.html#MassConnector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#connector.mass_connector.MassConnector" title="Link to this definition"></a></dt>
+<dd><p>A class to handle and calculate fluid properties based on given state variables.</p>
+<section id="attributes">
+<h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>fluid<span class="classifier">str, optional</span></dt><dd><p>The name of the fluid.</p>
+</dd>
+<dt>m_dot<span class="classifier">float, optional</span></dt><dd><p>Mass flow rate in kg/s.</p>
+</dd>
+<dt>V_dot<span class="classifier">float, optional</span></dt><dd><p>Volume flow rate in m^3/s.</p>
+</dd>
+<dt>T<span class="classifier">float, optional</span></dt><dd><p>Temperature in Kelvin.</p>
+</dd>
+<dt>p<span class="classifier">float, optional</span></dt><dd><p>Pressure in Pascal.</p>
+</dd>
+<dt>h<span class="classifier">float, optional</span></dt><dd><p>Specific enthalpy in J/kg.</p>
+</dd>
+<dt>s<span class="classifier">float, optional</span></dt><dd><p>Specific entropy in J/kg/K.</p>
+</dd>
+<dt>D<span class="classifier">float, optional</span></dt><dd><p>Mass density in kg/m^3.</p>
+</dd>
+<dt>x<span class="classifier">float, optional</span></dt><dd><p>Quality in kg/kg.</p>
+</dd>
+<dt>cp<span class="classifier">float, optional</span></dt><dd><p>Specific heat capacity in J/kg/K.</p>
+</dd>
+<dt>completely_known<span class="classifier">bool</span></dt><dd><p>True if all properties and mass flow rate are known, otherwise False.</p>
+</dd>
+<dt>state_known<span class="classifier">bool</span></dt><dd><p>True if all state properties are known, otherwise False.</p>
+</dd>
+<dt>variables_input<span class="classifier">list of lists</span></dt><dd><p>A list of the state variables used to define the fluid state. Each entry is a list of [variable_name, value].</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h2>Methods:<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>__init__(self, fluid=None):</dt><dd><p>Initializes the MassConnector object with optional fluid.</p>
+</dd>
+<dt>reset(self):</dt><dd><p>Resets all properties to None and flags to False.</p>
+</dd>
+<dt>check_completely_known(self):</dt><dd><p>Checks if all necessary properties and mass flow rate are known to determine if the state is completely known.</p>
+</dd>
+<dt>calculate_properties(self):</dt><dd><p>Calculates fluid properties using CoolProp based on known variables.</p>
+</dd>
+<dt>is_two_phase_PT(self):</dt><dd><p>Determines if the current state is in the two-phase region based on temperature and pressure.</p>
+</dd>
+<dt>set_properties(self, kwargs):</dt><dd><p>Sets various properties of the fluid. Accepts named arguments for ‘fluid’, ‘m_dot’, ‘V_dot’, ‘T’, ‘P’, ‘H’, ‘S’, ‘D’, ‘x’, and ‘cp’.</p>
+</dd>
+<dt>set_fluid(self, value):</dt><dd><p>Sets the fluid type and checks if it’s valid.</p>
+</dd>
+<dt>set_m_dot(self, value):</dt><dd><p>Sets the mass flow rate and ensures volume flow rate is not set simultaneously.</p>
+</dd>
+<dt>set_V_dot(self, value):</dt><dd><p>Sets the volume flow rate and ensures mass flow rate is not set simultaneously.</p>
+</dd>
+<dt>set_T(self, value):</dt><dd><p>Sets the temperature and updates the list of known variables.</p>
+</dd>
+<dt>set_p(self, value):</dt><dd><p>Sets the pressure and updates the list of known variables.</p>
+</dd>
+<dt>set_h(self, value):</dt><dd><p>Sets the specific enthalpy and updates the list of known variables.</p>
+</dd>
+<dt>set_s(self, value):</dt><dd><p>Sets the specific entropy and updates the list of known variables.</p>
+</dd>
+<dt>set_D(self, value):</dt><dd><p>Sets the mass density and updates the list of known variables.</p>
+</dd>
+<dt>set_x(self, value):</dt><dd><p>Sets the quality and updates the list of known variables.</p>
+</dd>
+<dt>set_cp(self, value):</dt><dd><p>Sets the specific heat capacity without calculating other properties.</p>
+</dd>
+<dt>print_resume(self, unit_T=’K’, unit_p=’Pa’):</dt><dd><p>Prints a summary of the current properties in specified units.</p>
+</dd>
+</dl>
+</section>
+<section id="exceptions">
+<h2>Exceptions:<a class="headerlink" href="#exceptions" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>Raised if an unsupported fluid name is used or if required variables for property calculation are missing.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

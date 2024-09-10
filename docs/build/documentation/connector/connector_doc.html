@@ -19,6 +19,7 @@
         <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -101,8 +102,13 @@
   <section id="connector">
 <h1>Connector<a class="headerlink" href="#connector" title="Link to this heading"></a></h1>
 <p>This section includes details on the connectors of the PyLaboThap library.</p>
-<p>The purpose of the <strong>Connector class</strong> is to link components between each other. Connectors represent different types of energy transfer within the
-system, whether it’s a <strong>mass flow</strong>, <strong>heat flow</strong>, or <strong>work flow</strong>.</p>
+<p>The purpose of the <strong>Connector class</strong> is to link components between each other. There are trhee different types of connectors that represent different
+types of energy transfer within the system;</p>
+<ul class="simple">
+<li><p><strong>Mass Connector</strong>: energy transfer in the form of mass flow (<span class="math notranslate nohighlight">\(\dot{m} \cdot h\)</span>).</p></li>
+<li><p><strong>Heat Connector</strong>: energy transfer in the form of heat flow (<span class="math notranslate nohighlight">\(\dot{Q}\)</span>).</p></li>
+<li><p><strong>Work Connector</strong>: energy transfer in the form of work flow (<span class="math notranslate nohighlight">\(\dot{W}\)</span>).</p></li>
+</ul>
 <a class="reference internal image-reference" href="../../_images/connectors.png"><img alt="Connectors description." src="../../_images/connectors.png" style="width: 100%;" /></a>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
@@ -122,7 +128,10 @@ The compressor is connected with connectors:</p>
 </div><div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mass_connector/mass_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mass_connector/mass_connector_doc.html">Mass Connector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mass_connector/mass_connector_doc.html#connector.mass_connector.MassConnector"><code class="docutils literal notranslate"><span class="pre">MassConnector</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="heat_connector/heat_connector_doc.html">Mass Connector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="work_connector/work_connector_doc.html">Mass Connector</a></li>
 </ul>

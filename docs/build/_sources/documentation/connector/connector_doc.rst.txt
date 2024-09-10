@@ -3,8 +3,12 @@ Connector
 
 This section includes details on the connectors of the PyLaboThap library.
 
-The purpose of the **Connector class** is to link components between each other. Connectors represent different types of energy transfer within the 
-system, whether it’s a **mass flow**, **heat flow**, or **work flow**.
+The purpose of the **Connector class** is to link components between each other. There are trhee different types of connectors that represent different
+types of energy transfer within the system;
+
+- **Mass Connector**: energy transfer in the form of mass flow (:math:`\dot{m} \cdot h`).
+- **Heat Connector**: energy transfer in the form of heat flow (:math:`\dot{Q}`).
+- **Work Connector**: energy transfer in the form of work flow (:math:`\dot{W}`).
 
 .. image:: ../../../figures/connector/connectors.png
    :alt: Connectors description.
@@ -30,9 +34,6 @@ The compressor is connected with connectors:
            </ul>
        </div>
    </div>
-
-
-
 
 
 
