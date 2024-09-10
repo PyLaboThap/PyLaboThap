@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>component.base_component &mdash; PyLaboThap Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=173837f2" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyLaboThap
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/installation_and_setup.html">Installation and Setup</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/documentation_doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../documentation/component/component_doc.html">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html">Steady-State Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#connector-approach">Connector Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#input-output-approach">Input/Output Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#basecomponent-class">BaseComponent Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../documentation/component/dynamic/dynamic_doc.html">Dynamic models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../documentation/component/sizing/sizing_doc.html">Sizing models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentation/connector/connector_doc.html">Connector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../documentation/connector/connector_doc.html#example">Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/connector/mass_connector/mass_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/connector/heat_connector/heat_connector_doc.html">Heat Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/connector/work_connector/work_connector_doc.html">Work Connector</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyLaboThap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">component.base_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for component.base_component</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Sep 10 14:09:18 2024</span>
+
+<span class="sd">@author: Elise Neven</span>
+<span class="sd">@email: elise.neven@uliege.be</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">patches</span>
+
+<div class="viewcode-block" id="BaseComponent">
+<a class="viewcode-back" href="../../documentation/component/steady_state/steady_state_doc.html#component.base_component.BaseComponent">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseComponent</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class representing a generic component in a system model. </span>
+
+<span class="sd">    The `BaseComponent` class provides a framework for defining components that can be used in system simulations.</span>
+<span class="sd">    Each component has inputs, parameters, and guesses, which are used to compute the steady-state behavior of the component.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    calculable : bool</span>
+<span class="sd">        Indicates whether the component has enough inputs to perform calculations.</span>
+<span class="sd">    parametrized : bool</span>
+<span class="sd">        Indicates whether the component has all required parameters set.</span>
+<span class="sd">    solved : bool</span>
+<span class="sd">        Indicates whether the component has been successfully solved (i.e., its state has been computed).</span>
+<span class="sd">    inputs : dict</span>
+<span class="sd">        A dictionary holding the input variables for the component.</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        A dictionary holding the parameters required for the component.</span>
+<span class="sd">    guesses : dict</span>
+<span class="sd">        A dictionary holding initial guesses for solving the component.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">    --------</span>
+<span class="sd">    set_inputs(inputs):</span>
+<span class="sd">        Sets the input values for the component.</span>
+<span class="sd">        </span>
+<span class="sd">    set_parameters(parameters):</span>
+<span class="sd">        Sets the parameter values for the component and checks if it is fully parametrized.</span>
+<span class="sd">        </span>
+<span class="sd">    set_guesses(guesses):</span>
+<span class="sd">        Sets initial guesses for variables to be solved.</span>
+<span class="sd">        </span>
+<span class="sd">    check_calculable():</span>
+<span class="sd">        Checks if the component has all the required inputs to perform calculations.</span>
+<span class="sd">        </span>
+<span class="sd">    check_parametrized():</span>
+<span class="sd">        Checks if the component has all the required parameters set.</span>
+<span class="sd">        </span>
+<span class="sd">    get_required_inputs():</span>
+<span class="sd">        Returns a list of required input variables for the component. Meant to be overridden in derived classes.</span>
+<span class="sd">        </span>
+<span class="sd">    get_required_parameters():</span>
+<span class="sd">        Returns a list of required parameters for the component. Meant to be overridden in derived classes.</span>
+<span class="sd">    </span>
+<span class="sd">    get_required_guesses():</span>
+<span class="sd">        Returns a list of required guesses for the component.</span>
+<span class="sd">        </span>
+<span class="sd">    solve():</span>
+<span class="sd">        Solves the component&#39;s state, to be implemented in derived classes.</span>
+<span class="sd">        </span>
+<span class="sd">    plot_component(inputs_names=None, outputs_names=None, parameters_names=None):</span>
+<span class="sd">        Creates a visual representation of the component with labeled inputs, outputs, and parameters.</span>
+<span class="sd">        </span>
+<span class="sd">    plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):</span>
+<span class="sd">        Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">    ------</span>
+<span class="sd">    - This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).</span>
+<span class="sd">    - The `solve` method is not implemented here and must be defined in derived classes for actual computation.</span>
+<span class="sd">    - `plot_component` and `plot_connectors` use Matplotlib to generate graphical representations of components, making </span>
+<span class="sd">      it easier to visualize system behavior in diagrams.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guesses</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">inputs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_parametrized</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_guesses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">guesses</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">guesses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">guesses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">check_calculable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">required_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_inputs</span><span class="p">()</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">required_inputs</span><span class="p">)</span> <span class="c1"># check if all required inputs are set</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculable</span>
+
+    <span class="k">def</span> <span class="nf">check_parametrized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">required_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_parameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">required_params</span><span class="p">)</span> <span class="c1"># check if all required parameters are set</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span>
+
+    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This method should be overridden in derived classes</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">get_required_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This method should be overridden in derived classes</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    
+    <span class="k">def</span> <span class="nf">get_required_guesses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This method should be overridden in derived classes</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The &#39;solve&#39; method should be implemented in derived classes.&quot;</span><span class="p">)</span>
+    
+
+    <span class="k">def</span> <span class="nf">plot_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputs_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameters_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot a visual representation of the component with inputs/outputs and parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Enable LaTeX rendering in Matplotlib</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Create figure and axis</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+        <span class="c1"># Draw the block (component)</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">FancyBboxPatch</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round,pad=0.1&quot;</span><span class="p">,</span> 
+                                        <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#D4E9C7&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> 
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Define positions for inputs, outputs, and parameters</span>
+        <span class="n">input_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for input</span>
+        <span class="n">output_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for output</span>
+        <span class="n">param_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]</span>  <span class="c1"># Position for parameters</span>
+
+        <span class="c1"># Inputs</span>
+        <span class="k">if</span> <span class="n">inputs_names</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Inputs}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+
+             <span class="c1"># Calculate spacing for inputs</span>
+            <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs_names</span><span class="p">)</span>
+            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">start_y</span> <span class="o">=</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_inputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># List all inputs next to the arrow</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs_names</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">input_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># Outputs</span>
+        <span class="k">if</span> <span class="n">outputs_names</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Outputs}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+
+            <span class="c1"># Calculate spacing for outputs</span>
+            <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs_names</span><span class="p">)</span>
+            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">start_y</span> <span class="o">=</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_outputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># List all outputs next to the arrow</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outputs_names</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># Parameters</span>
+        <span class="k">if</span> <span class="n">parameters_names</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Parameters}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">),</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+
+            <span class="c1"># Calculate spacing for parameters</span>
+            <span class="n">num_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters_names</span><span class="p">)</span>
+            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">start_y</span> <span class="o">=</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_params</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># List all parameters below &quot;Parameters&quot;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters_names</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">-</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Plot formatting</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  <span class="c1"># Hide axis</span>
+
+
+    <span class="k">def</span> <span class="nf">plot_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_connectors_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exhaust_connectors_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot a visual representation of the component with inputs/outputs and parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Enable LaTeX rendering in Matplotlib</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Create figure and axis</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+        <span class="c1"># Draw the block (component)</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">FancyBboxPatch</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round,pad=0.1&quot;</span><span class="p">,</span> 
+                                        <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> 
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Define positions for inputs, outputs, and parameters</span>
+        <span class="n">input_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for input</span>
+        <span class="n">output_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for output</span>
+
+        <span class="c1"># Inputs</span>
+        <span class="k">if</span> <span class="n">supply_connectors_names</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+
+             <span class="c1"># Calculate spacing for inputs</span>
+            <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">supply_connectors_names</span><span class="p">)</span>
+            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">start_y</span> <span class="o">=</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_inputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># List all inputs next to the arrow</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">supply_connectors_names</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">input_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># Outputs</span>
+        <span class="k">if</span> <span class="n">exhaust_connectors_names</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+
+            <span class="c1"># Calculate spacing for outputs</span>
+            <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exhaust_connectors_names</span><span class="p">)</span>
+            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">start_y</span> <span class="o">=</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_outputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># List all outputs next to the arrow</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">exhaust_connectors_names</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># Plot formatting</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  <span class="c1"># Hide axis</span></div>
+
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Basile Chaudoir, Elise Neven.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

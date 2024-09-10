@@ -5,11 +5,11 @@ Constant Isentropic Efficiency Compressor model
 
    <div class="side-by-side">
 
-.. image:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_in_out.png
+.. image:: ../../../../../../../../figures/component/constant_isentropic_efficiency_compressor_in_out.png
    :alt: Description of the plot
    :width: 100%
 
-.. image:: ../../../../../../../figures/component/constant_isentropic_efficiency_compressor_connectors.png
+.. image:: ../../../../../../../../figures/component/constant_isentropic_efficiency_compressor_connectors.png
    :alt: Description of the plot
    :width: 100%
 

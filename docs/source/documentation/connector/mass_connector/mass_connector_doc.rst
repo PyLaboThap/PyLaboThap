@@ -52,6 +52,3 @@ Example of usage
       :language: python
       :lines: 27-28
 
-
-
-

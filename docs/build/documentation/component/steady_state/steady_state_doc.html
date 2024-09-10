@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Steady State &mdash; PyLaboThap Documentation</title>
+  <title>Steady-State Models &mdash; PyLaboThap Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=173837f2" />
@@ -23,7 +23,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Volumetric Machine" href="volumetric_machine/volumetric_machine_doc.html" />
+    <link rel="next" title="BaseComponent Class" href="base_component/base_component_doc.html" />
     <link rel="prev" title="Components" href="../component_doc.html" /> 
 </head>
 
@@ -53,8 +53,10 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../documentation_doc.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../component_doc.html">Components</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Steady State</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Steady-State Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#connector-approach">Connector Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#input-output-approach">Input/Output Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#contents">Contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../dynamic/dynamic_doc.html">Dynamic models</a></li>
@@ -64,8 +66,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../connector/connector_doc.html">Connector</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../connector/connector_doc.html#example">Example</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../connector/mass_connector/mass_connector_doc.html">Mass Connector</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../connector/heat_connector/heat_connector_doc.html">Mass Connector</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../connector/work_connector/work_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../connector/heat_connector/heat_connector_doc.html">Heat Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../connector/work_connector/work_connector_doc.html">Work Connector</a></li>
 </ul>
 </li>
 </ul>
@@ -90,7 +92,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../documentation_doc.html">Documentation</a></li>
           <li class="breadcrumb-item"><a href="../component_doc.html">Components</a></li>
-      <li class="breadcrumb-item active">Steady State</li>
+      <li class="breadcrumb-item active">Steady-State Models</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation/component/steady_state/steady_state_doc.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,18 +102,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="steady-state">
-<h1>Steady State<a class="headerlink" href="#steady-state" title="Link to this heading"></a></h1>
-<p>Information about steady state components.</p>
+  <section id="steady-state-models">
+<h1>Steady-State Models<a class="headerlink" href="#steady-state-models" title="Link to this heading"></a></h1>
+<p>This section provides an overview of the steady-state models for components in the PyLaboThap library.</p>
+<p>Steady-state models serve as the fundamental building blocks for simulating systems. They are used to represent the behavior of
+individual components under steady conditions and can be interconnected using connectors to model more complex systems. Components
+can be defined in two different ways:</p>
+<section id="connector-approach">
+<h2>Connector Approach<a class="headerlink" href="#connector-approach" title="Link to this heading"></a></h2>
+<p>In this approach, the inputs for components are set through connectors. This is particularly useful when multiple components are linked
+to form a larger system. Connectors facilitate the transfer of inputs and outputs between components, enabling the simulation of system-wide
+behavior.</p>
+<a class="reference internal image-reference" href="../../../_images/Component_connectors.png"><img alt="Components connectors description." src="../../../_images/Component_connectors.png" style="width: 100%;" /></a>
+</section>
+<section id="input-output-approach">
+<h2>Input/Output Approach<a class="headerlink" href="#input-output-approach" title="Link to this heading"></a></h2>
+<p>In this approach, inputs are set directly within each component. This is more suitable when using components individually, without linking
+them to other components.</p>
+<a class="reference internal image-reference" href="../../../_images/Component_in_out.png"><img alt="Components inlet/outlet description." src="../../../_images/Component_in_out.png" style="width: 100%;" /></a>
+</section>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Steady State Components:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="volumetric_machine/compressor/compressor_doc.html">Compressor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_component/base_component_doc.html">BaseComponent Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="base_component/base_component_doc.html#component.base_component.BaseComponent"><code class="docutils literal notranslate"><span class="pre">BaseComponent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="base_component/base_component_doc.html#example-of-a-steady-state-component-model">Example of a Steady-State Component Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/models_doc.html">Steady-State Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models/volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a></li>
 </ul>
 </li>
 </ul>
 </div>
+</section>
 </section>
 
 
@@ -119,13 +145,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../component_doc.html" class="btn btn-neutral float-left" title="Components" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="volumetric_machine/volumetric_machine_doc.html" class="btn btn-neutral float-right" title="Volumetric Machine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="base_component/base_component_doc.html" class="btn btn-neutral float-right" title="BaseComponent Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Basile Chaudoire, Elise Neven.</p>
+    <p>&#169; Copyright 2024, Basile Chaudoir, Elise Neven.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

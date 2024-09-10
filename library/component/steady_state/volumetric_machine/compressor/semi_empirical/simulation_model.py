@@ -23,44 +23,47 @@ class CompressorSE(BaseComponent):
         super().__init__()
         self.su = MassConnector()
         self.ex = MassConnector() # Mass_connector
-        self.work_cp = WorkConnector()
-        self.heat_amb = HeatConnector()
+        self.W_cp = WorkConnector()
+        self.Q_amb = HeatConnector()
 
-    def get_required_inputs(self):
-        
-        if self.inputs == {}:
-            if self.su.T is not None:
-                self.inputs['su_T'] = self.su.T
-            elif self.su.h is not None:
-                self.inputs['su_h'] = self.su.h
-            if self.su.p is not None:
-                self.inputs['su_p'] = self.su.p
-            if self.ex.p is not None:
-                self.inputs['ex_p'] = self.ex.p
-            if self.work_cp.speed is not None:
-                self.inputs['N_rot'] = self.work_cp.speed
-            if self.heat_amb.temperature_in is not None:
-                self.inputs['T_amb'] = self.heat_amb.temperature_in
-            if self.su.fluid is not None:
-                self.inputs['su_fluid'] = self.su.fluid
-
-        if self.inputs != {}:
-            self.su.set_fluid(self.inputs['su_fluid'])
-            if 'su_T' in self.inputs:
-                self.su.set_T(self.inputs['su_T'])
-            elif 'su_h' in self.inputs:
-                self.su.set_h(self.inputs['su_h'])
-            if 'su_p' in self.inputs:
-                self.su.set_p(self.inputs['su_p'])
-            if 'ex_p' in self.inputs:
-                self.ex.set_p(self.inputs['ex_p'])
-            if 'N_rot' in self.inputs:
-                self.work_cp.set_speed(self.inputs['N_rot'])
-            if 'T_amb' in self.inputs:
-                self.heat_amb.set_temperature_in(self.inputs['T_amb'])
-
-        return ['su_p', 'su_T', 'ex_p', 'N_rot', 'T_amb', 'su_fluid']
+    def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
+            self.sync_inputs()
+            # Return a list of required inputs
+            return ['su_p', 'su_T', 'ex_p', 'N_rot', 'T_amb', 'su_fluid']
     
+    def sync_inputs(self):
+        """Synchronize the inputs dictionary with the connector states."""
+        if self.su.fluid is not None:
+            self.inputs['su_fluid'] = self.su.fluid
+        if self.su.T is not None:
+            self.inputs['su_T'] = self.su.T
+        if self.su.p is not None:
+            self.inputs['su_p'] = self.su.p
+        if self.ex.p is not None:
+            self.inputs['ex_p'] = self.ex.p
+        if self.W_cp.N is not None:
+            self.inputs['N_rot'] = self.W_cp.N
+        if self.Q_amb.T_cold is not None:
+            self.inputs['T_amb'] = self.Q_amb.T_cold
+
+    def set_inputs(self, **kwargs):
+        """Set inputs directly through a dictionary and update connector properties."""
+        self.inputs.update(kwargs) # This line merges the keyword arguments ('kwargs') passed to the 'set_inputs()' method into the eisting 'self.inputs' dictionary.
+
+        # Update the connectors based on the new inputs
+        if 'su_fluid' in self.inputs:
+            self.su.set_fluid(self.inputs['su_fluid'])
+        if 'su_T' in self.inputs:
+            self.su.set_T(self.inputs['su_T'])
+        if 'su_p' in self.inputs:
+            self.su.set_p(self.inputs['su_p'])
+        if 'ex_p' in self.inputs:
+            self.ex.set_p(self.inputs['ex_p'])
+        if 'N_rot' is self.inputs:
+            self.W_cp.set_N(self.inputs['N_rot'])
+        if 'T_amb' is self.inputs:
+            self.Q_amb.set_T_cold(self.inputs['T_amb'])
+
     def get_required_parameters(self):
         return [
             'AU_amb', 'AU_su_n', 'AU_ex_n', 'd_ex', 'm_dot_n', 
@@ -72,8 +75,8 @@ class CompressorSE(BaseComponent):
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
-        print(f"  - W_dot: speed={self.work_cp.speed}")
-        print(f"  - Q_dot_amb: temperature_in={self.heat_amb.temperature_in}")
+        print(f"  - W_dot: speed={self.W_cp.N}")
+        print(f"  - Q_dot_amb: temperature_in={self.Q_amb.T_cold}")
 
         print("\nInputs:")
         for input in self.get_required_inputs():
@@ -222,13 +225,13 @@ class CompressorSE(BaseComponent):
         h_ex = h_ex1+(Q_dot_ex/self.m_dot)
         
         "Fictious enveloppe heat balance"
-        Q_dot_amb = self.params['AU_amb']*(self.T_w-self.inputs['T_amb'])
+        self.Q_dot_amb = self.params['AU_amb']*(self.T_w-self.inputs['T_amb'])
         
         
         "Compression work and power"
         W_dot_in = m_dot_in*w_in
         W_dot_loss = self.params['alpha']*W_dot_in + self.params['W_dot_loss_0'] + self.params['C_loss']*self.N*2*np.pi
-        self.W_dot = W_dot_in + W_dot_loss
+        self.W_dot_cp = W_dot_in + W_dot_loss
         
         "Exit data"
         self.h_ex = h_ex
@@ -256,19 +259,11 @@ class CompressorSE(BaseComponent):
         "Residue"
         
         self.res_h_ex1 = abs(h_ex1_bis-h_ex1)/h_ex1
-        self.resE = abs((W_dot_loss - Q_dot_ex - Q_dot_su - Q_dot_amb)/(W_dot_loss))
+        self.resE = abs((W_dot_loss - Q_dot_ex - Q_dot_su - self.Q_dot_amb)/(W_dot_loss))
         self.res_h_ex2 = abs(h_ex2_bis-h_ex2)/h_ex2
         self.res_m_dot_in = abs(m_dot_in-m_dot_in_bis)/m_dot_in
         self.res = [self.res_h_ex1, self.resE, self.res_h_ex2, self.res_m_dot_in]
         # print(W_dot_loss, Q_dot_ex, Q_dot_su, Q_dot_amb)
-        "problem with entropy"
-        self.h_su = h_su
-        self.h_su1 = h_su1
-        self.h_su2 = h_su2
-        self.h_in = h_in
-        self.h_ex2 = h_ex2
-        self.h_ex1 = h_ex1
-        self.h_ex = h_ex
 
         self.s_su = s_su
         self.s_su1 = s_su1
@@ -327,10 +322,7 @@ class CompressorSE(BaseComponent):
 
                 self.convergence = stop
                 
-            self.ex.set_fluid(self.su.fluid)
-            self.ex.set_m_dot(self.m_dot)
-            self.ex.set_h(self.h_ex)
-            self.ex.set_p(self.P_ex)
+            self.update_connectors()
 
             self.defined = True
             
@@ -344,13 +336,37 @@ class CompressorSE(BaseComponent):
             if self.parametrized == False:
                 print("Parameters of the component not completely known")
 
-    def print_results(self):
-        if self.defined:
-            print("=== Compressor Results ===")
-            print(f"T_ex: {self.ex.T}")
-            print(f"W_dot_cp: {self.W_dot}")
-            print(f"eta_is: {self.epsilon_is}")
-            print(f"eta_v: {self.epsilon_v}")
+    def update_connectors(self):
+        """Update the connectors with the calculated values."""
+        self.su.set_m_dot(self.m_dot)
+        self.ex.set_fluid(self.su.fluid)
+        self.ex.set_h(self.h_ex)
+        self.ex.set_p(self.P_ex)
+        self.ex.set_m_dot(self.m_dot)
+        self.W_cp.set_W_dot(self.W_dot_cp)
+        self.Q_amb.set_Q_dot(self.Q_dot_amb)
+        self.Q_amb.set_T_cold(self.T_w)
 
-        else:
-            print("Expander component is not defined. Ensure it is solved first.")
+    def print_results(self):
+        print("=== Expander Results ===")
+        print(f"  - h_ex: {self.ex.h} [J/kg]")
+        print(f"  - T_ex: {self.ex.T} [K]")
+        print(f"  - W_dot_cp: {self.W_cp.W_dot} [W]")
+        print(f"  - epsilon_is: {self.epsilon_is} [-]")
+        print(f"  - m_dot: {self.m_dot} [kg/s]")
+        print("=========================")
+
+    def print_states_connectors(self):
+        print("=== Expander Results ===")
+        print("Mass connectors:")
+        print(f"  - su: fluid={self.su.fluid}, T={self.su.T} [K], p={self.su.p} [Pa], h={self.su.h} [J/kg], s={self.su.s} [J/K.kg], m_dot={self.su.m_dot} [kg/s]")
+        print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
+        print("=========================")
+        print("Work connector:")
+        print(f"  - W_dot_cp: {self.W_cp.W_dot} [W]")
+        print("=========================")
+        print("Heat connector:")
+        print(f"  - Q_dot_amb: {self.Q_amb.Q_dot} [W]")
+        print(f"  - T_hot: {self.Q_amb.T_hot} [K]")
+        print(f"  - T_cold: {self.Q_amb.T_cold} [K]")
+        print("=========================")

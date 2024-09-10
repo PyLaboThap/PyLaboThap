@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.abspath('../../library'))
 
 # -- Project information -----------------------------------------------------
 project = 'PyLaboThap'
-copyright = '2024, Basile Chaudoire, Elise Neven'
-author = 'Elise Neven, Basile Chaudoire'
+copyright = '2024, Basile Chaudoir, Elise Neven'
+author = 'Elise Neven, Basile Chaudoir'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------

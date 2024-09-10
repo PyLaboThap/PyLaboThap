@@ -49,8 +49,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation/documentation_doc.html">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../documentation/component/component_doc.html">Components</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html">Steady State</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html">Steady-State Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#connector-approach">Connector Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#input-output-approach">Input/Output Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#basecomponent-class">BaseComponent Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/steady_state_doc.html#example-of-usage">Example of usage</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../documentation/component/dynamic/dynamic_doc.html">Dynamic models</a></li>
@@ -95,9 +98,19 @@
            <div itemprop="articleBody">
              
   <h1>Source code for connector.work_connector</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Sep 10 14:09:18 2024</span>
+
+<span class="sd">@author: Elise Neven</span>
+<span class="sd">@email: elise.neven@uliege.be</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
 <div class="viewcode-block" id="WorkConnector">
 <a class="viewcode-back" href="../../documentation/connector/work_connector/work_connector_doc.html#connector.work_connector.WorkConnector">[docs]</a>
-<span></span><span class="k">class</span> <span class="nc">WorkConnector</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">WorkConnector</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to handle transfer of work power.</span>
 
@@ -171,7 +184,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Basile Chaudoire, Elise Neven.</p>
+    <p>&#169; Copyright 2024, Basile Chaudoir, Elise Neven.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

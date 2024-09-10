@@ -82,11 +82,10 @@ class ExpanderCstEff(BaseComponent):
         # self.check_calculable()
         # self.check_parametrized()
 
-        # if not (self.calculable and self.parametrized):
-        #     self.solved = False
-        #     print("ExpanderCstEff could not be solved. It is not calculable and/or not parametrized")
-        #     return
-
+        if not (self.calculable and self.parametrized):
+            self.solved = False
+            print("ExpanderCstEff could not be solved. It is not calculable and/or not parametrized")
+            return
         try:
             """EXPANDER MODEL"""
 

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BaseComponent Class &mdash; PyLaboThap Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=173837f2" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            PyLaboThap
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide/installation_and_setup.html">Installation and Setup</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_doc.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../component_doc.html">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../steady_state_doc.html">Steady-State Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../steady_state_doc.html#connector-approach">Connector Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steady_state_doc.html#input-output-approach">Input/Output Approach</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../steady_state_doc.html#contents">Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../dynamic/dynamic_doc.html">Dynamic models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sizing/sizing_doc.html">Sizing models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connector/connector_doc.html">Connector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../connector/connector_doc.html#example">Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../connector/mass_connector/mass_connector_doc.html">Mass Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../connector/heat_connector/heat_connector_doc.html">Heat Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../connector/work_connector/work_connector_doc.html">Work Connector</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">PyLaboThap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">BaseComponent Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/documentation/component/steady_state/base_component/base_component_doc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="basecomponent-class">
+<h1>BaseComponent Class<a class="headerlink" href="#basecomponent-class" title="Link to this heading"></a></h1>
+<p>The <cite>BaseComponent</cite> class is the parent class for all components in the PyLaboThap library. All components inherit the properties and methods of the <cite>BaseComponent</cite> class. Key methods provided by this class include:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="component.base_component.BaseComponent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">component.base_component.</span></span><span class="sig-name descname"><span class="pre">BaseComponent</span></span><a class="reference internal" href="../../../../_modules/component/base_component.html#BaseComponent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.base_component.BaseComponent" title="Link to this definition"></a></dt>
+<dd><p>A base class representing a generic component in a system model.</p>
+<p>The <cite>BaseComponent</cite> class provides a framework for defining components that can be used in system simulations.
+Each component has inputs, parameters, and guesses, which are used to compute the steady-state behavior of the component.</p>
+<section id="attributes">
+<h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>calculable<span class="classifier">bool</span></dt><dd><p>Indicates whether the component has enough inputs to perform calculations.</p>
+</dd>
+<dt>parametrized<span class="classifier">bool</span></dt><dd><p>Indicates whether the component has all required parameters set.</p>
+</dd>
+<dt>solved<span class="classifier">bool</span></dt><dd><p>Indicates whether the component has been successfully solved (i.e., its state has been computed).</p>
+</dd>
+<dt>inputs<span class="classifier">dict</span></dt><dd><p>A dictionary holding the input variables for the component.</p>
+</dd>
+<dt>params<span class="classifier">dict</span></dt><dd><p>A dictionary holding the parameters required for the component.</p>
+</dd>
+<dt>guesses<span class="classifier">dict</span></dt><dd><p>A dictionary holding initial guesses for solving the component.</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h2>Methods:<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>set_inputs(inputs):</dt><dd><p>Sets the input values for the component.</p>
+</dd>
+<dt>set_parameters(parameters):</dt><dd><p>Sets the parameter values for the component and checks if it is fully parametrized.</p>
+</dd>
+<dt>set_guesses(guesses):</dt><dd><p>Sets initial guesses for variables to be solved.</p>
+</dd>
+<dt>check_calculable():</dt><dd><p>Checks if the component has all the required inputs to perform calculations.</p>
+</dd>
+<dt>check_parametrized():</dt><dd><p>Checks if the component has all the required parameters set.</p>
+</dd>
+<dt>get_required_inputs():</dt><dd><p>Returns a list of required input variables for the component. Meant to be overridden in derived classes.</p>
+</dd>
+<dt>get_required_parameters():</dt><dd><p>Returns a list of required parameters for the component. Meant to be overridden in derived classes.</p>
+</dd>
+<dt>get_required_guesses():</dt><dd><p>Returns a list of required guesses for the component.</p>
+</dd>
+<dt>solve():</dt><dd><p>Solves the component’s state, to be implemented in derived classes.</p>
+</dd>
+<dt>plot_component(inputs_names=None, outputs_names=None, parameters_names=None):</dt><dd><p>Creates a visual representation of the component with labeled inputs, outputs, and parameters.</p>
+</dd>
+<dt>plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):</dt><dd><p>Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).</p></li>
+<li><p>The <cite>solve</cite> method is not implemented here and must be defined in derived classes for actual computation.</p></li>
+<li><p><cite>plot_component</cite> and <cite>plot_connectors</cite> use Matplotlib to generate graphical representations of components, making
+it easier to visualize system behavior in diagrams.</p></li>
+</ul>
+</section>
+</dd></dl>
+
+</section>
+<section id="example-of-a-steady-state-component-model">
+<h1>Example of a Steady-State Component Model<a class="headerlink" href="#example-of-a-steady-state-component-model" title="Link to this heading"></a></h1>
+<p>The following example demonstrates how to create a compressor model using the PyLaboThap library. This example is based on the model (XXX). For more details on this model, refer to the documentation [here](lien).</p>
+<p>Inputs for the model can be defined using either the connector approach or the input/output approach. The figures below illustrate these two approaches for the compressor model:</p>
+<div class="side-by-side"><a class="reference internal image-reference" href="../../../../_images/compressor_connectors.png"><img alt="Connectors approach for a compressor model." src="../../../../_images/compressor_connectors.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../../../../_images/compressor_in_out.png"><img alt="Input/Output approach for a compressor model." src="../../../../_images/compressor_in_out.png" style="width: 50%;" /></a>
+</div><p>For each model, the following methods need to be implemented:</p>
+<ul>
+<li><p><strong>Connectors</strong>: Specify connectors in the <cite>__init__</cite> method of the class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">su</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span> <span class="c1"># Mass_connector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span> <span class="o">=</span> <span class="n">WorkConnector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span> <span class="o">=</span> <span class="n">HeatConnector</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Required Inputs</strong>: Define the required inputs for the model to work in the <cite>get_required_inputs</cite> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Used in check_calculablle to see if all of the required inputs are set</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_inputs</span><span class="p">()</span>
+            <span class="c1"># Return a list of required inputs</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">,</span> <span class="s1">&#39;su_T&#39;</span><span class="p">,</span> <span class="s1">&#39;ex_p&#39;</span><span class="p">,</span> <span class="s1">&#39;N_rot&#39;</span><span class="p">,</span> <span class="s1">&#39;T_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Sync Inputs</strong>: In the <cite>sync_inputs</cite> method, the inputs dictionary (containing all of the inputs) is synchronized with the connectors’ states. This method searches for inputs inside the connectors if inputs are set through them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">sync_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Synchronize the inputs dictionary with the connector states.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Set Inputs</strong>: In the <cite>set_inputs</cite> method, the inputs are set directly by the user. The connectors will thus be filled by the inputs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set inputs directly through a dictionary and update connector properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># This line merges the keyword arguments (&#39;kwargs&#39;) passed to the &#39;set_inputs()&#39; method into the eisting &#39;self.inputs&#39; dictionary.</span>
+
+        <span class="c1"># Update the connectors based on the new inputs</span>
+        <span class="k">if</span> <span class="s1">&#39;su_fluid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;su_T&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_T</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;su_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;ex_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;N_rot&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_N</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;T_amb&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Get Required Parameters</strong>: List all the parameters required to run the model in the <cite>get_required_parameters</cite> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_required_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;AU_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_su_n&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_ex_n&#39;</span><span class="p">,</span> <span class="s1">&#39;d_ex&#39;</span><span class="p">,</span> <span class="s1">&#39;m_dot_n&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;A_leak&#39;</span><span class="p">,</span> <span class="s1">&#39;W_dot_loss_0&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;C_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;rv_in&#39;</span><span class="p">,</span> <span class="s1">&#39;V_s&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Print Setup</strong>: Print the different connectors and inputs needed to run the simulation in the <cite>print_setup</cite> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_required_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;AU_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_su_n&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_ex_n&#39;</span><span class="p">,</span> <span class="s1">&#39;d_ex&#39;</span><span class="p">,</span> <span class="s1">&#39;m_dot_n&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;A_leak&#39;</span><span class="p">,</span> <span class="s1">&#39;W_dot_loss_0&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;C_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;rv_in&#39;</span><span class="p">,</span> <span class="s1">&#39;V_s&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Solve</strong>: Implement the model-solving logic in the <cite>solve</cite> method.</p></li>
+<li><p><strong>Update Connectors</strong>: In the <cite>update_connectors</cite> method, update the connectors after calculation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">update_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the connectors with the calculated values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_h</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_ex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P_ex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_W_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W_dot_cp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_Q_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Print Results</strong>: Use the <cite>print_results</cite> method to print the results calculated by the model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Expander Results ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - h_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot_cp: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">W_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - epsilon_is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon_is</span><span class="si">}</span><span class="s2"> [-]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - m_dot: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Print States of Connectors</strong>: Print the connectors’ state in the <cite>print_states_connectors</cite> method.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Wed Nov 29 10:38:08 2023</span>
+
+<span class="sd">@author: Elise</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">component.base_component</span> <span class="kn">import</span> <span class="n">BaseComponent</span>
+<span class="kn">from</span> <span class="nn">connector.mass_connector</span> <span class="kn">import</span> <span class="n">MassConnector</span>
+<span class="kn">from</span> <span class="nn">connector.work_connector</span> <span class="kn">import</span> <span class="n">WorkConnector</span>
+<span class="kn">from</span> <span class="nn">connector.heat_connector</span> <span class="kn">import</span> <span class="n">HeatConnector</span>
+
+<span class="kn">from</span> <span class="nn">CoolProp.CoolProp</span> <span class="kn">import</span> <span class="n">PropsSI</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1"># TO DO (for the model in general not for the purpose of the off-design model of the CB):</span>
+<span class="c1">#Find a way so that it can take as input either m_dot or N_rot</span>
+
+<span class="k">class</span> <span class="nc">CompressorSE</span><span class="p">(</span><span class="n">BaseComponent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">su</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span> <span class="c1"># Mass_connector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span> <span class="o">=</span> <span class="n">WorkConnector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span> <span class="o">=</span> <span class="n">HeatConnector</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Used in check_calculablle to see if all of the required inputs are set</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_inputs</span><span class="p">()</span>
+            <span class="c1"># Return a list of required inputs</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">,</span> <span class="s1">&#39;su_T&#39;</span><span class="p">,</span> <span class="s1">&#39;ex_p&#39;</span><span class="p">,</span> <span class="s1">&#39;N_rot&#39;</span><span class="p">,</span> <span class="s1">&#39;T_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">sync_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Synchronize the inputs dictionary with the connector states.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span>
+
+    <span class="k">def</span> <span class="nf">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set inputs directly through a dictionary and update connector properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># This line merges the keyword arguments (&#39;kwargs&#39;) passed to the &#39;set_inputs()&#39; method into the eisting &#39;self.inputs&#39; dictionary.</span>
+
+        <span class="c1"># Update the connectors based on the new inputs</span>
+        <span class="k">if</span> <span class="s1">&#39;su_fluid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;su_T&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_T</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;su_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;ex_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;N_rot&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_N</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;T_amb&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_required_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;AU_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_su_n&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_ex_n&#39;</span><span class="p">,</span> <span class="s1">&#39;d_ex&#39;</span><span class="p">,</span> <span class="s1">&#39;m_dot_n&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;A_leak&#39;</span><span class="p">,</span> <span class="s1">&#39;W_dot_loss_0&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;C_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;rv_in&#39;</span><span class="p">,</span> <span class="s1">&#39;V_s&#39;</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">print_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Compressor Setup ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connectors:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - su: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">, p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2">, m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - ex: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">, p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2">, m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot: speed=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Q_dot_amb: temperature_in=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Inputs:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_inputs</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="nb">input</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">: Not set&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Parameters:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_parameters</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">: Not set&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;======================&quot;</span><span class="p">)</span>
+
+    <span class="c1">#------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">System</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            
+        <span class="s2">&quot;Modelling section of the code&quot;</span>
+        
+        <span class="c1"># If the rotational speed is an input of the model while the mass flow rate is unknown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_ex2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="c1"># print(x)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">60</span>
+        <span class="c1">#Boundary on the mass flow rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+            
+        <span class="s2">&quot;1. Supply conditions: su&quot;</span>
+        <span class="n">T_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">P_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">h_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">s_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span>
+        <span class="n">rho_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">D</span>
+        <span class="n">Fluid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span>
+        <span class="n">P_ex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
+
+        <span class="n">T_sat_su</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">T_su</span><span class="o">&lt;</span><span class="n">T_sat_su</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----Warning the compressor inlet stream is not in vapor phase---&#39;</span><span class="p">)</span>
+
+        <span class="s2">&quot;2. Supply heating: su-&gt;su1&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cp_su</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_su</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cp_su</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+            
+        <span class="n">C_dot_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">*</span><span class="n">cp_su</span>
+        <span class="n">AU_su</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;AU_su_n&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;m_dot_n&#39;</span><span class="p">])</span><span class="o">**</span><span class="mf">0.8</span>
+        <span class="n">NTU_su</span> <span class="o">=</span> <span class="n">AU_su</span><span class="o">/</span><span class="n">C_dot_su</span>
+        <span class="n">epsilon_su</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">NTU_su</span><span class="p">)</span>
+        <span class="n">Q_dot_su</span> <span class="o">=</span> <span class="n">epsilon_su</span><span class="o">*</span><span class="n">C_dot_su</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="o">-</span><span class="n">T_su</span><span class="p">)</span>
+ 
+        <span class="n">h_su1</span> <span class="o">=</span> <span class="n">h_su</span> <span class="o">+</span> <span class="n">Q_dot_su</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span>
+        <span class="n">P_su1</span> <span class="o">=</span> <span class="n">P_su</span>
+        <span class="n">T_su1</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_su1</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">s_su1</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_su1</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+       
+        <span class="c1">#------------------------------------------------------------------</span>
+        
+        <span class="s2">&quot;3. Internal leakage: ex2-&gt;su1&quot;</span>
+        <span class="n">s_ex2_bis</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_ex2</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span> <span class="c1"># C ICI LE PB??</span>
+        <span class="n">h_ex2_bis</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_ex2</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="n">cv_leak</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;CVMASS&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex2_bis</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+            <span class="n">cp_leak</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;CPMASS&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex2_bis</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cv_leak</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;CVMASS&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+            <span class="n">cp_leak</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;CPMASS&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        
+        <span class="n">gamma_ex</span> <span class="o">=</span> <span class="n">cp_leak</span><span class="o">/</span><span class="n">cv_leak</span>
+        <span class="n">P_thr_crit</span> <span class="o">=</span> <span class="n">P_ex</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">/</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">P_thr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">P_thr_crit</span><span class="p">,</span> <span class="n">P_su1</span><span class="p">)</span>
+        <span class="c1"># print(P_thr, P_thr_crit)</span>
+        <span class="n">s_thr</span> <span class="o">=</span> <span class="n">s_ex2_bis</span> <span class="c1"># Isentropic until the throat</span>
+        <span class="n">rho_thr</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_thr</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_thr</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">h_thr</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_thr</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_thr</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">C_thr</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">h_ex2_bis</span><span class="o">-</span><span class="n">h_thr</span><span class="p">)))</span>
+        <span class="n">V_dot_leak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;A_leak&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">C_thr</span>
+        <span class="n">m_dot_leak</span> <span class="o">=</span> <span class="n">V_dot_leak</span><span class="o">*</span><span class="n">rho_thr</span>
+
+        <span class="s2">&quot;4. Flow rate calculation: su2&quot;</span>
+        <span class="n">P_su2</span> <span class="o">=</span> <span class="n">P_su1</span>
+        <span class="n">m_dot_in</span> <span class="o">=</span> <span class="n">m_dot_leak</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span>
+        <span class="n">h_su2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">*</span><span class="n">h_su1</span> <span class="o">+</span> <span class="n">m_dot_leak</span><span class="o">*</span><span class="n">h_ex2_bis</span><span class="p">)</span><span class="o">/</span><span class="n">m_dot_in</span><span class="p">,</span> <span class="n">h_ex2_bis</span><span class="p">),</span> <span class="n">h_su1</span><span class="p">)</span>
+        <span class="n">rho_su2</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_su2</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">s_su2</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_su2</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_su2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_rot_bis</span> <span class="o">=</span> <span class="n">m_dot_in</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">rho_su2</span><span class="o">*</span><span class="mi">60</span>
+        
+
+        
+        <span class="s2">&quot;5. Internal compression: su2-&gt;ex2&quot;</span>
+        <span class="s2">&quot;Isentropic compression: su2-&gt;in&quot;</span>
+        <span class="n">s_in</span> <span class="o">=</span> <span class="n">s_su2</span>
+        <span class="n">rho_in</span> <span class="o">=</span> <span class="n">rho_su2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;rv_in&#39;</span><span class="p">]</span>
+        <span class="n">P_in</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">rho_in</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_in</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">h_in</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">rho_in</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_in</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">v_in</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">rho_in</span>
+        <span class="n">rp_in</span> <span class="o">=</span> <span class="n">P_in</span><span class="o">/</span><span class="n">P_su2</span>
+
+        <span class="n">w_in_is</span> <span class="o">=</span> <span class="n">h_in</span><span class="o">-</span><span class="n">h_su2</span>
+        
+        <span class="s2">&quot;Isochoric compression: in-&gt;ex2&quot;</span>
+
+        <span class="n">w_in_v</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="o">-</span><span class="n">P_in</span><span class="p">)</span><span class="o">/</span><span class="n">rho_in</span><span class="c1">#*1000</span>
+        
+        <span class="s2">&quot;Total internal work&quot;</span>
+        <span class="n">w_in</span> <span class="o">=</span> <span class="n">w_in_is</span> <span class="o">+</span> <span class="n">w_in_v</span>
+        <span class="n">h_ex2</span> <span class="o">=</span> <span class="n">h_su2</span> <span class="o">+</span> <span class="n">w_in</span>
+        <span class="n">s_ex2</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">T_ex2</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+
+        
+        <span class="s2">&quot;6. Pressure drops: ex2-&gt;ex1&quot;</span>
+        <span class="n">A_ex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;d_ex&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        
+        <span class="n">h_ex1</span> <span class="o">=</span> <span class="n">h_ex2</span> <span class="c1">#Isenthalpic valve</span>
+        
+        <span class="n">P_crit_ex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_ex2</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">/</span><span class="p">(</span><span class="n">gamma_ex</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">P_thr_ex</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">P_crit_ex</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">)</span>
+        <span class="n">h_thr_ex</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_thr_ex</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">v_thr_ex</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_thr_ex</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_ex2</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="n">V_dot_ex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">*</span><span class="n">v_thr_ex</span>
+        <span class="n">C_ex</span> <span class="o">=</span> <span class="n">V_dot_ex</span><span class="o">/</span><span class="n">A_ex</span>
+        <span class="n">h_ex1_bis</span> <span class="o">=</span> <span class="n">h_thr_ex</span> <span class="o">+</span> <span class="p">(</span><span class="n">C_ex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        
+        <span class="n">T_ex1</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex1</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="s2">&quot;7. Cooling at exit: ex1 -&gt; ex &quot;</span>
+        <span class="n">AU_ex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;AU_ex_n&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;m_dot_n&#39;</span><span class="p">])</span><span class="o">**</span><span class="mf">0.8</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cp_ex</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cp_su</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="n">C_dot_ex</span> <span class="o">=</span> <span class="n">cp_ex</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span>
+        <span class="n">NTU_ex</span> <span class="o">=</span> <span class="n">AU_ex</span><span class="o">/</span><span class="n">C_dot_ex</span>
+        <span class="n">epsilon_ex</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">NTU_ex</span><span class="p">)</span>
+        <span class="n">Q_dot_ex</span> <span class="o">=</span> <span class="n">epsilon_ex</span><span class="o">*</span><span class="n">C_dot_ex</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="o">-</span><span class="n">T_ex1</span><span class="p">)</span>
+        
+        <span class="n">h_ex</span> <span class="o">=</span> <span class="n">h_ex1</span><span class="o">+</span><span class="p">(</span><span class="n">Q_dot_ex</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+        
+        <span class="s2">&quot;Fictious enveloppe heat balance&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;AU_amb&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">])</span>
+        
+        
+        <span class="s2">&quot;Compression work and power&quot;</span>
+        <span class="n">W_dot_in</span> <span class="o">=</span> <span class="n">m_dot_in</span><span class="o">*</span><span class="n">w_in</span>
+        <span class="n">W_dot_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">W_dot_in</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;W_dot_loss_0&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;C_loss&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W_dot_cp</span> <span class="o">=</span> <span class="n">W_dot_in</span> <span class="o">+</span> <span class="n">W_dot_loss</span>
+        
+        <span class="s2">&quot;Exit data&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h_ex</span> <span class="o">=</span> <span class="n">h_ex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">P_ex</span> <span class="o">=</span> <span class="n">P_ex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_ex</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="s2">&quot;Isentropic efficiency&quot;</span>
+        <span class="n">h_ex_is</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">s_su</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="n">w_s</span> <span class="o">=</span> <span class="n">h_ex_is</span><span class="o">-</span><span class="n">h_su</span>
+        <span class="n">W_dot_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">*</span><span class="n">w_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_is</span> <span class="o">=</span> <span class="n">W_dot_s</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">W_dot</span>
+        
+        <span class="s2">&quot;Volumetric efficiency&quot;</span>
+        <span class="c1">#Theoretical flowrate</span>
+        <span class="n">V_s_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+        <span class="n">m_dot_th</span> <span class="o">=</span> <span class="n">V_s_dot</span><span class="o">*</span><span class="n">rho_su</span>
+        
+        <span class="n">m_dot_in_bis</span> <span class="o">=</span> <span class="n">V_s_dot</span><span class="o">*</span><span class="n">rho_su2</span>
+        
+        <span class="c1">#Volumetric efficiencies definitions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">/</span><span class="n">m_dot_th</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_v_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="o">/</span><span class="n">m_dot_in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_v_PT</span> <span class="o">=</span> <span class="n">m_dot_in</span><span class="o">/</span><span class="n">m_dot_th</span>
+        
+        <span class="s2">&quot;Residue&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_h_ex1</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h_ex1_bis</span><span class="o">-</span><span class="n">h_ex1</span><span class="p">)</span><span class="o">/</span><span class="n">h_ex1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resE</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">W_dot_loss</span> <span class="o">-</span> <span class="n">Q_dot_ex</span> <span class="o">-</span> <span class="n">Q_dot_su</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">W_dot_loss</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_h_ex2</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h_ex2_bis</span><span class="o">-</span><span class="n">h_ex2</span><span class="p">)</span><span class="o">/</span><span class="n">h_ex2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_m_dot_in</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m_dot_in</span><span class="o">-</span><span class="n">m_dot_in_bis</span><span class="p">)</span><span class="o">/</span><span class="n">m_dot_in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">res_h_ex1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_h_ex2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_m_dot_in</span><span class="p">]</span>
+        <span class="c1"># print(W_dot_loss, Q_dot_ex, Q_dot_su, Q_dot_amb)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_su</span> <span class="o">=</span> <span class="n">s_su</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_su1</span> <span class="o">=</span> <span class="n">s_su1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_su2</span> <span class="o">=</span> <span class="n">s_su2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_in</span> <span class="o">=</span> <span class="n">s_in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_ex2</span> <span class="o">=</span> <span class="n">s_ex2</span>
+        <span class="c1"># self.s_ex1 = s_ex2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s_ex</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_ex</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="c1"># print(self.s_su, self.s_su1, self.s_su2, self.s_in, self.s_ex2, self.s_ex)</span>
+
+        <span class="c1"># print(self.res)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span>
+    
+                
+    <span class="c1">#------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_calculable</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_parametrized</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span><span class="p">:</span>
+            
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            
+            <span class="n">x_m_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">]</span> <span class="c1">#guesses on the filling factor to provide suitable initial point for the iteration</span>
+            <span class="n">x_T_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span> <span class="c1">#For the iteration on the T_w</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="c1">#If N_rot is known</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_T_guess</span><span class="p">):</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_m_guess</span><span class="p">):</span>
+                        
+                    <span class="c1"># Loop to permit multiple attempts to solve the implicit calculation</span>
+                    <span class="n">T_w_guess</span> <span class="o">=</span> <span class="n">x_T_guess</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb</span>
+                    <span class="n">m_dot_guess</span> <span class="o">=</span> <span class="n">x_m_guess</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">60</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">D</span> <span class="c1">#ff_guess[k]*self.V_s*self.N_rot/60*PropsSI(&#39;D&#39;, &#39;P&#39;, self.su.p, &#39;H&#39;, self.su.h, self.su.fluid) #initial value for M_dot</span>
+                    <span class="n">T_ex2_guess</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#PropsSI(&#39;T&#39;, &#39;P&#39;, self.su.p*self.rp,&#39;S&#39;, self.su.s, self.su.fluid)</span>
+                    <span class="n">P_ex2_guess</span> <span class="o">=</span> <span class="mf">0.9</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
+                    <span class="c1">#---------------------------------------------------------------------</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="p">()</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_ex2_guess</span><span class="p">,</span> <span class="n">T_w_guess</span><span class="p">,</span> <span class="n">P_ex2_guess</span><span class="p">,</span> <span class="n">m_dot_guess</span><span class="p">]</span>
+                    <span class="c1">#--------------------------------------------------------------------------</span>
+                    <span class="c1"># ub = 2*x # upper bound for fsolve</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">)</span>
+                        <span class="n">res_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">res_norm</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">res_norm</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="k">pass</span>
+                    <span class="c1"># print(res_norm, self.res)</span>
+                    <span class="k">if</span> <span class="n">res_norm</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">:</span>
+                        <span class="n">stop</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">convergence</span> <span class="o">=</span> <span class="n">stop</span>
+                
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_connectors</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">defined</span> <span class="o">=</span> <span class="kc">True</span>
+            
+            <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="c1">#print(&quot;Optimization time:&quot;, elapsed_time, &quot;seconds&quot;)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input of the component not completely known&quot;</span><span class="p">)</span>
+                
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parameters of the component not completely known&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the connectors with the calculated values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_h</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_ex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P_ex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_W_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W_dot_cp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_Q_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Expander Results ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - h_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot_cp: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">W_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - epsilon_is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon_is</span><span class="si">}</span><span class="s2"> [-]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - m_dot: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">print_states_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Expander Results ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mass connectors:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - su: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K], p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2"> [Pa], h=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg], s=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="si">}</span><span class="s2"> [J/K.kg], m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - ex: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K], p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2"> [Pa], h=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg], s=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">s</span><span class="si">}</span><span class="s2"> [J/K.kg], m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Work connector:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot_cp: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">W_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heat connector:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Q_dot_amb: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">Q_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_hot: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_hot</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_cold: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>More information on this model can be found [here](lien).</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Basile Chaudoir, Elise Neven.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

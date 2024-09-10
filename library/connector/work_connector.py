@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 10 14:09:18 2024
+
+@author: Elise Neven
+@email: elise.neven@uliege.be
+
+"""
+
+
 class WorkConnector:
     """
     A class to handle transfer of work power.
