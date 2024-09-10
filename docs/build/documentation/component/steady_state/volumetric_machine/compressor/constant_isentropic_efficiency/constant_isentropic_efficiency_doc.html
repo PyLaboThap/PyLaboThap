@@ -23,6 +23,7 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../../../../../connector/connector_doc.html" />
     <link rel="prev" title="Compressor" href="../compressor_doc.html" /> 
 </head>
 
@@ -97,9 +98,13 @@
 <a class="reference internal image-reference" href="../../../../../../_images/constant_isentropic_efficiency_compressor_connectors.png"><img alt="Description of the plot" src="../../../../../../_images/constant_isentropic_efficiency_compressor_connectors.png" style="width: 100%;" /></a>
 </div><section id="model-description">
 <h2>Model description<a class="headerlink" href="#model-description" title="Link to this heading"></a></h2>
-<p>The constant isentropic efficiency model is a simple model based on the definition of the isentropic efficiency.</p>
+<p>The constant isentropic efficiency model is a simple model based on the assumption that the isentropic efficiency stays constant.</p>
 <div class="math notranslate nohighlight">
-\[\eta_{is} = \frac{h_{su} - h_{ex, is}}{h_{su} - h_{ex}}\]</div>
+\[\epsilon_{is} = \frac{h_{su} - h_{ex, is}}{h_{su} - h_{ex}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\epsilon_{is}\)</span> is the isentropic efficiency, <span class="math notranslate nohighlight">\(h_{su}\)</span> is the specific enthalpy at the supply inlet,
+<span class="math notranslate nohighlight">\(h_{ex, is}\)</span> is the specific enthalpy at the exhaust outlet in isentropic conditions and <span class="math notranslate nohighlight">\(h_{ex}\)</span> is the specific enthalpy at
+the exhaust outlet.</p>
+<p>Based on the isentropic efficiency definition, the specific enthalpy at the exhaust outlet can be calculated and thus also the exhaust temperature.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
@@ -111,6 +116,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../compressor_doc.html" class="btn btn-neutral float-left" title="Compressor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../../../connector/connector_doc.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -75,7 +75,7 @@ class BaseComponent:
                                         edgecolor="black", facecolor="#D4E9C7", zorder=2)
         ax.add_patch(block)
         ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
-                verticalalignment='center', fontsize=16, fontweight='bold')
+                verticalalignment='center', fontsize=20, fontweight='bold')
 
         # Define positions for inputs, outputs, and parameters
         input_pos = [0.2, 0.65]  # Position for input
@@ -84,7 +84,7 @@ class BaseComponent:
 
         # Inputs
         if inputs_names:
-            ax.text(input_pos[0] - 0.15, input_pos[1] + 0.2, r'\textbf{Inputs}', fontsize=15, fontweight='bold', color='black')
+            ax.text(input_pos[0] - 0.15, input_pos[1] + 0.2, r'\textbf{Inputs}', fontsize=17, fontweight='bold', color='black')
             ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
                         fontsize=12, color='black',
                         arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
@@ -97,12 +97,12 @@ class BaseComponent:
             # List all inputs next to the arrow
             for i, input_name in enumerate(inputs_names):
                 y = start_y + i * vertical_spacing
-                ax.text(input_pos[0] - 0.15, y, f'${input_name}$', fontsize=15, color='black', verticalalignment='center')
+                ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
         # Outputs
         if outputs_names:
-            ax.text(output_pos[0] + 0.2, output_pos[1] + 0.2, r'\textbf{Outputs}', fontsize=15, fontweight='bold', color='black')
+            ax.text(output_pos[0] + 0.15, output_pos[1] + 0.2, r'\textbf{Outputs}', fontsize=17, fontweight='bold', color='black')
             ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
                         fontsize=12, color='black',
                         arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
@@ -115,12 +115,12 @@ class BaseComponent:
             # List all outputs next to the arrow
             for i, output_name in enumerate(outputs_names):
                 y = start_y + i * vertical_spacing
-                ax.text(output_pos[0] + 0.2, y, f'${output_name}$', fontsize=15, color='black', verticalalignment='center')
+                ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
         # Parameters
         if parameters_names:
-            ax.text(param_pos[0], param_pos[1], r'\textbf{Parameters}', fontsize=15, fontweight='bold', color='black', horizontalalignment='center')
+            ax.text(param_pos[0], param_pos[1], r'\textbf{Parameters}', fontsize=17, fontweight='bold', color='black', horizontalalignment='center')
             ax.annotate('', xy=(param_pos[0], param_pos[1] + 0.1), xytext=(param_pos[0], param_pos[1] + 0.05),
                         fontsize=12, color='black',
                         arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
@@ -133,7 +133,7 @@ class BaseComponent:
             # List all parameters below "Parameters"
             for i, param_name in enumerate(parameters_names):
                 y = start_y - i * vertical_spacing
-                ax.text(param_pos[0], y-0.05, f'${param_name}$', fontsize=15, color='black', verticalalignment='center', horizontalalignment='center')
+                ax.text(param_pos[0], y-0.05, f'$\\mathbf{{{param_name}}}$', fontsize=17, color='black', verticalalignment='center', horizontalalignment='center')
 
         # Plot formatting
         ax.set_xlim(0, 1)
@@ -158,7 +158,7 @@ class BaseComponent:
                                         edgecolor="black", facecolor="skyblue", zorder=2)
         ax.add_patch(block)
         ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
-                verticalalignment='center', fontsize=16, fontweight='bold')
+                verticalalignment='center', fontsize=20, fontweight='bold')
 
         # Define positions for inputs, outputs, and parameters
         input_pos = [0.2, 0.65]  # Position for input
@@ -178,7 +178,7 @@ class BaseComponent:
             # List all inputs next to the arrow
             for i, input_name in enumerate(supply_connectors_names):
                 y = start_y + i * vertical_spacing
-                ax.text(input_pos[0] - 0.15, y, f'${input_name}$', fontsize=15, color='black', verticalalignment='center')
+                ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
         # Outputs
@@ -195,7 +195,7 @@ class BaseComponent:
             # List all outputs next to the arrow
             for i, output_name in enumerate(exhaust_connectors_names):
                 y = start_y + i * vertical_spacing
-                ax.text(output_pos[0] + 0.2, y, f'${output_name}$', fontsize=15, color='black', verticalalignment='center')
+                ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
         # Plot formatting
