@@ -14,3 +14,7 @@ __pycache__/
 # Ignore Jupyter Notebook checkpoints
 notebook.ipynb
 *.ipynb_checkpoints/
+
+# Confidential codes
+c_*.py
+geometry*.py

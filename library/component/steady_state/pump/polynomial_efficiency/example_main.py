@@ -8,7 +8,7 @@ import __init__
 
 from connector.mass_connector import MassConnector
 from component.steady_state.pump.polynomial_efficiency.simulation_model import PumpPolynEff
-from modules.pump_polyn_geom import GeometryPolynPump
+from library.component.steady_state.pump.polynomial_efficiency.modules.c_pump_polyn_geom import GeometryPolynPump
 from CoolProp.CoolProp import PropsSI    
 
 "--------- 1) EXAMPLE : DECAGONE PUMP ------------------------------------------------------------------------------------------"
