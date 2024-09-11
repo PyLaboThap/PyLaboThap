@@ -146,3 +146,5 @@ class CompressorCstEff(BaseComponent):
         plt.savefig(file_path, format='png', bbox_inches='tight')  # Save the figure
 
         plt.show()
+
+"Guten Tag"

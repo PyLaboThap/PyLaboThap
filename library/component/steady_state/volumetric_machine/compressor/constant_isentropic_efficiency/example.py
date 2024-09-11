@@ -22,3 +22,5 @@ CP.solve()
 CP.print_results()
 CP.plot_component_comp_cst_eff()
 CP.plot_connectors_comp_cst_eff()
+
+"Hallo"
