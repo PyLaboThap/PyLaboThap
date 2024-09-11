@@ -6,8 +6,10 @@ Created on Aug 03 21:31:37 2023
 # import importlib
 # import component.pump.constant_efficiency.simulation_model as simulation_model
 # importlib.reload(simulation_model)
-from component.pump.constant_efficiency.simulation_model import PumpCstEff
 
+import __init__
+
+from component.steadystate.pump.constant_efficiency.simulation_model import PumpCstEff
 import numpy as np
 
 # Example usage
