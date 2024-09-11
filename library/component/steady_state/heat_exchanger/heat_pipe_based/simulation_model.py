@@ -10,9 +10,9 @@ import numpy as np
 from CoolProp.CoolProp import PropsSI
 from connector.mass_connector import MassConnector
 from connector.heat_connector import HeatConnector
-from component.steadystate.heat_exchanger.heat_pipe_based.modules.Airflow import nozzle
-from component.steadystate.heat_exchanger.heat_pipe_based.modules.P_max_steel_pipes import P_max_adm
-from component.steadystate.heat_exchanger.heat_pipe_based.modules.HP_tube_model import thermosyphon_model
+from component.steady_state.heat_exchanger.heat_pipe_based.modules.Airflow import nozzle
+from component.steady_state.heat_exchanger.heat_pipe_based.modules.P_max_steel_pipes import P_max_adm
+from component.steady_state.heat_exchanger.heat_pipe_based.modules.HP_tube_model import thermosyphon_model
 from component.base_component import BaseComponent
 
 class HP_HTX(BaseComponent):

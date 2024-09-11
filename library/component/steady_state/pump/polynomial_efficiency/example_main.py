@@ -7,7 +7,7 @@ Created on Wed Jun  5 10:07:43 2024
 import __init__
 
 from connector.mass_connector import MassConnector
-from component.steadystate.pump.polynomial_efficiency.simulation_model import PumpPolynEff
+from component.steady_state.pump.polynomial_efficiency.simulation_model import PumpPolynEff
 from modules.pump_polyn_geom import GeometryPolynPump
 from CoolProp.CoolProp import PropsSI    
 
