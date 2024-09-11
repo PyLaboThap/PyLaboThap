@@ -5,7 +5,8 @@ Created on Aug 03 21:31:37 2023
 @author: Elise
 """
 
-from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
+import __init__
+from component.steady_state.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
 
 import numpy as np
 
