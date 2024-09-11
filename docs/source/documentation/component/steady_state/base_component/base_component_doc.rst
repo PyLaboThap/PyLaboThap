@@ -1,15 +1,22 @@
 BaseComponent Class
--------------------
-The `BaseComponent` class is the parent class for all components in the PyLaboThap library. All components inherit the properties and methods of the `BaseComponent` class. Key methods provided by this class include:
+===================
+The `BaseComponent` class is the parent class for all components in the PyLaboThap library. 
+All components inherit the properties and methods of the `BaseComponent` class. Key methods provided by this 
+class include:
 
 .. autoclass:: component.base_component.BaseComponent
 
 Example of a Steady-State Component Model
 ------------------------------------------
 
-The following example demonstrates how to create a compressor model using the PyLaboThap library. This example is based on the model (XXX). For more details on this model, refer to the documentation [here](lien).
+The following example demonstrates how to create a steady-state model using the PyLaboThap library nomenclature. 
+The different methods to implement are described below.
 
-Inputs for the model can be defined using either the connector approach or the input/output approach. The figures below illustrate these two approaches for the compressor model:
+This example is based on the semif-empirical model of a volumetric compressor (XXX). For more details on this model, 
+refer to the documentation [here](lien).
+
+Inputs for the model can be defined using either the connector approach or the input/output approach. 
+The figures below illustrate these two approaches for the compressor model:
 
 .. raw:: html
 
@@ -17,11 +24,11 @@ Inputs for the model can be defined using either the connector approach or the i
 
 .. image:: ../../../../../figures/component/compressor_connectors.png
    :alt: Connectors approach for a compressor model.
-   :width: 50%
+   :width: 100%
 
 .. image:: ../../../../../figures/component/compressor_in_out.png
    :alt: Input/Output approach for a compressor model.
-   :width: 50%
+   :width: 100%
 
 .. raw:: html
 
@@ -57,13 +64,13 @@ For each model, the following methods need to be implemented:
   
   .. literalinclude:: ../../../../../../library/component/steady_state/volumetric_machine/compressor/semi_empirical/simulation_model.py
      :language: python
-     :lines: 67-70
+     :lines: 67-71
 
 - **Print Setup**: Print the different connectors and inputs needed to run the simulation in the `print_setup` method.
   
   .. literalinclude:: ../../../../../../library/component/steady_state/volumetric_machine/compressor/semi_empirical/simulation_model.py
      :language: python
-     :lines: 67-70
+     :lines: 73-95
 
 - **Solve**: Implement the model-solving logic in the `solve` method.
 
@@ -82,7 +89,8 @@ For each model, the following methods need to be implemented:
 - **Print States of Connectors**: Print the connectors' state in the `print_states_connectors` method.
   
   .. literalinclude:: ../../../../../../library/component/steady_state/volumetric_machine/compressor/semi_empirical/simulation_model.py
-
+     :language: python
+     :lines: 359-372
 
 More information on this model can be found [here](lien).
 
