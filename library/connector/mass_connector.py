@@ -13,90 +13,90 @@ class MassConnector:
     """
     A class to handle and calculate fluid properties based on given state variables.
 
-    Attributes:
-    ^^^^^^^^^^^
-    fluid : str, optional
-        The name of the fluid.
-    m_dot : float, optional
-        Mass flow rate in kg/s.
-    V_dot : float, optional
-        Volume flow rate in m^3/s.
-    T : float, optional
-        Temperature in Kelvin.
-    p : float, optional
-        Pressure in Pascal.
-    h : float, optional
-        Specific enthalpy in J/kg.
-    s : float, optional
-        Specific entropy in J/kg/K.
-    D : float, optional
-        Mass density in kg/m^3.
-    x : float, optional
-        Quality in kg/kg.
-    cp : float, optional
-        Specific heat capacity in J/kg/K.
-    completely_known : bool
-        True if all properties and mass flow rate are known, otherwise False.
-    state_known : bool
-        True if all state properties are known, otherwise False.
-    variables_input : list of lists
-        A list of the state variables used to define the fluid state. Each entry is a list of [variable_name, value].
-
-    Methods:
-    ^^^^^^^^
-    __init__(self, fluid=None):
-        Initializes the MassConnector object with optional fluid.
+    **Attributes**:
     
-    reset(self):
-        Resets all properties to None and flags to False.
+        fluid : str, optional
+            The name of the fluid.
+        m_dot : float, optional
+            Mass flow rate in kg/s.
+        V_dot : float, optional
+            Volume flow rate in m^3/s.
+        T : float, optional
+            Temperature in Kelvin.
+        p : float, optional
+            Pressure in Pascal.
+        h : float, optional
+            Specific enthalpy in J/kg.
+        s : float, optional
+            Specific entropy in J/kg/K.
+        D : float, optional
+            Mass density in kg/m^3.
+        x : float, optional
+            Quality in kg/kg.
+        cp : float, optional
+            Specific heat capacity in J/kg/K.
+        completely_known : bool
+            True if all properties and mass flow rate are known, otherwise False.
+        state_known : bool
+            True if all state properties are known, otherwise False.
+        variables_input : list of lists
+            A list of the state variables used to define the fluid state. Each entry is a list of [variable_name, value].
 
-    check_completely_known(self):
-        Checks if all necessary properties and mass flow rate are known to determine if the state is completely known.
+    **Methods**:
 
-    calculate_properties(self):
-        Calculates fluid properties using CoolProp based on known variables.
+        __init__(self, fluid=None):
+            Initializes the MassConnector object with optional fluid.
+        
+        reset(self):
+            Resets all properties to None and flags to False.
 
-    is_two_phase_PT(self):
-        Determines if the current state is in the two-phase region based on temperature and pressure.
+        check_completely_known(self):
+            Checks if all necessary properties and mass flow rate are known to determine if the state is completely known.
 
-    set_properties(self, kwargs):
-        Sets various properties of the fluid. Accepts named arguments for 'fluid', 'm_dot', 'V_dot', 'T', 'P', 'H', 'S', 'D', 'x', and 'cp'.
+        calculate_properties(self):
+            Calculates fluid properties using CoolProp based on known variables.
 
-    set_fluid(self, value):
-        Sets the fluid type and checks if it's valid.
+        is_two_phase_PT(self):
+            Determines if the current state is in the two-phase region based on temperature and pressure.
 
-    set_m_dot(self, value):
-        Sets the mass flow rate and ensures volume flow rate is not set simultaneously.
+        set_properties(self, kwargs):
+            Sets various properties of the fluid. Accepts named arguments for 'fluid', 'm_dot', 'V_dot', 'T', 'P', 'H', 'S', 'D', 'x', and 'cp'.
 
-    set_V_dot(self, value):
-        Sets the volume flow rate and ensures mass flow rate is not set simultaneously.
+        set_fluid(self, value):
+            Sets the fluid type and checks if it's valid.
 
-    set_T(self, value):
-        Sets the temperature and updates the list of known variables.
+        set_m_dot(self, value):
+            Sets the mass flow rate and ensures volume flow rate is not set simultaneously.
 
-    set_p(self, value):
-        Sets the pressure and updates the list of known variables.
+        set_V_dot(self, value):
+            Sets the volume flow rate and ensures mass flow rate is not set simultaneously.
 
-    set_h(self, value):
-        Sets the specific enthalpy and updates the list of known variables.
+        set_T(self, value):
+            Sets the temperature and updates the list of known variables.
 
-    set_s(self, value):
-        Sets the specific entropy and updates the list of known variables.
+        set_p(self, value):
+            Sets the pressure and updates the list of known variables.
 
-    set_D(self, value):
-        Sets the mass density and updates the list of known variables.
+        set_h(self, value):
+            Sets the specific enthalpy and updates the list of known variables.
 
-    set_x(self, value):
-        Sets the quality and updates the list of known variables.
+        set_s(self, value):
+            Sets the specific entropy and updates the list of known variables.
 
-    set_cp(self, value):
-        Sets the specific heat capacity without calculating other properties.
+        set_D(self, value):
+            Sets the mass density and updates the list of known variables.
 
-    print_resume(self, unit_T='K', unit_p='Pa'):
-        Prints a summary of the current properties in specified units.
+        set_x(self, value):
+            Sets the quality and updates the list of known variables.
 
-    Exceptions:
-    ^^^^^^^^^^^
+        set_cp(self, value):
+            Sets the specific heat capacity without calculating other properties.
+
+        print_resume(self, unit_T='K', unit_p='Pa'):
+            Prints a summary of the current properties in specified units.
+
+    **Exceptions**:
+    
     ValueError
         Raised if an unsupported fluid name is used or if required variables for property calculation are missing.
     """

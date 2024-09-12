@@ -242,7 +242,7 @@ class CompressorSE(BaseComponent):
         h_ex_is = PropsSI('H', 'S', s_su, 'P', P_ex, Fluid)
         w_s = h_ex_is-h_su
         W_dot_s = self.m_dot*w_s
-        self.epsilon_is = W_dot_s/self.W_dot
+        self.epsilon_is = W_dot_s/self.W_dot_cp
         
         "Volumetric efficiency"
         #Theoretical flowrate
@@ -284,7 +284,6 @@ class CompressorSE(BaseComponent):
         self.check_parametrized()
         
         if self.calculable and self.parametrized:
-            
             start_time = time.time()
             
             x_m_guess = [1.1, 0.99, 1.3, 1, 1.15] #guesses on the filling factor to provide suitable initial point for the iteration
@@ -310,7 +309,6 @@ class CompressorSE(BaseComponent):
                     try:
                         fsolve(self.System, x, args = args)
                         res_norm = np.linalg.norm(self.res)
-                        print(res_norm)
                     except:
                         res_norm = 1
                         pass

@@ -12,29 +12,33 @@ class WorkConnector:
     """
     A class to handle transfer of work power.
 
-    Attributes:
-    ^^^^^^^^^^^
-    W_dot : float, optional
-        Work power in W.
-    variables_input : list of lists
-        A list of the variables used to define the work connector. Each entry is a list of [variable_name, value].
+    **Attributes**:
 
-    Methods:
-    ^^^^^^^^
-    __init__(self):
-        Initializes the WorkConnector object with.
+        W_dot : float, optional
+            Work power in W.
+        N : float, optional
+            Speed in rpm.
+        C : float, optional
+            Torque in Nm.
+        variables_input : list of lists
+            A list of the variables used to define the work connector. Each entry is a list of [variable_name, value].
 
-    set_W_dot(self, value):
-        Sets the work power and updates the list of known variables.
+    **Methods**:
 
-    set_N(self, value):
-        Sets the speed and updates the list of known variables.
-    
-    set_C(self, value):
-        Sets the torque and updates the list of known variables.
+        __init__(self):
+            Initializes the WorkConnector object with.
 
-    print_resume(self):
-        Print a summary of the work connector properties.
+        set_W_dot(self, value):
+            Sets the work power and updates the list of known variables.
+
+        set_N(self, value):
+            Sets the speed and updates the list of known variables.
+        
+        set_C(self, value):
+            Sets the torque and updates the list of known variables.
+
+        print_resume(self):
+            Print a summary of the work connector properties.
     """
 
     def __init__(self):
