@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="Steady-State Models" href="../models/models_doc.html" /><link rel="prev" title="Steady-state models" href="../steady_state_doc.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
         <title>BaseComponent Class - PyLaboThap Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
@@ -224,9 +224,8 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../steady_state_doc.html#example-of-usage">Example of usage</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Example of usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l4"><a class="reference internal" href="../../../../notebooks/semi_empirical_cp_example.html">Semi-Empirical Compressor Model Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="exampleofsetup_doc.html">Example of a Steady-State Component Model</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../dynamic/dynamic_doc.html">Dynamic models</a></li>
@@ -278,17 +277,13 @@
           <section id="basecomponent-class">
 <h1>BaseComponent Class<a class="headerlink" href="#basecomponent-class" title="Link to this heading">¶</a></h1>
 <p>The <cite>BaseComponent</cite> class is the parent class for all components in the PyLaboThap library.
-All components inherit the properties and methods of the <cite>BaseComponent</cite> class. Key methods provided by this
-class include:</p>
+All components inherit the properties and methods of the <cite>BaseComponent</cite> class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="component.base_component.BaseComponent">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">component.base_component.</span></span><span class="sig-name descname"><span class="pre">BaseComponent</span></span><a class="reference internal" href="../../../../_modules/component/base_component.html#BaseComponent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.base_component.BaseComponent" title="Link to this definition">¶</a></dt>
-<dd><p>A base class representing a generic component in a system model.</p>
-<p>The <cite>BaseComponent</cite> class provides a framework for defining components that can be used in system simulations.
-Each component has inputs, parameters, and guesses, which are used to compute the steady-state behavior of the component.</p>
-<section id="attributes">
-<h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<dl class="simple">
+<dd><p><strong>Attributes</strong>:</p>
+<blockquote>
+<div><dl class="simple">
 <dt>calculable<span class="classifier">bool</span></dt><dd><p>Indicates whether the component has enough inputs to perform calculations.</p>
 </dd>
 <dt>parametrized<span class="classifier">bool</span></dt><dd><p>Indicates whether the component has all required parameters set.</p>
@@ -302,10 +297,10 @@ Each component has inputs, parameters, and guesses, which are used to compute th
 <dt>guesses<span class="classifier">dict</span></dt><dd><p>A dictionary holding initial guesses for solving the component.</p>
 </dd>
 </dl>
-</section>
-<section id="methods">
-<h2>Methods:<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
-<dl class="simple">
+</div></blockquote>
+<p><strong>Methods</strong>:</p>
+<blockquote>
+<div><dl class="simple">
 <dt>set_inputs(inputs):</dt><dd><p>Sets the input values for the component.</p>
 </dd>
 <dt>set_parameters(parameters):</dt><dd><p>Sets the parameter values for the component and checks if it is fully parametrized.</p>
@@ -329,169 +324,16 @@ Each component has inputs, parameters, and guesses, which are used to compute th
 <dt>plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):</dt><dd><p>Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.</p>
 </dd>
 </dl>
-</section>
-<section id="notes">
-<h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+</div></blockquote>
+<p><strong>Notes</strong>:</p>
 <ul class="simple">
 <li><p>This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).</p></li>
 <li><p>The <cite>solve</cite> method is not implemented here and must be defined in derived classes for actual computation.</p></li>
 <li><p><cite>plot_component</cite> and <cite>plot_connectors</cite> use Matplotlib to generate graphical representations of components, making
 it easier to visualize system behavior in diagrams.</p></li>
 </ul>
-</section>
 </dd></dl>
 
-<section id="example-of-a-steady-state-component-model">
-<h2>Example of a Steady-State Component Model<a class="headerlink" href="#example-of-a-steady-state-component-model" title="Link to this heading">¶</a></h2>
-<p>The following example demonstrates how to create a steady-state model using the PyLaboThap library nomenclature.
-The different methods to implement are described below.</p>
-<p>This example is based on the semif-empirical model of a volumetric compressor (XXX). For more details on this model,
-refer to the documentation [here](lien).</p>
-<p>Inputs for the model can be defined using either the connector approach or the input/output approach.
-The figures below illustrate these two approaches for the compressor model:</p>
-<div class="side-by-side"><a class="reference internal image-reference" href="../../../../_images/compressor_connectors.png"><img alt="Connectors approach for a compressor model." src="../../../../_images/compressor_connectors.png" style="width: 100%;" /></a>
-<a class="reference internal image-reference" href="../../../../_images/compressor_in_out.png"><img alt="Input/Output approach for a compressor model." src="../../../../_images/compressor_in_out.png" style="width: 100%;" /></a>
-</div><p>For each model, the following methods need to be implemented:</p>
-<ul>
-<li><p><strong>Connectors</strong>: Specify connectors in the <cite>__init__</cite> method of the class.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">su</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span> <span class="o">=</span> <span class="n">MassConnector</span><span class="p">()</span> <span class="c1"># Mass_connector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span> <span class="o">=</span> <span class="n">WorkConnector</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span> <span class="o">=</span> <span class="n">HeatConnector</span><span class="p">()</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Required Inputs</strong>: Define the required inputs for the model to work in the <cite>get_required_inputs</cite> method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Used in check_calculablle to see if all of the required inputs are set</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sync_inputs</span><span class="p">()</span>
-            <span class="c1"># Return a list of required inputs</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">,</span> <span class="s1">&#39;su_T&#39;</span><span class="p">,</span> <span class="s1">&#39;ex_p&#39;</span><span class="p">,</span> <span class="s1">&#39;N_rot&#39;</span><span class="p">,</span> <span class="s1">&#39;T_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Sync Inputs</strong>: In the <cite>sync_inputs</cite> method, the inputs dictionary (containing all of the inputs) is synchronized with the connectors’ states. This method searches for inputs inside the connectors if inputs are set through them.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">sync_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Synchronize the inputs dictionary with the connector states.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Set Inputs</strong>: In the <cite>set_inputs</cite> method, the inputs are set directly by the user. The connectors will thus be filled by the inputs.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set inputs directly through a dictionary and update connector properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># This line merges the keyword arguments (&#39;kwargs&#39;) passed to the &#39;set_inputs()&#39; method into the eisting &#39;self.inputs&#39; dictionary.</span>
-
-        <span class="c1"># Update the connectors based on the new inputs</span>
-        <span class="k">if</span> <span class="s1">&#39;su_fluid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_fluid&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;su_T&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_T</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_T&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;su_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;ex_p&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;ex_p&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;N_rot&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_N</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;T_amb&#39;</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;T_amb&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Get Required Parameters</strong>: List all the parameters required to run the model in the <cite>get_required_parameters</cite> method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_required_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="s1">&#39;AU_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_su_n&#39;</span><span class="p">,</span> <span class="s1">&#39;AU_ex_n&#39;</span><span class="p">,</span> <span class="s1">&#39;d_ex&#39;</span><span class="p">,</span> <span class="s1">&#39;m_dot_n&#39;</span><span class="p">,</span> 
-            <span class="s1">&#39;A_leak&#39;</span><span class="p">,</span> <span class="s1">&#39;W_dot_loss_0&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;C_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;rv_in&#39;</span><span class="p">,</span> <span class="s1">&#39;V_s&#39;</span>
-        <span class="p">]</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Print Setup</strong>: Print the different connectors and inputs needed to run the simulation in the <cite>print_setup</cite> method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">print_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Compressor Setup ===&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connectors:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - su: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">, p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2">, m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - ex: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">, p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2">, m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot: speed=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Q_dot_amb: temperature_in=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Inputs:&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_inputs</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="nb">input</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">: Not set&quot;</span><span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Parameters:&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_parameters</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">: Not set&quot;</span><span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;======================&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Solve</strong>: Implement the model-solving logic in the <cite>solve</cite> method.</p></li>
-<li><p><strong>Update Connectors</strong>: In the <cite>update_connectors</cite> method, update the connectors after calculation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_h</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_ex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P_ex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_W_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W_dot_cp</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_Q_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_cold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Print Results</strong>: Use the <cite>print_results</cite> method to print the results calculated by the model.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - h_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_ex: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot_cp: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">W_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - epsilon_is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon_is</span><span class="si">}</span><span class="s2"> [-]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - m_dot: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">print_states_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Print States of Connectors</strong>: Print the connectors’ state in the <cite>print_states_connectors</cite> method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mass connectors:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - su: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K], p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2"> [Pa], h=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg], s=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="si">}</span><span class="s2"> [J/K.kg], m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - ex: fluid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">fluid</span><span class="si">}</span><span class="s2">, T=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2"> [K], p=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="si">}</span><span class="s2"> [Pa], h=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">h</span><span class="si">}</span><span class="s2"> [J/kg], s=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">s</span><span class="si">}</span><span class="s2"> [J/K.kg], m_dot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">m_dot</span><span class="si">}</span><span class="s2"> [kg/s]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Work connector:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - W_dot_cp: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">W_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heat connector:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Q_dot_amb: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">Q_dot</span><span class="si">}</span><span class="s2"> [W]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_hot: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_hot</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - T_cold: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">T_cold</span><span class="si">}</span><span class="s2"> [K]&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-</ul>
-<p>More information on this model can be found [here](lien).</p>
-</section>
 </section>
 
         </article>
@@ -551,7 +393,6 @@ The figures below illustrate these two approaches for the compressor model:</p>
             <ul>
 <li><a class="reference internal" href="#">BaseComponent Class</a><ul>
 <li><a class="reference internal" href="#component.base_component.BaseComponent"><code class="docutils literal notranslate"><span class="pre">BaseComponent</span></code></a></li>
-<li><a class="reference internal" href="#example-of-a-steady-state-component-model">Example of a Steady-State Component Model</a></li>
 </ul>
 </li>
 </ul>

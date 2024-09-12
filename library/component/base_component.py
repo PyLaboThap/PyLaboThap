@@ -13,63 +13,59 @@ import matplotlib.patches as patches
 
 class BaseComponent:
     """
-    A base class representing a generic component in a system model. 
 
-    The `BaseComponent` class provides a framework for defining components that can be used in system simulations.
-    Each component has inputs, parameters, and guesses, which are used to compute the steady-state behavior of the component.
+    **Attributes**:
 
-    Attributes:
-    -----------
-    calculable : bool
-        Indicates whether the component has enough inputs to perform calculations.
-    parametrized : bool
-        Indicates whether the component has all required parameters set.
-    solved : bool
-        Indicates whether the component has been successfully solved (i.e., its state has been computed).
-    inputs : dict
-        A dictionary holding the input variables for the component.
-    params : dict
-        A dictionary holding the parameters required for the component.
-    guesses : dict
-        A dictionary holding initial guesses for solving the component.
+        calculable : bool
+            Indicates whether the component has enough inputs to perform calculations.
+        parametrized : bool
+            Indicates whether the component has all required parameters set.
+        solved : bool
+            Indicates whether the component has been successfully solved (i.e., its state has been computed).
+        inputs : dict
+            A dictionary holding the input variables for the component.
+        params : dict
+            A dictionary holding the parameters required for the component.
+        guesses : dict
+            A dictionary holding initial guesses for solving the component.
 
-    Methods:
-    --------
-    set_inputs(inputs):
-        Sets the input values for the component.
-        
-    set_parameters(parameters):
-        Sets the parameter values for the component and checks if it is fully parametrized.
-        
-    set_guesses(guesses):
-        Sets initial guesses for variables to be solved.
-        
-    check_calculable():
-        Checks if the component has all the required inputs to perform calculations.
-        
-    check_parametrized():
-        Checks if the component has all the required parameters set.
-        
-    get_required_inputs():
-        Returns a list of required input variables for the component. Meant to be overridden in derived classes.
-        
-    get_required_parameters():
-        Returns a list of required parameters for the component. Meant to be overridden in derived classes.
-    
-    get_required_guesses():
-        Returns a list of required guesses for the component.
-        
-    solve():
-        Solves the component's state, to be implemented in derived classes.
-        
-    plot_component(inputs_names=None, outputs_names=None, parameters_names=None):
-        Creates a visual representation of the component with labeled inputs, outputs, and parameters.
-        
-    plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):
-        Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.
+    **Methods**:
 
-    Notes:
-    ------
+        set_inputs(inputs):
+            Sets the input values for the component.
+            
+        set_parameters(parameters):
+            Sets the parameter values for the component and checks if it is fully parametrized.
+            
+        set_guesses(guesses):
+            Sets initial guesses for variables to be solved.
+            
+        check_calculable():
+            Checks if the component has all the required inputs to perform calculations.
+            
+        check_parametrized():
+            Checks if the component has all the required parameters set.
+            
+        get_required_inputs():
+            Returns a list of required input variables for the component. Meant to be overridden in derived classes.
+            
+        get_required_parameters():
+            Returns a list of required parameters for the component. Meant to be overridden in derived classes.
+        
+        get_required_guesses():
+            Returns a list of required guesses for the component.
+            
+        solve():
+            Solves the component's state, to be implemented in derived classes.
+            
+        plot_component(inputs_names=None, outputs_names=None, parameters_names=None):
+            Creates a visual representation of the component with labeled inputs, outputs, and parameters.
+            
+        plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):
+            Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.
+
+    **Notes**:
+
     - This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).
     - The `solve` method is not implemented here and must be defined in derived classes for actual computation.
     - `plot_component` and `plot_connectors` use Matplotlib to generate graphical representations of components, making 

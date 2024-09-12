@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Dynamic models" href="../documentation/component/dynamic/dynamic_doc.html" /><link rel="prev" title="Constant Isentropic Efficiency Compressor model" href="../documentation/component/steady_state/models/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
         <title>Semi-Empirical Compressor Model Example - PyLaboThap Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
@@ -281,7 +281,7 @@
 <h2>1. Check the Inputs and Parameters<a class="headerlink" href="#1.-Check-the-Inputs-and-Parameters" title="Link to this heading">¶</a></h2>
 <p>To view the necessary inputs and parameters, use the <code class="docutils literal notranslate"><span class="pre">print_setup</span></code> method. This method will display the names of different connectors along with the various inputs and parameters required for the model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -357,7 +357,7 @@ Parameters:
 </ul>
 <p>After filling in the inputs, you can call the <code class="docutils literal notranslate"><span class="pre">print_setup</span></code> method again to verify that all connectors, inputs, and parameters have been correctly assigned.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Set inputs of the model through the connectors&quot;</span>
@@ -393,8 +393,8 @@ Parameters:
 <div class="highlight"><pre>
 === Compressor Setup ===
 Connectors:
-  - su: fluid=R1233ZDE, T=331.033964665788, p=319296.5575177148, m_dot=None
-  - ex: fluid=None, T=None, p=606240.1433176235, m_dot=None
+  - su: fluid=R134a, T=331.033964665788, p=319296.5575177148, m_dot=0.1544975292337707
+  - ex: fluid=R134a, T=332.830679971755, p=606240.1433176235, m_dot=0.1544975292337707
   - W_dot: speed=6000
   - Q_dot_amb: temperature_in=293
 
@@ -404,7 +404,7 @@ Inputs:
   - ex_p: 606240.1433176235
   - N_rot: 6000
   - T_amb: 293
-  - su_fluid: R1233ZDE
+  - su_fluid: R134a
 
 Parameters:
   - AU_amb: 9.9651329
@@ -430,7 +430,7 @@ Parameters:
 <p>In this option, you will provide the necessary inputs through directly through the dictionarry containing all of the inputs.</p>
 <p>After filling in the inputs, you can call the <code class="docutils literal notranslate"><span class="pre">print_setup</span></code> method again to verify that all connectors, inputs, and parameters have been correctly assigned.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Set inputs of the model directly&quot;</span>
@@ -461,18 +461,18 @@ Parameters:
 <div class="highlight"><pre>
 === Compressor Setup ===
 Connectors:
-  - su: fluid=R1233ZDE, T=331.033964665788, p=319296.5575177148, m_dot=None
-  - ex: fluid=None, T=None, p=606240.1433176235, m_dot=None
+  - su: fluid=R134a, T=331.033964665788, p=319296.5575177148, m_dot=0.07000360882677287
+  - ex: fluid=R134a, T=323.5444335245112, p=606240.1433176235, m_dot=0.07000360882677287
   - W_dot: speed=6000
-  - Q_dot_amb: temperature_in=293
+  - Q_dot_amb: temperature_in=-134.25203797978708
 
 Inputs:
   - su_p: 319296.5575177148
   - su_T: 331.033964665788
   - ex_p: 606240.1433176235
   - N_rot: 6000
-  - T_amb: 293
-  - su_fluid: R1233ZDE
+  - T_amb: -134.25203797978708
+  - su_fluid: R134a
 
 Parameters:
   - AU_amb: 9.9651329
@@ -496,7 +496,7 @@ Parameters:
 <p>Once you have set all the necessary inputs and parameters, you can solve the model by calling the <code class="docutils literal notranslate"><span class="pre">solve</span></code> method. After solving, you can view the results by using the <code class="docutils literal notranslate"><span class="pre">print_results</span></code> method.</p>
 <p>By using these methods, you can easily solve the model and analyze the results.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solve the expander component</span>
@@ -511,11 +511,11 @@ Parameters:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 === Expander Results ===
-  - h_ex: 487629.6418827042 [J/kg]
-  - T_ex: 350.23799348607076 [K]
-  - W_dot_cp: 2508.6772396755514 [W]
-  - epsilon_is: 0.9604075586858205 [-]
-  - m_dot: 0.196105762681324 [kg/s]
+  - h_ex: 465850.8002015501 [J/kg]
+  - T_ex: 351.3544183196535 [K]
+  - W_dot_cp: 2529.9998517301788 [W]
+  - epsilon_is: 0.9710854077013931 [-]
+  - m_dot: 0.14579672962674642 [kg/s]
 =========================
 </pre></div></div>
 </div>

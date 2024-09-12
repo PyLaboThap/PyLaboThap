@@ -18,10 +18,10 @@ CP.su.set_T(331.033964665788)  # You need to set su.h appropriately
 CP.ex.set_p(606240.1433176235)
 
 # Set rotational speed
-CP.work_cp.set_speed(6000)
+CP.W_cp.set_speed(6000)
 
 # Set ambient temperature
-CP.heat_amb.set_temperature_in(293)
+CP.Q_amb.set_temperature_in(293)
 
 # Setting inputs
 CP.set_inputs(
