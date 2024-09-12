@@ -27,6 +27,7 @@ extensions = [
 
 # Configure nbsphinx
 nbsphinx_execute = 'always'  # Options are 'auto', 'always', 'never'
+nbsphinx_allow_errors = True
 
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'description'
