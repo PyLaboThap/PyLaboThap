@@ -8,3 +8,4 @@ Details about compressors.
    :caption: Compressor Models:
 
    constant_isentropic_efficiency/constant_isentropic_efficiency_doc
+   semi_empirical/semi_empirical_doc

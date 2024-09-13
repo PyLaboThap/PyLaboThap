@@ -19,6 +19,73 @@ import time
 #Find a way so that it can take as input either m_dot or N_rot
 
 class CompressorSE(BaseComponent):
+    """
+        Component: Volumetric compressor
+
+        Model: Semi-empirical model
+
+        **Connectors**:
+
+            su (MassConnector): Mass connector for the suction side.
+
+            ex (MassConnector): Mass connector for the exhaust side.
+
+            W_cp (WorkConnector): Work connector.
+
+            Q_amb (HeatConnector): Heat connector for the ambient heat transfer.
+
+        **Parameters**:
+
+            AU_amb: Heat transfer coefficient for the ambient heat transfer. [W/K]
+
+            AU_su_n: Nominal heat transfer coefficient for the suction side heat transfer. [W/K]
+
+            AU_ex_n: Nominal heat transfer coefficient for the exhaust side heat transfer. [W/K]
+
+            d_ex: Pressure drop diameter. [m]
+
+            m_dot_n: Nominal mass flow rate. [kg/s]
+
+            A_leak: Leakage area. [m^2]
+
+            W_dot_loss_0: Constant loss in the compressor. [W]
+
+            alpha: Loss coefficient. [-]
+
+            C_loss: Torque losses. [N.m]
+
+            rv_in: Inlet volume ratio. [-]
+
+            V_s: Swept volume. [m^3]
+
+        **Inputs**:
+
+            su_p: Suction side pressure. [Pa]
+
+            su_T: Suction side temperature. [K]
+
+            ex_p: Exhaust side pressure. [Pa]
+
+            su_fluid: Suction side fluid. [-]
+
+            N_rot: Rotational speed. [rpm]
+
+            T_amb: Ambient temperature. [K]
+
+        **Ouputs**:
+
+            eta_is: Isentropic efficiency. [-]
+
+            h_ex: Exhaust side specific enthalpy. [J/kg]
+
+            T_ex: Exhaust side temperature. [K]
+
+            W_dot_cp: Compressor power. [W]
+
+            m_dot: Mass flow rate. [kg/s]
+            
+            epsilon_v: Volumetric efficiency. [-]
+    """
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
@@ -75,8 +142,8 @@ class CompressorSE(BaseComponent):
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
-        print(f"  - W_dot: speed={self.W_cp.N}")
-        print(f"  - Q_dot_amb: temperature_in={self.Q_amb.T_cold}")
+        print(f"  - W_cp: N={self.W_cp.N}, W_dot={self.W_cp.W_dot}")
+        print(f"  - Q_amb: T_cold={self.Q_amb.T_cold}, T_hot={self.Q_amb.T_hot}, Q_dot={self.Q_amb.Q_dot}")
 
         print("\nInputs:")
         for input in self.get_required_inputs():
@@ -99,9 +166,7 @@ class CompressorSE(BaseComponent):
             
         "Modelling section of the code"
         
-        # If the rotational speed is an input of the model while the mass flow rate is unknown
         self.T_ex2, self.T_w, self.P_ex2, self.m_dot = x
-        # print(x)
         self.N = self.inputs['N_rot']/60
         #Boundary on the mass flow rate
         self.m_dot = max(self.m_dot, 1e-5)
@@ -153,7 +218,6 @@ class CompressorSE(BaseComponent):
         gamma_ex = cp_leak/cv_leak
         P_thr_crit = P_ex*(2/(gamma_ex+1))**(gamma_ex/(gamma_ex-1))
         P_thr = max(P_thr_crit, P_su1)
-        # print(P_thr, P_thr_crit)
         s_thr = s_ex2_bis # Isentropic until the throat
         rho_thr = PropsSI('D', 'P', P_thr, 'S', s_thr, Fluid)
         h_thr = PropsSI('H', 'P', P_thr, 'S', s_thr, Fluid)
@@ -169,22 +233,17 @@ class CompressorSE(BaseComponent):
         s_su2 = PropsSI('S', 'H', h_su2, 'P', P_su2, Fluid)
         self.N_rot_bis = m_dot_in/self.params['V_s']/rho_su2*60
         
-
-        
         "5. Internal compression: su2->ex2"
         "Isentropic compression: su2->in"
         s_in = s_su2
         rho_in = rho_su2*self.params['rv_in']
         P_in = PropsSI('P', 'D', rho_in, 'S', s_in, Fluid)
         h_in = PropsSI('H', 'D', rho_in, 'P', P_in, Fluid)
-        v_in = 1/rho_in
-        rp_in = P_in/P_su2
 
         w_in_is = h_in-h_su2
         
         "Isochoric compression: in->ex2"
-
-        w_in_v = (self.P_ex2-P_in)/rho_in#*1000
+        w_in_v = (self.P_ex2-P_in)/rho_in
         
         "Total internal work"
         w_in = w_in_is + w_in_v
@@ -227,7 +286,6 @@ class CompressorSE(BaseComponent):
         "Fictious enveloppe heat balance"
         self.Q_dot_amb = self.params['AU_amb']*(self.T_w-self.inputs['T_amb'])
         
-        
         "Compression work and power"
         W_dot_in = m_dot_in*w_in
         W_dot_loss = self.params['alpha']*W_dot_in + self.params['W_dot_loss_0'] + self.params['C_loss']*self.N*2*np.pi
@@ -257,24 +315,13 @@ class CompressorSE(BaseComponent):
         self.epsilon_v_PT = m_dot_in/m_dot_th
         
         "Residue"
-        
         self.res_h_ex1 = abs(h_ex1_bis-h_ex1)/h_ex1
         self.resE = abs((W_dot_loss - Q_dot_ex - Q_dot_su - self.Q_dot_amb)/(W_dot_loss))
         self.res_h_ex2 = abs(h_ex2_bis-h_ex2)/h_ex2
         self.res_m_dot_in = abs(m_dot_in-m_dot_in_bis)/m_dot_in
+
         self.res = [self.res_h_ex1, self.resE, self.res_h_ex2, self.res_m_dot_in]
-        # print(W_dot_loss, Q_dot_ex, Q_dot_su, Q_dot_amb)
-
-        self.s_su = s_su
-        self.s_su1 = s_su1
-        self.s_su2 = s_su2
-        self.s_in = s_in
-        self.s_ex2 = s_ex2
-        # self.s_ex1 = s_ex2
-        self.s_ex = PropsSI('S', 'T', self.T_ex, 'P', P_ex, Fluid)
-        # print(self.s_su, self.s_su1, self.s_su2, self.s_in, self.s_ex2, self.s_ex)
-
-        # print(self.res)
+ 
         return self.res
     
                 
@@ -282,21 +329,27 @@ class CompressorSE(BaseComponent):
     def solve(self):
         self.check_calculable()
         self.check_parametrized()
+
+        if not (self.calculable and self.parametrized):
+            self.solved = False
+            print("CompressorSE could not be solved. It is not calculable and/or not parametrized")
+            return
         
-        if self.calculable and self.parametrized:
+        try:
+            "Actual calculation of the model"
             start_time = time.time()
             
             x_m_guess = [1.1, 0.99, 1.3, 1, 1.15] #guesses on the filling factor to provide suitable initial point for the iteration
             x_T_guess = [0.9, 1.01, 0.7, 1.1, 0.2] #For the iteration on the T_w
             stop = 0
             
-            #If N_rot is known
             j = 0
+            # Loop to permit multiple attempts to solve the implicit calculation
             while not stop and j < len(x_T_guess):
                 k = 0
                 while not stop and k < len(x_m_guess):
-                        
-                    # Loop to permit multiple attempts to solve the implicit calculation
+                    print(f"Attempt {j+1} - {k+1}")
+                    # Guesses for the initial values
                     T_w_guess = x_T_guess[j]*PropsSI('T', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)+5 #x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb
                     m_dot_guess = x_m_guess[k]*self.params['V_s']*self.inputs['N_rot']/60*self.su.D #ff_guess[k]*self.V_s*self.N_rot/60*PropsSI('D', 'P', self.su.p, 'H', self.su.h, self.su.fluid) #initial value for M_dot
                     T_ex2_guess = PropsSI('T','P', self.ex.p,'S', self.su.s, self.su.fluid)+5 #PropsSI('T', 'P', self.su.p*self.rp,'S', self.su.s, self.su.fluid)
@@ -305,14 +358,13 @@ class CompressorSE(BaseComponent):
                     args = ()
                     x = [T_ex2_guess, T_w_guess, P_ex2_guess, m_dot_guess]
                     #--------------------------------------------------------------------------
-                    # ub = 2*x # upper bound for fsolve
                     try:
+                        print("Solving...")
                         fsolve(self.System, x, args = args)
                         res_norm = np.linalg.norm(self.res)
                     except:
-                        res_norm = 1
-                        pass
-                    # print(res_norm, self.res)
+                        res_norm = 1e6
+                
                     if res_norm < 1e-3:
                         stop = 1
                     k = k + 1
@@ -322,17 +374,13 @@ class CompressorSE(BaseComponent):
                 
             self.update_connectors()
 
-            self.defined = True
+            self.solved = True
+        except Exception as e:
+            print(f"CompressorSE could not be solved. Error: {e}")
+            self.solved = False
+        
+        self.elapsed_time = time.time() - start_time
             
-            elapsed_time = time.time() - start_time
-            #print("Optimization time:", elapsed_time, "seconds")
-            
-        else:
-            if self.calculable == False:
-                print("Input of the component not completely known")
-                
-            if self.parametrized == False:
-                print("Parameters of the component not completely known")
 
     def update_connectors(self):
         """Update the connectors with the calculated values."""
@@ -343,7 +391,7 @@ class CompressorSE(BaseComponent):
         self.ex.set_m_dot(self.m_dot)
         self.W_cp.set_W_dot(self.W_dot_cp)
         self.Q_amb.set_Q_dot(self.Q_dot_amb)
-        self.Q_amb.set_T_cold(self.T_w)
+        self.Q_amb.set_T_hot(self.T_w)
 
     def print_results(self):
         print("=== Expander Results ===")
@@ -352,6 +400,7 @@ class CompressorSE(BaseComponent):
         print(f"  - W_dot_cp: {self.W_cp.W_dot} [W]")
         print(f"  - epsilon_is: {self.epsilon_is} [-]")
         print(f"  - m_dot: {self.m_dot} [kg/s]")
+        print(f"  - epsilon_v: {self.epsilon_v} [-]")
         print("=========================")
 
     def print_states_connectors(self):

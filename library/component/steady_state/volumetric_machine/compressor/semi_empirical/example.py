@@ -18,20 +18,20 @@ CP.su.set_T(331.033964665788)  # You need to set su.h appropriately
 CP.ex.set_p(606240.1433176235)
 
 # Set rotational speed
-CP.W_cp.set_speed(6000)
+CP.W_cp.set_N(6000)
 
 # Set ambient temperature
-CP.Q_amb.set_temperature_in(293)
+CP.Q_amb.set_T_cold(293)
 
 # Setting inputs
-CP.set_inputs(
-    N_rot=6000,
-    T_amb=293,
-    su_p=319296.5575177148,
-    su_T=331.033964665788,
-    ex_p=606240.1433176235,
-    su_fluid='R1233ZDE'  # Make sure to include fluid information
-)
+# CP.set_inputs(
+#     N_rot=6000,
+#     T_amb=293,
+#     su_p=319296.5575177148,
+#     su_T=331.033964665788,
+#     ex_p=606240.1433176235,
+#     su_fluid='R1233ZDE'  # Make sure to include fluid information
+# )
 
 # Setting parameters
 CP.set_parameters(

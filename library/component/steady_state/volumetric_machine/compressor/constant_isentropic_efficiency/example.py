@@ -3,7 +3,7 @@ Created on Aug 03 21:31:37 2023
 
 @author: Elise
 """
-
+import __init__
 from component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model import CompressorCstEff
 
 import numpy as np
