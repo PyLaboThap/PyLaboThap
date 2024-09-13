@@ -95,14 +95,19 @@ class CompressorCstEff(BaseComponent):
         print("======================")
 
     def solve(self):
-        self.check_calculable()
-        self.check_parametrized()
-
-        if self.calculable and self.parametrized:
+        if not (self.calculable and self.parametrized):
+            self.solved = False
+            print("ExpanderCstEff could not be solved. It is not calculable and/or not parametrized")
+            return
+        try:
 
             h_ex_is = PropsSI('H', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)
             h_ex = self.su.h + (h_ex_is - self.su.h) / self.params['eta_is']
             self.ex.set_h(h_ex)
+        except Exception as e:
+            print(f"Error: {e}")
+            self.solved = False
+            return
 
     def print_results(self):
         print("=== Expander Results ===")
@@ -147,4 +152,3 @@ class CompressorCstEff(BaseComponent):
 
         plt.show()
 
-"Guten Tag"

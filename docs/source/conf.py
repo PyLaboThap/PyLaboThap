@@ -4,8 +4,6 @@ import sys
 # Add the path to the library directory
 sys.path.insert(0, os.path.abspath('../../library'))
 
-# Debugging: Print sys.path to confirm
-print("Current sys.path:", sys.path)
 
 
 
@@ -50,5 +48,6 @@ html_title = "PyLaboThap Documentation"
 
 # MathJax settings
 mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+
 
 
