@@ -6,10 +6,11 @@ import numpy as np
 from connector.mass_connector import MassConnector
 from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
+from machine.cycle.cycle import Cycle
 
-from machine.circuit import Circuit
-from machine.boundary_conditions.mass_source import MassSource
-from machine.boundary_conditions.mass_sink import MassSink
+from machine.cycle.circuit import Circuit
+from machine.cycle.source import Source
+from machine.cycle.sink import Sink
 
 from component.heat_exchanger.epsilon_NTU.simulation_model import HXeNTU
 from component.volumetric_machine.expander.constant_isentropic_efficiency.simulation_model import ExpanderCstEff
@@ -18,8 +19,9 @@ from component.pump.constant_efficiency.simulation_model import PumpCstEff
 class System:
     def __init__(self):
         self.cycle = Circuit()
-        self.source = MassSource()
-        self.sink = MassSink()
+        self.source = Source()
+        self.sink = Sink()
+
 
 
 if __name__ == "__main__":
