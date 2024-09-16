@@ -25,20 +25,20 @@ from scipy.interpolate import interp1d
 
 # Internal Toolbox 
 import __init__
-from modules.f_lmtd2 import f_lmtd2
-from modules.propsfluid import propsfluid
-from modules.find_2P_boundaries import find_2P_boundaries
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.f_lmtd2 import f_lmtd2
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.propsfluid import propsfluid
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.find_2P_boundaries import find_2P_boundaries
 
 # HTC and DP Correlations
-from modules.plate_htc import han_BPHEX_DP, water_plate_HTC, martin_BPHEX_HTC, muley_manglik_BPHEX_HTC, han_boiling_BPHEX_HTC, han_cond_BPHEX_HTC
-from modules.pipe_htc import gnielinski_pipe_htc, boiling_curve, horizontal_tube_internal_condensation
-from modules.shell_and_tube_htc import shell_bell_delaware_htc
-from modules.tube_bank_htc import ext_tube_film_condens
-from modules.fins import htc_tube_and_fins
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.plate_htc import han_BPHEX_DP, water_plate_HTC, martin_BPHEX_HTC, muley_manglik_BPHEX_HTC, han_boiling_BPHEX_HTC, han_cond_BPHEX_HTC
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.pipe_htc import gnielinski_pipe_htc, boiling_curve, horizontal_tube_internal_condensation
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.shell_and_tube_htc import shell_bell_delaware_htc
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.tube_bank_htc import ext_tube_film_condens
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.fins import htc_tube_and_fins
 
 # Phase related correlations
-from modules.void_fraction import void_fraction
-from modules.kim_dry_out_incipience import kim_dry_out_incipience
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.void_fraction import void_fraction
+from component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.modules.kim_dry_out_incipience import kim_dry_out_incipience
 
 # Connectors
 from connector.mass_connector import MassConnector
@@ -55,94 +55,94 @@ debug = False
 
 class HeatExchangerMB(BaseComponent):
     """
-            Component: Heat Exchanger
-    
-            Model: The model is based on the the work of Ian Bell "A generalized moving-boundary algorithm to predict the heat transfer
-                   rate of counterflow heat exchangers for any phase configuration". 
-    
-            **Descritpion**:
-    
-                   It is a moving-boundary model allowing for the precise estimation of its performance, pressure drops and fluid charges inside it (using a void fraction correlation for two-phase flow conditions). 
-                   For now, the method has been adapted for many geometries : 
-                   - Brazed-Plate heat exchangers
-                   - Shell-and-Tube heat exchangers
-                   - Cross-CounterFlow tube and fin heat exchangers
+        Component: Heat Exchanger
 
-                   The precision of the model and the geometry dependent charge estimation requires to know the geometry. 
-                   The required parameters are adapted to the used heat transfer and pressure drop correlations that can be chosen from the ones implemented.
+        Model: The model is based on the the work of Ian Bell "A generalized moving-boundary algorithm to predict the heat transfer
+                rate of counterflow heat exchangers for any phase configuration". 
 
-            **Assumptions**:
-    
-                - Steady-state operation.
-                - Pressure drop proportional to the heat transfer area for each discretization.
-                - Volume used for the charge computation are also assumed proportional to the heat transfer area for each discretization.
-                - No loss to the ambient is considered.
+        **Descritpion**:
 
-            **Connectors**:
-    
-                su_H (MassConnector): Mass connector for the hot suction side.
-                su_C (MassConnector): Mass connector for the cold suction side.
+                It is a moving-boundary model allowing for the precise estimation of its performance, pressure drops and fluid charges inside it (using a void fraction correlation for two-phase flow conditions). 
+                For now, the method has been adapted for many geometries : 
+                - Brazed-Plate heat exchangers
+                - Shell-and-Tube heat exchangers
+                - Cross-CounterFlow tube and fin heat exchangers
 
-                ex_H (MassConnector): Mass connector for the hot exhaust side.
-                ex_C (MassConnector): Mass connector for the cold exhaust side.
-    
-                Q_dot (HeatConnector): Heat connector for the heat transfer between the fluids
+                The precision of the model and the geometry dependent charge estimation requires to know the geometry. 
+                The required parameters are adapted to the used heat transfer and pressure drop correlations that can be chosen from the ones implemented.
 
-            **Parameters**:
+        **Assumptions**:
 
-                Parameters can be differentiated between geometrical parameters and simulation parameters. 
+            - Steady-state operation.
+            - Pressure drop proportional to the heat transfer area for each discretization.
+            - Volume used for the charge computation are also assumed proportional to the heat transfer area for each discretization.
+            - No loss to the ambient is considered.
 
-                Simulation required parameters are: 
+        **Connectors**:
 
-                Flow_Type : Flow configuration of the fluid ('CounterFlow', 'CrossFlow', 'Shell&Tube', 'ParallelFlow') [-]
+            su_H (MassConnector): Mass connector for the hot suction side.
+            su_C (MassConnector): Mass connector for the cold suction side.
 
-                htc_type  : Heat Transfer coefficient type ('User-Defined' or 'Correlation') [-]. If the 'User-Defined' option is chosen,
-                values for the different heat transfer coefficients can be manually passed by the user for different state conditions: 
-                'Liquid', 'Vapor', 'Two-Phase', 'Vapor-wet', 'Dryout', 'Transcritical'. If the 'Correlation' option is chosen, then the names
-                of implemented correlations shall be passed. For 1 phase heat transfer, 2 phases heat transfer and for pressure drops. 
+            ex_H (MassConnector): Mass connector for the hot exhaust side.
+            ex_C (MassConnector): Mass connector for the cold exhaust side.
 
-                H_DP_ON   : Hot side pressure drop considered or not [-]
-                
-                C_DP_ON   : Cold side pressure drop considered or not [-]
-                
-                n_disc    : number of heat exchanger discretizations [-]
+            Q_dot (HeatConnector): Heat connector for the heat transfer between the fluids
+
+        **Parameters**:
+
+            Parameters can be differentiated between geometrical parameters and simulation parameters. 
+
+            Simulation required parameters are: 
+
+            Flow_Type : Flow configuration of the fluid ('CounterFlow', 'CrossFlow', 'Shell&Tube', 'ParallelFlow') [-]
+
+            htc_type  : Heat Transfer coefficient type ('User-Defined' or 'Correlation') [-]. If the 'User-Defined' option is chosen,
+            values for the different heat transfer coefficients can be manually passed by the user for different state conditions: 
+            'Liquid', 'Vapor', 'Two-Phase', 'Vapor-wet', 'Dryout', 'Transcritical'. If the 'Correlation' option is chosen, then the names
+            of implemented correlations shall be passed. For 1 phase heat transfer, 2 phases heat transfer and for pressure drops. 
+
+            H_DP_ON   : Hot side pressure drop considered or not [-]
             
-                Geometry required parameters depend on the type of heat exchanger and on especially the used correlations. 
-                More information can be found in the documentation of the correlations themselves. 
-    
-            **Inputs**:
-    
-                su_H_p: Hot suction side pressure. [Pa]
-    
-                su_H_h: Hot suction side enthalpy. [J/kg]
-
-                su_H_fluid: Hot suction side fluid. [-]
-
-                su_H_m_dot: Hot suction side mass flowrate. [kg/s]
-
-                su_C_p: Cold suction side pressure. [Pa]
-    
-                su_C_h: Cold suction side enthalpy. [J/kg]
-
-                su_C_fluid: Cold suction side fluid. [-]
-
-                su_C_m_dot: Cold suction side mass flowrate. [kg/s]
-    
-            **Ouputs**:
+            C_DP_ON   : Cold side pressure drop considered or not [-]
+            
+            n_disc    : number of heat exchanger discretizations [-]
         
-                ex_H_h: Hot exhaust side specific enthalpy. [J/kg]
-    
-                ex_H_p: Hot exhaust side pressure. [Pa]
+            Geometry required parameters depend on the type of heat exchanger and on especially the used correlations. 
+            More information can be found in the documentation of the correlations themselves. 
 
-                ex_C_h: Cold exhaust side specific enthalpy. [J/kg]
-    
-                ex_C_p: Cold exhaust side pressure. [Pa]
+        **Inputs**:
 
-                Q_dot: Heat transfer rate [W]
+            su_H_p: Hot suction side pressure. [Pa]
 
-                M_H : Hot fluid charge [kg]
+            su_H_h: Hot suction side enthalpy. [J/kg]
 
-                M_C : Cold fluid charge [kg]
+            su_H_fluid: Hot suction side fluid. [-]
+
+            su_H_m_dot: Hot suction side mass flowrate. [kg/s]
+
+            su_C_p: Cold suction side pressure. [Pa]
+
+            su_C_h: Cold suction side enthalpy. [J/kg]
+
+            su_C_fluid: Cold suction side fluid. [-]
+
+            su_C_m_dot: Cold suction side mass flowrate. [kg/s]
+
+        **Ouputs**:
+
+            ex_H_h: Hot exhaust side specific enthalpy. [J/kg]
+
+            ex_H_p: Hot exhaust side pressure. [Pa]
+
+            ex_C_h: Cold exhaust side specific enthalpy. [J/kg]
+
+            ex_C_p: Cold exhaust side pressure. [Pa]
+
+            Q_dot: Heat transfer rate [W]
+
+            M_H : Hot fluid charge [kg]
+
+            M_C : Cold fluid charge [kg]
     """
 
     class H():

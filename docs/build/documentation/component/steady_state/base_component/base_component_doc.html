@@ -223,6 +223,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="../models/heat_exchanger/heat_exchanger_doc.html">Heat Exchanger</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Heat Exchanger</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../models/heat_exchanger/moving_boundary/moving_boundary_doc.html">Moving Boundary Heat Exchanger Models</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Moving Boundary Heat Exchanger Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../models/heat_exchanger/moving_boundary/charge_sensitive/charge_sensitive_mb_doc.html">General Charge Sensitive Moving Boundary Model for Heat Exchangers</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../notebooks/semi_empirical_cp_example.html">Semi-Empirical Compressor Model Example</a></li>
@@ -320,18 +327,12 @@ All components inherit the properties and methods of the <cite>BaseComponent</ci
 </dd>
 <dt>solve():</dt><dd><p>Solves the component’s state, to be implemented in derived classes.</p>
 </dd>
-<dt>plot_component(inputs_names=None, outputs_names=None, parameters_names=None):</dt><dd><p>Creates a visual representation of the component with labeled inputs, outputs, and parameters.</p>
-</dd>
-<dt>plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):</dt><dd><p>Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.</p>
-</dd>
 </dl>
 </div></blockquote>
 <p><strong>Notes</strong>:</p>
 <ul class="simple">
 <li><p>This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).</p></li>
 <li><p>The <cite>solve</cite> method is not implemented here and must be defined in derived classes for actual computation.</p></li>
-<li><p><cite>plot_component</cite> and <cite>plot_connectors</cite> use Matplotlib to generate graphical representations of components, making
-it easier to visualize system behavior in diagrams.</p></li>
 </ul>
 </dd></dl>
 

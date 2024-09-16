@@ -223,6 +223,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="../models/heat_exchanger/heat_exchanger_doc.html">Heat Exchanger</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Heat Exchanger</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../models/heat_exchanger/moving_boundary/moving_boundary_doc.html">Moving Boundary Heat Exchanger Models</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Moving Boundary Heat Exchanger Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../models/heat_exchanger/moving_boundary/charge_sensitive/charge_sensitive_mb_doc.html">General Charge Sensitive Moving Boundary Model for Heat Exchangers</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../notebooks/semi_empirical_cp_example.html">Semi-Empirical Compressor Model Example</a></li>
@@ -290,22 +297,22 @@ The figures below illustrate these two approaches for the compressor model:</p>
 Name the model accoring to PyLaboThap’s conventions. In this example, the model is named ‘CompressorSE’ (SE stands for Semi-Empirical). The model inherits from <cite>BaseComponent</cite> its methods and attributes.
 In the ‘__init__(self)’ method, define the connectors for the component. <em>Note: super().__init__() is used to call the parent class constructor</em>.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CompressorSE</span><span class="p">(</span><span class="n">BaseComponent</span><span class="p">):</span>
-    <span class="s2">&quot;&quot;&quot;</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Component: Volumetric compressor</span>
 
-<span class="s2">        Model: Semi-empirical model</span>
+<span class="s2">        Model: The model is based on the thesis of V. Lemort (2008) and is a semi-empirical model.</span>
 
-<span class="s2">        **Connectors**:</span>
+<span class="s2">        **Descritpion**:</span>
+
 </pre></div>
 </div>
 </div></blockquote>
 <p>2. <strong>Defining the required inputs</strong>:
 In the ‘get_required_inputs’ method, specif the inputs necessary for the models.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">su</span> <span class="p">(</span><span class="n">MassConnector</span><span class="p">):</span> <span class="n">Mass</span> <span class="n">connector</span> <span class="k">for</span> <span class="n">the</span> <span class="n">suction</span> <span class="n">side</span><span class="o">.</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">The</span> <span class="n">parameters</span> <span class="n">of</span> <span class="n">the</span> <span class="n">model</span> <span class="n">need</span> <span class="n">to</span> <span class="n">be</span> <span class="n">calibrated</span> <span class="k">with</span> <span class="n">experimental</span> <span class="n">datas</span> <span class="n">to</span> <span class="n">represent</span> <span class="n">the</span> <span class="n">real</span> <span class="n">behavior</span> <span class="n">of</span> <span class="n">the</span> <span class="n">compressor</span><span class="o">.</span>
 
-            <span class="n">ex</span> <span class="p">(</span><span class="n">MassConnector</span><span class="p">):</span> <span class="n">Mass</span> <span class="n">connector</span> <span class="k">for</span> <span class="n">the</span> <span class="n">exhaust</span> <span class="n">side</span><span class="o">.</span>
+        <span class="o">**</span><span class="n">Assumptions</span><span class="o">**</span><span class="p">:</span>
 
 </pre></div>
 </div>
@@ -314,26 +321,34 @@ In the ‘get_required_inputs’ method, specif the inputs necessary for the mod
 In the <cite>sync_inputs</cite> method synchronizes the inputs dictionary with the connectors’ states. If the inputs are provided through the connectors, this methods ensures that the model reads them correctly.</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+        <span class="o">**</span><span class="n">Connectors</span><span class="o">**</span><span class="p">:</span>
+
+            <span class="n">su</span> <span class="p">(</span><span class="n">MassConnector</span><span class="p">):</span> <span class="n">Mass</span> <span class="n">connector</span> <span class="k">for</span> <span class="n">the</span> <span class="n">suction</span> <span class="n">side</span><span class="o">.</span>
+
+            <span class="n">ex</span> <span class="p">(</span><span class="n">MassConnector</span><span class="p">):</span> <span class="n">Mass</span> <span class="n">connector</span> <span class="k">for</span> <span class="n">the</span> <span class="n">exhaust</span> <span class="n">side</span><span class="o">.</span>
+
+            <span class="n">W_cp</span> <span class="p">(</span><span class="n">WorkConnector</span><span class="p">):</span> <span class="n">Work</span> <span class="n">connector</span><span class="o">.</span>
+
             <span class="n">Q_amb</span> <span class="p">(</span><span class="n">HeatConnector</span><span class="p">):</span> <span class="n">Heat</span> <span class="n">connector</span> <span class="k">for</span> <span class="n">the</span> <span class="n">ambient</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span>
 
         <span class="o">**</span><span class="n">Parameters</span><span class="o">**</span><span class="p">:</span>
 
             <span class="n">AU_amb</span><span class="p">:</span> <span class="n">Heat</span> <span class="n">transfer</span> <span class="n">coefficient</span> <span class="k">for</span> <span class="n">the</span> <span class="n">ambient</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="o">/</span><span class="n">K</span><span class="p">]</span>
-
-            <span class="n">AU_su_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">heat</span> <span class="n">transfer</span> <span class="n">coefficient</span> <span class="k">for</span> <span class="n">the</span> <span class="n">suction</span> <span class="n">side</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="o">/</span><span class="n">K</span><span class="p">]</span>
-
-            <span class="n">AU_ex_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">heat</span> <span class="n">transfer</span> <span class="n">coefficient</span> <span class="k">for</span> <span class="n">the</span> <span class="n">exhaust</span> <span class="n">side</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="o">/</span><span class="n">K</span><span class="p">]</span>
-
-            <span class="n">d_ex</span><span class="p">:</span> <span class="n">Pressure</span> <span class="n">drop</span> <span class="n">diameter</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
-
-            <span class="n">m_dot_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">mass</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span> <span class="p">[</span><span class="n">kg</span><span class="o">/</span><span class="n">s</span><span class="p">]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>4. <strong>Setting the inputs</strong>:
 In the <cite>set_inputs</cite> method, the inputs are set directly by the user. This method ensures that the connectors are updated automatically.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">A_leak</span><span class="p">:</span> <span class="n">Leakage</span> <span class="n">area</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="o">^</span><span class="mi">2</span><span class="p">]</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">AU_su_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">heat</span> <span class="n">transfer</span> <span class="n">coefficient</span> <span class="k">for</span> <span class="n">the</span> <span class="n">suction</span> <span class="n">side</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="o">/</span><span class="n">K</span><span class="p">]</span>
+
+            <span class="n">AU_ex_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">heat</span> <span class="n">transfer</span> <span class="n">coefficient</span> <span class="k">for</span> <span class="n">the</span> <span class="n">exhaust</span> <span class="n">side</span> <span class="n">heat</span> <span class="n">transfer</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="o">/</span><span class="n">K</span><span class="p">]</span>
+
+            <span class="n">d_ex</span><span class="p">:</span> <span class="n">Pressure</span> <span class="n">drop</span> <span class="n">diameter</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+
+            <span class="n">m_dot_n</span><span class="p">:</span> <span class="n">Nominal</span> <span class="n">mass</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span> <span class="p">[</span><span class="n">kg</span><span class="o">/</span><span class="n">s</span><span class="p">]</span>
+
+            <span class="n">A_leak</span><span class="p">:</span> <span class="n">Leakage</span> <span class="n">area</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="o">^</span><span class="mi">2</span><span class="p">]</span>
 
             <span class="n">W_dot_loss_0</span><span class="p">:</span> <span class="n">Constant</span> <span class="n">loss</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">compressor</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="p">]</span>
 
@@ -342,61 +357,61 @@ In the <cite>set_inputs</cite> method, the inputs are set directly by the user. 
             <span class="n">C_loss</span><span class="p">:</span> <span class="n">Torque</span> <span class="n">losses</span><span class="o">.</span> <span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">m</span><span class="p">]</span>
 
             <span class="n">rv_in</span><span class="p">:</span> <span class="n">Inlet</span> <span class="n">volume</span> <span class="n">ratio</span><span class="o">.</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span>
-
-            <span class="n">V_s</span><span class="p">:</span> <span class="n">Swept</span> <span class="n">volume</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="p">]</span>
-
-        <span class="o">**</span><span class="n">Inputs</span><span class="o">**</span><span class="p">:</span>
-
-            <span class="n">su_p</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">pressure</span><span class="o">.</span> <span class="p">[</span><span class="n">Pa</span><span class="p">]</span>
-
-            <span class="n">su_T</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>5. <strong>Defining required parameters</strong>:
 Use the <cite>get_required_parameters</cite> method to list all parameters necessary for the model.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">ex_p</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">pressure</span><span class="o">.</span> <span class="p">[</span><span class="n">Pa</span><span class="p">]</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">V_s</span><span class="p">:</span> <span class="n">Swept</span> <span class="n">volume</span><span class="o">.</span> <span class="p">[</span><span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="p">]</span>
 
-            <span class="n">su_fluid</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">fluid</span><span class="o">.</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span>
+        <span class="o">**</span><span class="n">Inputs</span><span class="o">**</span><span class="p">:</span>
 
-            <span class="n">N_rot</span><span class="p">:</span> <span class="n">Rotational</span> <span class="n">speed</span><span class="o">.</span> <span class="p">[</span><span class="n">rpm</span><span class="p">]</span>
+            <span class="n">su_p</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">pressure</span><span class="o">.</span> <span class="p">[</span><span class="n">Pa</span><span class="p">]</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>6. <strong>Printing setup information</strong>:
 The <cite>print_setup</cite> method prints details of the connectors and inputs needed to run the simulation.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">T_amb</span><span class="p">:</span> <span class="n">Ambient</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">su_T</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
+
+            <span class="n">ex_p</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">pressure</span><span class="o">.</span> <span class="p">[</span><span class="n">Pa</span><span class="p">]</span>
+
+            <span class="n">su_fluid</span><span class="p">:</span> <span class="n">Suction</span> <span class="n">side</span> <span class="n">fluid</span><span class="o">.</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span>
+
+            <span class="n">N_rot</span><span class="p">:</span> <span class="n">Rotational</span> <span class="n">speed</span><span class="o">.</span> <span class="p">[</span><span class="n">rpm</span><span class="p">]</span>
+
+            <span class="n">T_amb</span><span class="p">:</span> <span class="n">Ambient</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
 
         <span class="o">**</span><span class="n">Ouputs</span><span class="o">**</span><span class="p">:</span>
 
             <span class="n">eta_is</span><span class="p">:</span> <span class="n">Isentropic</span> <span class="n">efficiency</span><span class="o">.</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span>
 
-            <span class="n">h_ex</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">specific</span> <span class="n">enthalpy</span><span class="o">.</span> <span class="p">[</span><span class="n">J</span><span class="o">/</span><span class="n">kg</span><span class="p">]</span>
+            <span class="n">ex_h</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">specific</span> <span class="n">enthalpy</span><span class="o">.</span> <span class="p">[</span><span class="n">J</span><span class="o">/</span><span class="n">kg</span><span class="p">]</span>
 
-            <span class="n">T_ex</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
+            <span class="n">ex_T</span><span class="p">:</span> <span class="n">Exhaust</span> <span class="n">side</span> <span class="n">temperature</span><span class="o">.</span> <span class="p">[</span><span class="n">K</span><span class="p">]</span>
 
             <span class="n">W_dot_cp</span><span class="p">:</span> <span class="n">Compressor</span> <span class="n">power</span><span class="o">.</span> <span class="p">[</span><span class="n">W</span><span class="p">]</span>
 
             <span class="n">m_dot</span><span class="p">:</span> <span class="n">Mass</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span> <span class="p">[</span><span class="n">kg</span><span class="o">/</span><span class="n">s</span><span class="p">]</span>
             
             <span class="n">epsilon_v</span><span class="p">:</span> <span class="n">Volumetric</span> <span class="n">efficiency</span><span class="o">.</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span>
-    <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    def __init__(self):</span>
-<span class="s2">        super().__init__()</span>
-<span class="s2">        self.su = MassConnector()</span>
-<span class="s2">        self.ex = MassConnector() # Mass_connector</span>
-<span class="s2">        self.W_cp = WorkConnector()</span>
-<span class="s2">        self.Q_amb = HeatConnector()</span>
-
 </pre></div>
 </div>
 </div></blockquote>
 <p>7. <strong>Solving the model</strong>:
 The <cite>solve</cite> method checks if the model is ready to be calculated (i.e., if all inputs and parameters are set) before performing the necessary calculations and updating the connectors with the results.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="n">Q_dot_ex</span> <span class="o">=</span> <span class="n">epsilon_ex</span><span class="o">*</span><span class="n">C_dot_ex</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="o">-</span><span class="n">T_ex1</span><span class="p">)</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cp_ex</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">h_ex1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cp_su</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">P_ex</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Fluid</span><span class="p">)</span>
+        
+        <span class="n">C_dot_ex</span> <span class="o">=</span> <span class="n">cp_ex</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span>
+        <span class="n">NTU_ex</span> <span class="o">=</span> <span class="n">AU_ex</span><span class="o">/</span><span class="n">C_dot_ex</span>
+        <span class="n">epsilon_ex</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">NTU_ex</span><span class="p">)</span>
+        <span class="n">Q_dot_ex</span> <span class="o">=</span> <span class="n">epsilon_ex</span><span class="o">*</span><span class="n">C_dot_ex</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="o">-</span><span class="n">T_ex1</span><span class="p">)</span>
         
         <span class="n">h_ex</span> <span class="o">=</span> <span class="n">h_ex1</span><span class="o">+</span><span class="p">(</span><span class="n">Q_dot_ex</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
         
@@ -442,62 +457,54 @@ The <cite>solve</cite> method checks if the model is ready to be calculated (i.e
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span>
     
                 
-    <span class="c1">#------------------------------------------------------------------------</span>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_calculable</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_parametrized</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CompressorSE could not be solved. It is not calculable and/or not parametrized&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>8. <strong>Updating the connectors</strong>:
 After solving the model, the <cite>update_connectors</cite> method updates the state of the connectors based on the calculated results.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_calculable</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_parametrized</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calculable</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parametrized</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CompressorSE could not be solved. It is not calculable and/or not parametrized&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
         <span class="k">try</span><span class="p">:</span>
-            <span class="s2">&quot;Actual calculation of the model&quot;</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            
-            <span class="n">x_m_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">]</span> <span class="c1">#guesses on the filling factor to provide suitable initial point for the iteration</span>
-            <span class="n">x_T_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span> <span class="c1">#For the iteration on the T_w</span>
-            <span class="n">stop</span> <span class="o">=</span> <span class="mi">0</span>
-            
-            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>9. <strong>Printing results</strong>:
 Use the <cite>print_results</cite> method to display the results of the model calculations.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_T_guess</span><span class="p">):</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_m_guess</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="c1"># Guesses for the initial values</span>
-                    <span class="n">T_w_guess</span> <span class="o">=</span> <span class="n">x_T_guess</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb</span>
-                    <span class="n">m_dot_guess</span> <span class="o">=</span> <span class="n">x_m_guess</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">60</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">D</span> <span class="c1">#ff_guess[k]*self.V_s*self.N_rot/60*PropsSI(&#39;D&#39;, &#39;P&#39;, self.su.p, &#39;H&#39;, self.su.h, self.su.fluid) #initial value for M_dot</span>
-                    <span class="n">T_ex2_guess</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#PropsSI(&#39;T&#39;, &#39;P&#39;, self.su.p*self.rp,&#39;S&#39;, self.su.s, self.su.fluid)</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            
+            <span class="n">x_m_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">]</span> <span class="c1">#guesses on the filling factor to provide suitable initial point for the iteration</span>
+            <span class="n">x_T_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span> <span class="c1">#For the iteration on the T_w</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Loop to permit multiple attempts to solve the implicit calculation</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>10. <strong>Printing the states of connectors</strong>:
 The <cite>print_states_connectors</cite> method prints the current state of the connectors after the simulation has been run.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>                    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_ex2_guess</span><span class="p">,</span> <span class="n">T_w_guess</span><span class="p">,</span> <span class="n">P_ex2_guess</span><span class="p">,</span> <span class="n">m_dot_guess</span><span class="p">]</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>                    <span class="c1"># Guesses for the initial values</span>
+                    <span class="n">T_w_guess</span> <span class="o">=</span> <span class="n">x_T_guess</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb</span>
+                    <span class="n">m_dot_guess</span> <span class="o">=</span> <span class="n">x_m_guess</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">60</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">D</span> <span class="c1">#ff_guess[k]*self.V_s*self.N_rot/60*PropsSI(&#39;D&#39;, &#39;P&#39;, self.su.p, &#39;H&#39;, self.su.h, self.su.fluid) #initial value for M_dot</span>
+                    <span class="n">T_ex2_guess</span> <span class="o">=</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#PropsSI(&#39;T&#39;, &#39;P&#39;, self.su.p*self.rp,&#39;S&#39;, self.su.s, self.su.fluid)</span>
+                    <span class="n">P_ex2_guess</span> <span class="o">=</span> <span class="mf">0.9</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span>
+                    <span class="c1">#---------------------------------------------------------------------</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="p">()</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_ex2_guess</span><span class="p">,</span> <span class="n">T_w_guess</span><span class="p">,</span> <span class="n">P_ex2_guess</span><span class="p">,</span> <span class="n">m_dot_guess</span><span class="p">]</span>
                     <span class="c1">#--------------------------------------------------------------------------</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solving...&quot;</span><span class="p">)</span>
                         <span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">)</span>
                         <span class="n">res_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">)</span>
-                    <span class="k">except</span><span class="p">:</span>
-                        <span class="n">res_norm</span> <span class="o">=</span> <span class="mf">1e6</span>
-                
-                    <span class="k">if</span> <span class="n">res_norm</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">:</span>
-                        <span class="n">stop</span> <span class="o">=</span> <span class="mi">1</span>
-                    <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
 </pre></div>
 </div>
 </div></blockquote>
