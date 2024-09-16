@@ -58,18 +58,10 @@ class BaseComponent:
         solve():
             Solves the component's state, to be implemented in derived classes.
             
-        plot_component(inputs_names=None, outputs_names=None, parameters_names=None):
-            Creates a visual representation of the component with labeled inputs, outputs, and parameters.
-            
-        plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):
-            Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.
-
     **Notes**:
 
     - This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).
     - The `solve` method is not implemented here and must be defined in derived classes for actual computation.
-    - `plot_component` and `plot_connectors` use Matplotlib to generate graphical representations of components, making 
-      it easier to visualize system behavior in diagrams.
     """
 
     def __init__(self):
@@ -120,149 +112,149 @@ class BaseComponent:
         raise NotImplementedError("The 'solve' method should be implemented in derived classes.")
     
 
-    def plot_component(self, inputs_names=None, outputs_names=None, parameters_names=None):
-        """
-        Plot a visual representation of the component with inputs/outputs and parameters.
-        """
+    # def plot_component(self, inputs_names=None, outputs_names=None, parameters_names=None):
+    #     """
+    #     Plot a visual representation of the component with inputs/outputs and parameters.
+    #     """
 
-        # Enable LaTeX rendering in Matplotlib
-        plt.rcParams['text.usetex'] = True
+    #     # Enable LaTeX rendering in Matplotlib
+    #     plt.rcParams['text.usetex'] = True
 
-        # Create figure and axis
-        fig, ax = plt.subplots(figsize=(8, 8))
+    #     # Create figure and axis
+    #     fig, ax = plt.subplots(figsize=(8, 8))
 
-        # Draw the block (component)
-        block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle="round,pad=0.1", 
-                                        edgecolor="black", facecolor="#D4E9C7", zorder=2)
-        ax.add_patch(block)
-        ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
-                verticalalignment='center', fontsize=20, fontweight='bold')
+    #     # Draw the block (component)
+    #     block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle="round,pad=0.1", 
+    #                                     edgecolor="black", facecolor="#D4E9C7", zorder=2)
+    #     ax.add_patch(block)
+    #     ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
+    #             verticalalignment='center', fontsize=20, fontweight='bold')
 
-        # Define positions for inputs, outputs, and parameters
-        input_pos = [0.2, 0.65]  # Position for input
-        output_pos = [0.8, 0.65]  # Position for output
-        param_pos = [0.55, 0.4]  # Position for parameters
+    #     # Define positions for inputs, outputs, and parameters
+    #     input_pos = [0.2, 0.65]  # Position for input
+    #     output_pos = [0.8, 0.65]  # Position for output
+    #     param_pos = [0.55, 0.4]  # Position for parameters
 
-        # Inputs
-        if inputs_names:
-            ax.text(input_pos[0] - 0.15, input_pos[1] + 0.2, r'\textbf{Inputs}', fontsize=17, fontweight='bold', color='black')
-            ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
-                        fontsize=12, color='black',
-                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+    #     # Inputs
+    #     if inputs_names:
+    #         ax.text(input_pos[0] - 0.15, input_pos[1] + 0.2, r'\textbf{Inputs}', fontsize=17, fontweight='bold', color='black')
+    #         ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
+    #                     fontsize=12, color='black',
+    #                     arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
 
-             # Calculate spacing for inputs
-            num_inputs = len(inputs_names)
-            vertical_spacing = 0.1
-            start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2
+    #          # Calculate spacing for inputs
+    #         num_inputs = len(inputs_names)
+    #         vertical_spacing = 0.1
+    #         start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2
 
-            # List all inputs next to the arrow
-            for i, input_name in enumerate(inputs_names):
-                y = start_y + i * vertical_spacing
-                ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
-
-
-        # Outputs
-        if outputs_names:
-            ax.text(output_pos[0] + 0.15, output_pos[1] + 0.2, r'\textbf{Outputs}', fontsize=17, fontweight='bold', color='black')
-            ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
-                        fontsize=12, color='black',
-                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
-
-            # Calculate spacing for outputs
-            num_outputs = len(outputs_names)
-            vertical_spacing = 0.1
-            start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2
-
-            # List all outputs next to the arrow
-            for i, output_name in enumerate(outputs_names):
-                y = start_y + i * vertical_spacing
-                ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
+    #         # List all inputs next to the arrow
+    #         for i, input_name in enumerate(inputs_names):
+    #             y = start_y + i * vertical_spacing
+    #             ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
-        # Parameters
-        if parameters_names:
-            ax.text(param_pos[0], param_pos[1], r'\textbf{Parameters}', fontsize=17, fontweight='bold', color='black', horizontalalignment='center')
-            ax.annotate('', xy=(param_pos[0], param_pos[1] + 0.1), xytext=(param_pos[0], param_pos[1] + 0.05),
-                        fontsize=12, color='black',
-                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+    #     # Outputs
+    #     if outputs_names:
+    #         ax.text(output_pos[0] + 0.15, output_pos[1] + 0.2, r'\textbf{Outputs}', fontsize=17, fontweight='bold', color='black')
+    #         ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
+    #                     fontsize=12, color='black',
+    #                     arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
 
-            # Calculate spacing for parameters
-            num_params = len(parameters_names)
-            vertical_spacing = 0.1
-            start_y = param_pos[1] - (num_params - 1) * vertical_spacing / 2
+    #         # Calculate spacing for outputs
+    #         num_outputs = len(outputs_names)
+    #         vertical_spacing = 0.1
+    #         start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2
 
-            # List all parameters below "Parameters"
-            for i, param_name in enumerate(parameters_names):
-                y = start_y - i * vertical_spacing
-                ax.text(param_pos[0], y-0.05, f'$\\mathbf{{{param_name}}}$', fontsize=17, color='black', verticalalignment='center', horizontalalignment='center')
-
-        # Plot formatting
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis('off')  # Hide axis
+    #         # List all outputs next to the arrow
+    #         for i, output_name in enumerate(outputs_names):
+    #             y = start_y + i * vertical_spacing
+    #             ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
-    def plot_connectors(self, supply_connectors_names=None, exhaust_connectors_names=None):
+    #     # Parameters
+    #     if parameters_names:
+    #         ax.text(param_pos[0], param_pos[1], r'\textbf{Parameters}', fontsize=17, fontweight='bold', color='black', horizontalalignment='center')
+    #         ax.annotate('', xy=(param_pos[0], param_pos[1] + 0.1), xytext=(param_pos[0], param_pos[1] + 0.05),
+    #                     fontsize=12, color='black',
+    #                     arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
 
-        """
-        Plot a visual representation of the component with inputs/outputs and parameters.
-        """
+    #         # Calculate spacing for parameters
+    #         num_params = len(parameters_names)
+    #         vertical_spacing = 0.1
+    #         start_y = param_pos[1] - (num_params - 1) * vertical_spacing / 2
 
-        # Enable LaTeX rendering in Matplotlib
-        plt.rcParams['text.usetex'] = True
+    #         # List all parameters below "Parameters"
+    #         for i, param_name in enumerate(parameters_names):
+    #             y = start_y - i * vertical_spacing
+    #             ax.text(param_pos[0], y-0.05, f'$\\mathbf{{{param_name}}}$', fontsize=17, color='black', verticalalignment='center', horizontalalignment='center')
 
-        # Create figure and axis
-        fig, ax = plt.subplots(figsize=(8, 8))
-
-        # Draw the block (component)
-        block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle="round,pad=0.1", 
-                                        edgecolor="black", facecolor="skyblue", zorder=2)
-        ax.add_patch(block)
-        ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
-                verticalalignment='center', fontsize=20, fontweight='bold')
-
-        # Define positions for inputs, outputs, and parameters
-        input_pos = [0.2, 0.65]  # Position for input
-        output_pos = [0.8, 0.65]  # Position for output
-
-        # Inputs
-        if supply_connectors_names:
-            ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
-                        fontsize=12, color='black',
-                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
-
-             # Calculate spacing for inputs
-            num_inputs = len(supply_connectors_names)
-            vertical_spacing = 0.1
-            start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2
-
-            # List all inputs next to the arrow
-            for i, input_name in enumerate(supply_connectors_names):
-                y = start_y + i * vertical_spacing
-                ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
+    #     # Plot formatting
+    #     ax.set_xlim(0, 1)
+    #     ax.set_ylim(0, 1)
+    #     ax.axis('off')  # Hide axis
 
 
-        # Outputs
-        if exhaust_connectors_names:
-            ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
-                        fontsize=12, color='black',
-                        arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+    # def plot_connectors(self, supply_connectors_names=None, exhaust_connectors_names=None):
 
-            # Calculate spacing for outputs
-            num_outputs = len(exhaust_connectors_names)
-            vertical_spacing = 0.1
-            start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2
+    #     """
+    #     Plot a visual representation of the component with inputs/outputs and parameters.
+    #     """
 
-            # List all outputs next to the arrow
-            for i, output_name in enumerate(exhaust_connectors_names):
-                y = start_y + i * vertical_spacing
-                ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
+    #     # Enable LaTeX rendering in Matplotlib
+    #     plt.rcParams['text.usetex'] = True
+
+    #     # Create figure and axis
+    #     fig, ax = plt.subplots(figsize=(8, 8))
+
+    #     # Draw the block (component)
+    #     block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle="round,pad=0.1", 
+    #                                     edgecolor="black", facecolor="skyblue", zorder=2)
+    #     ax.add_patch(block)
+    #     ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment='center', 
+    #             verticalalignment='center', fontsize=20, fontweight='bold')
+
+    #     # Define positions for inputs, outputs, and parameters
+    #     input_pos = [0.2, 0.65]  # Position for input
+    #     output_pos = [0.8, 0.65]  # Position for output
+
+    #     # Inputs
+    #     if supply_connectors_names:
+    #         ax.annotate('', xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),
+    #                     fontsize=12, color='black',
+    #                     arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+
+    #          # Calculate spacing for inputs
+    #         num_inputs = len(supply_connectors_names)
+    #         vertical_spacing = 0.1
+    #         start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2
+
+    #         # List all inputs next to the arrow
+    #         for i, input_name in enumerate(supply_connectors_names):
+    #             y = start_y + i * vertical_spacing
+    #             ax.text(input_pos[0] - 0.15, y, f'$\\mathbf{{{input_name}}}$', fontsize=17, color='black', verticalalignment='center')
 
 
-        # Plot formatting
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis('off')  # Hide axis
+    #     # Outputs
+    #     if exhaust_connectors_names:
+    #         ax.annotate('', xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),
+    #                     fontsize=12, color='black',
+    #                     arrowprops=dict(facecolor='black', edgecolor='black', width=0.5, headwidth=8, shrink=0.05))
+
+    #         # Calculate spacing for outputs
+    #         num_outputs = len(exhaust_connectors_names)
+    #         vertical_spacing = 0.1
+    #         start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2
+
+    #         # List all outputs next to the arrow
+    #         for i, output_name in enumerate(exhaust_connectors_names):
+    #             y = start_y + i * vertical_spacing
+    #             ax.text(output_pos[0] + 0.2, y, f'$\\mathbf{{{output_name}}}$', fontsize=17, color='black', verticalalignment='center')
+
+
+    #     # Plot formatting
+    #     ax.set_xlim(0, 1)
+    #     ax.set_ylim(0, 1)
+    #     ax.axis('off')  # Hide axis
 
 
 

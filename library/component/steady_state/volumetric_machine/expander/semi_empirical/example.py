@@ -5,8 +5,8 @@ Created on Wed Nov 22 14:39:37 2023
 @author: Elise
 """
 
-
-from component.volumetric_machine.expander.semi_empirical.simulation_model import ExpanderSE
+import __init__
+from component.steady_state.volumetric_machine.expander.semi_empirical.simulation_model import ExpanderSE
 
 import numpy as np
 
@@ -26,10 +26,10 @@ expander.su.set_T(374.1)  # You need to set su.h appropriately
 expander.ex.set_p(293940.1)
 
 # Set rotational speed
-expander.work_exp.set_speed(1500)
+expander.W_exp.set_N(1500)
 
 # Set ambient temperature
-expander.heat_amb.set_temperature_in(293)
+expander.Q_amb.set_T_cold(293)
 
 # Setting inputs
 # expander.set_inputs(

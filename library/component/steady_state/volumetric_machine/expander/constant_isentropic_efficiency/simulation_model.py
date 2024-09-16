@@ -9,6 +9,38 @@ import numpy as np
 import time
 
 class ExpanderCstEff(BaseComponent):
+    """
+        Component: Expander
+
+        Model: Constant isentropic efficiency model
+
+        **Connectors**:
+
+            su (MassConnector): Mass connector for the suction side.
+
+            ex (MassConnector): Mass connector for the exhaust side.
+
+        **Parameters**:
+
+            eta_is: Isentropic efficiency. [-]
+
+        **Inputs**:
+
+            su_p: Suction side pressure. [Pa]
+
+            su_T: Suction side temperature. [K]
+
+            ex_p: Exhaust side pressure. [Pa]
+
+            su_fluid: Suction side fluid. [-]
+
+        **Ouputs**:
+
+            ex_h: Exhaust side specific enthalpy. [J/kg]
+
+            ex_T: Exhaust side temperature. [K]
+    """
+    
     def __init__(self):
         super().__init__()
         self.su = MassConnector()

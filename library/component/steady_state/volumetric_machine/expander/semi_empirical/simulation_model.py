@@ -11,47 +11,118 @@ import numpy as np
 import time
 
 class ExpanderSE(BaseComponent):
+    """
+        Component: Volumetric expander
+
+        Model: Semi-empirical model
+
+        **Connectors**:
+
+            su (MassConnector): Mass connector for the suction side.
+
+            ex (MassConnector): Mass connector for the exhaust side.
+
+            W_exp (WorkConnector): Work connector.
+
+            Q_amb (HeatConnector): Heat connector for the ambient heat transfer.
+
+        **Parameters**:
+
+            AU_amb: Heat transfer coefficient for the ambient heat transfer. [W/K]
+
+            AU_su_n: Nominal heat transfer coefficient for the suction side heat transfer. [W/K]
+
+            AU_ex_n: Nominal heat transfer coefficient for the exhaust side heat transfer. [W/K]
+
+            d_su1: Pressure drop diameter. [m]
+
+            m_dot_n: Nominal mass flow rate. [kg/s]
+
+            A_leak: Leakage area. [m^2]
+
+            W_dot_loss_0: Constant loss in the compressor. [W]
+
+            alpha: Loss coefficient. [-]
+
+            C_loss: Torque losses. [N.m]
+
+            rv_in: Inlet volume ratio. [-]
+
+            V_s: Swept volume. [m^3]
+
+        **Inputs**:
+
+            su_p: Suction side pressure. [Pa]
+
+            su_T: Suction side temperature. [K]
+
+            ex_p: Exhaust side pressure. [Pa]
+
+            su_fluid: Suction side fluid. [-]
+
+            N_rot: Rotational speed. [rpm]
+
+            T_amb: Ambient temperature. [K]
+
+        **Ouputs**:
+
+            eta_is: Isentropic efficiency. [-]
+
+            ex_h: Exhaust side specific enthalpy. [J/kg]
+
+            ex_T: Exhaust side temperature. [K]
+
+            W_dot_exp: Compressor power. [W]
+
+            m_dot: Mass flow rate. [kg/s]
+            
+            epsilon_v: Volumetric efficiency. [-]
+    """
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
-        self.ex = MassConnector() # Mass_connector
-        self.work_exp = WorkConnector()
-        self.heat_amb = HeatConnector()
+        self.ex = MassConnector()
+        self.W_exp = WorkConnector()
+        self.Q_amb = HeatConnector()
 
     def get_required_inputs(self):
-        
-        if self.inputs == {}:
-            if self.su.T is not None:
-                self.inputs['su_T'] = self.su.T
-            elif self.su.h is not None:
-                self.inputs['su_h'] = self.su.h
-            if self.su.p is not None:
-                self.inputs['su_p'] = self.su.p
-            if self.ex.p is not None:
-                self.inputs['ex_p'] = self.ex.p
-            if self.work_exp.speed is not None:
-                self.inputs['N_rot'] = self.work_exp.speed
-            if self.heat_amb.temperature_in is not None:
-                self.inputs['T_amb'] = self.heat_amb.temperature_in
-            if self.su.fluid is not None:
-                self.inputs['su_fluid'] = self.su.fluid
-        
-        if self.inputs != {}:
-            self.su.set_fluid(self.inputs['su_fluid'])
-            if 'su_T' in self.inputs:
-                self.su.set_T(self.inputs['su_T'])
-            elif 'su_h' in self.inputs:
-                self.su.set_h(self.inputs['su_h'])
-            if 'su_p' in self.inputs:
-                self.su.set_p(self.inputs['su_p'])
-            if 'ex_p' in self.inputs:
-                self.ex.set_p(self.inputs['ex_p'])
-            if 'N_rot' in self.inputs:
-                self.work_exp.set_speed(self.inputs['N_rot'])
-            if 'T_amb' in self.inputs:
-                self.heat_amb.set_temperature_in(self.inputs['T_amb'])
+            self.sync_inputs()
+            # Return a list of required inputs
+            return ['su_p', 'su_T', 'ex_p', 'N_rot', 'T_amb', 'su_fluid']
+    
+    def sync_inputs(self):
+        """Synchronize the inputs dictionary with the connector states."""
+        if self.su.fluid is not None:
+            self.inputs['su_fluid'] = self.su.fluid
+        if self.su.T is not None:
+            self.inputs['su_T'] = self.su.T
+        if self.su.p is not None:
+            self.inputs['su_p'] = self.su.p
+        if self.ex.p is not None:
+            self.inputs['ex_p'] = self.ex.p
+        if self.W_exp.N is not None:
+            self.inputs['N_rot'] = self.W_exp.N
+        if self.Q_amb.T_cold is not None:
+            self.inputs['T_amb'] = self.Q_amb.T_cold
 
-        return ['su_p', 'su_T', 'ex_p', 'N_rot', 'T_amb', 'su_fluid']
+    def set_inputs(self, **kwargs):
+        """Set inputs directly through a dictionary and update connector properties."""
+        self.inputs.update(kwargs)
+
+        # Update the connectors based on the new inputs
+        if 'su_fluid' in self.inputs:
+            self.su.set_fluid(self.inputs['su_fluid'])
+        if 'su_T' in self.inputs:
+            self.su.set_T(self.inputs['su_T'])
+        if 'su_p' in self.inputs:
+            self.su.set_p(self.inputs['su_p'])
+        if 'ex_p' in self.inputs:
+            self.ex.set_p(self.inputs['ex_p'])
+        if 'N_rot' is self.inputs:
+            self.W_exp.set_N(self.inputs['N_rot'])
+        if 'T_amb' is self.inputs:
+            self.Q_amb.set_T_cold(self.inputs['T_amb'])
+
 
     def get_required_parameters(self):
         return [
@@ -64,8 +135,8 @@ class ExpanderSE(BaseComponent):
         print("Connectors:")
         print(f"  - su: fluid={self.su.fluid}, T={self.su.T}, p={self.su.p}, m_dot={self.su.m_dot}")
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
-        print(f"  - W_dot: speed={self.work_exp.speed}")
-        print(f"  - Q_dot_amb: temperature_in={self.heat_amb.temperature_in}")
+        print(f"  - W_exp: N={self.W_exp.N}, W={self.W_exp.W_dot}")
+        print(f"  - Q_amb: T_cold={self.Q_amb.T_cold}, T_hot={self.Q_amb.T_hot}, Q={self.Q_amb.Q_dot}")
 
         print("\nInputs:")
         for input in self.get_required_inputs():
@@ -106,7 +177,7 @@ class ExpanderSE(BaseComponent):
 
         T_sat_su = PropsSI('T', 'P', P_su, 'Q', 1, Fluid)
         if T_su<T_sat_su:
-            print('----Warning the compressor inlet stream is not in vapor phase---')
+            print('----Warning the expander inlet stream is not in vapor phase---')
 
         "2. Supply pressure drop: su->su1"
         h_su1 = h_su #Isenthalpic valve
@@ -194,7 +265,7 @@ class ExpanderSE(BaseComponent):
         self.h_ex = h_ex1+Q_dot_ex/self.m_dot
 
         "8. Energy balance"
-        Q_dot_amb = self.params['AU_amb']*(self.T_w-self.inputs['T_amb'])
+        self.Q_dot_amb = self.params['AU_amb']*(self.T_w-self.inputs['T_amb'])
         W_dot_loss = self.params['alpha']*W_dot_in + self.params['W_dot_loss_0'] + self.params['C_loss']*self.N*2*np.pi
         self.W_dot_exp = W_dot_in - W_dot_loss
 
@@ -205,7 +276,7 @@ class ExpanderSE(BaseComponent):
         self.epsilon_v = self.m_dot/self.m_dot_th
         
         "10. Residuals"
-        self.res_E = abs((Q_dot_su + W_dot_loss - Q_dot_ex - Q_dot_amb)/(Q_dot_su + W_dot_loss))
+        self.res_E = abs((Q_dot_su + W_dot_loss - Q_dot_ex - self.Q_dot_amb)/(Q_dot_su + W_dot_loss))
         self.res = self.res_E
         self.res_m_leak = abs((m_dot_leak_bis-m_dot_leak)/m_dot_leak)
         self.res = [self.res, self.res_m_leak]
@@ -215,7 +286,12 @@ class ExpanderSE(BaseComponent):
         self.check_calculable()
         self.check_parametrized()
 
-        if self.calculable and self.parametrized:
+        if not (self.calculable and self.parametrized):
+            self.solved = False
+            print("ExpanderSE could not be solved. It is not calculable and/or not parametrized")
+            return
+
+        try:
             start_time = time.time()
             ff_guess = [0.7, 1.2, 0.8, 1.3, 0.4, 1.7, 3]
             x_T_guess = [0.7, 0.95, 0.8, 0.99, 0.9]
@@ -240,38 +316,54 @@ class ExpanderSE(BaseComponent):
                         stop = 1
                     k += 1
                 j += 1
+
             self.convergence = stop
 
-            elapsed_time = time.time() - start_time
-            if self.convergence == 0:
-                print("The system did not converge")
-            if self.convergence == 1:
-                self.ex.set_fluid(self.su.fluid)
-                self.ex.set_m_dot(self.m_dot)
-                self.ex.set_h(self.h_ex)
-                self.ex.set_p(self.P_ex)
-                self.defined = True
-        else:
-            if not self.calculable:
-                print("Input of the component not completely known. Required inputs:")
-                for input in self.get_required_inputs():
-                    if input not in self.inputs:
-                        print(f"  - {input}")
-            if not self.parametrized:
-                print("Parameters of the component not completely known. Required parameters:")
-                for param in self.get_required_parameters():
-                    if param not in self.params:
-                        print(f"  - {param}")
-    
-    def print_results(self):
-        if self.defined:
-            print("=== Expander Results ===")
-            print(f"T_ex: {self.ex.T}")
-            print(f"W_dot_exp: {self.W_dot_exp}")
-            print(f"eta_is: {self.epsilon_is}")
-            print(f"eta_v: {self.epsilon_v}")
+            if self.convergence:
+                self.update_connectors()
+                self.solved = True
 
-        else:
-            print("Expander component is not defined. Ensure it is solved first.")
+        except Exception as e:
+            print(f"ExpanderSE could not be solved. Error: {e}")
+            self.solved = False
+
+    def update_connectors(self):
+        """Update the connectors with the calculated values."""
+        self.su.set_m_dot(self.m_dot)
+        
+        self.ex.set_fluid(self.su.fluid)
+        self.ex.set_m_dot(self.m_dot)
+        self.ex.set_h(self.h_ex)
+        self.ex.set_p(self.P_ex)
+
+        self.W_exp.set_W_dot(self.W_dot_exp)
+        self.Q_amb.set_Q_dot(self.Q_dot_amb)
+        self.Q_amb.set_T_hot(self.T_w)
+
+    def print_results(self):
+        print("=== Expander Results ===")
+        print(f"  - h_ex: {self.ex.h} [J/kg]")
+        print(f"  - T_ex: {self.ex.T} [K]")
+        print(f"  - W_dot_exp: {self.W_exp.W_dot} [W]")
+        print(f"  - epsilon_is: {self.epsilon_is} [-]")
+        print(f"  - m_dot: {self.m_dot} [kg/s]")
+        print(f"  - epsilon_v: {self.epsilon_v} [-]")
+        print("=========================")
+
+    def print_states_connectors(self):
+        print("=== Expander Results ===")
+        print("Mass connectors:")
+        print(f"  - su: fluid={self.su.fluid}, T={self.su.T} [K], p={self.su.p} [Pa], h={self.su.h} [J/kg], s={self.su.s} [J/K.kg], m_dot={self.su.m_dot} [kg/s]")
+        print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
+        print("=========================")
+        print("Work connector:")
+        print(f"  - W_dot_exp: {self.W_exp.W_dot} [W]")
+        print("=========================")
+        print("Heat connector:")
+        print(f"  - Q_dot_amb: {self.Q_amb.Q_dot} [W]")
+        print(f"  - T_hot: {self.Q_amb.T_hot} [K]")
+        print(f"  - T_cold: {self.Q_amb.T_cold} [K]")
+        print("=========================")
+
 
 
