@@ -110,7 +110,7 @@ def f_lmtd2(R,P,params):
 
         F = 1
         flag = flag_ntu
-        
+    
     return F
 
 def find_UA(Q_dot, T_c_i, T_c_o, T_h_i, T_h_o, flow = 'CounterFlow', params = None):

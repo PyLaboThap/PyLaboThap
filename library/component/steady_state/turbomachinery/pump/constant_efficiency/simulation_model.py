@@ -110,7 +110,6 @@ class PumpCstEff(BaseComponent):
         print("=== Pump Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
-        print(f"  - w_pp: {self.W_pp.w} [J/kg]")
         print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")
 
@@ -121,6 +120,5 @@ class PumpCstEff(BaseComponent):
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
         print("=========================")
         print("Work connector:")
-        print(f"  - W_pp: w={self.W_pp.w} [J/kg]")
         print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")

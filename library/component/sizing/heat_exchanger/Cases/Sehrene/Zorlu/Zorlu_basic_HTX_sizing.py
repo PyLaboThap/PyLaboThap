@@ -2,7 +2,7 @@
 import __init__
 import numpy as np
 import matplotlib.pyplot as plt
-from library.component.sizing.heat_exchanger.basic_sizing import find_UA
+from library.component.sizing.heat_exchanger.basic_sizing_UA import find_UA
 
 case_1 = "Zorlu ht-hp-pcm-orc-rec"
 case_2 = "Zorlu ht-hp-pcm-orc-rec-pr"

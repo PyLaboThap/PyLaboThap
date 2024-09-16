@@ -23,29 +23,53 @@ import scipy.optimize
 from scipy.interpolate import interp1d
 
 
-# Internal Toolbox 
-import __init__
-from modules.f_lmtd2 import f_lmtd2
-from modules.propsfluid import propsfluid
-from modules.find_2P_boundaries import find_2P_boundaries
+try:
+    # Internal Toolbox 
+    from modules.f_lmtd2 import f_lmtd2
+    from modules.propsfluid import propsfluid
+    from modules.find_2P_boundaries import find_2P_boundaries
 
-# HTC and DP Correlations
-from modules.plate_htc import han_BPHEX_DP, water_plate_HTC, martin_BPHEX_HTC, muley_manglik_BPHEX_HTC, han_boiling_BPHEX_HTC, han_cond_BPHEX_HTC
-from modules.pipe_htc import gnielinski_pipe_htc, boiling_curve, horizontal_tube_internal_condensation
-from modules.shell_and_tube_htc import shell_bell_delaware_htc
-from modules.tube_bank_htc import ext_tube_film_condens
-from modules.fins import htc_tube_and_fins
+    # HTC and DP Correlations
+    from modules.plate_htc import han_BPHEX_DP, water_plate_HTC, martin_BPHEX_HTC, muley_manglik_BPHEX_HTC, han_boiling_BPHEX_HTC, han_cond_BPHEX_HTC
+    from modules.pipe_htc import gnielinski_pipe_htc, boiling_curve, horizontal_tube_internal_condensation
+    from modules.shell_and_tube_htc import shell_bell_delaware_htc, shell_htc_DP_kern
+    from modules.tube_bank_htc import ext_tube_film_condens
+    from modules.fins import htc_tube_and_fins
 
-# Phase related correlations
-from modules.void_fraction import void_fraction
-from modules.kim_dry_out_incipience import kim_dry_out_incipience
+    # Phase related correlations
+    from modules.void_fraction import void_fraction
+    from modules.kim_dry_out_incipience import kim_dry_out_incipience
 
-# Connectors
-from connector.mass_connector import MassConnector
-from connector.heat_connector import HeatConnector
+    # Connectors
+    from connector.mass_connector import MassConnector
+    from connector.heat_connector import HeatConnector
 
-# Component base frame
-from component.base_component import BaseComponent
+    # Component base frame
+    from component.base_component import BaseComponent
+
+except:
+    # Internal Toolbox 
+    from .modules.f_lmtd2 import f_lmtd2
+    from .modules.propsfluid import propsfluid
+    from .modules.find_2P_boundaries import find_2P_boundaries
+
+    # HTC and DP Correlations
+    from .modules.plate_htc import han_BPHEX_DP, water_plate_HTC, martin_BPHEX_HTC, muley_manglik_BPHEX_HTC, han_boiling_BPHEX_HTC, han_cond_BPHEX_HTC
+    from .modules.pipe_htc import gnielinski_pipe_htc, boiling_curve, horizontal_tube_internal_condensation
+    from .modules.shell_and_tube_htc import shell_bell_delaware_htc, shell_htc_DP_kern
+    from .modules.tube_bank_htc import ext_tube_film_condens
+    from .modules.fins import htc_tube_and_fins
+
+    # Phase related correlations
+    from .modules.void_fraction import void_fraction
+    from .modules.kim_dry_out_incipience import kim_dry_out_incipience
+
+    # Connectors
+    from connector.mass_connector import MassConnector
+    from connector.heat_connector import HeatConnector
+
+    # Component base frame
+    from component.base_component import BaseComponent
 
 #%%
 # Set to True to enable some debugging output to screen
@@ -192,13 +216,22 @@ class HeatExchangerMB(BaseComponent):
                                    'n_plates', 'plate_cond', 'plate_pitch_co', 't_plates', 'w']
 
         elif self.HTX_Type == 'Shell&Tube':
+            
+            if self.H.Correlation_1phase == "Shell_Bell_Delaware_HTC" or self.C.Correlation_1phase == "Shell_Bell_Delaware_HTC":
                 
-            geometry_parameters = ['A_eff', 'Baffle_cut', 'D_OTL', 'N_strips', 'S_V_tot',
-                                   'Shell_ID', 'T_V_tot', 'Tube_L', 'Tube_OD', 'Tube_pass',
-                                   'Tube_t', 'Tubesheet_t', 'central_spacing', 'clear_BS', 'clear_TB',
-                                   'cross_passes', 'foul_s', 'foul_t', 'inlet_spacing', 'n_series',
-                                   'n_tubes', 'outlet_spacing', 'pitch_ratio', 'tube_cond', 'tube_layout', 'Shell_Side']
-        
+                geometry_parameters = ['A_eff', 'Baffle_cut', 'D_OTL', 'N_strips', 'S_V_tot',
+                                    'Shell_ID', 'T_V_tot', 'Tube_L', 'Tube_OD', 'Tube_pass',
+                                    'Tube_t', 'Tubesheet_t', 'central_spacing', 'clear_BS', 'clear_TB',
+                                    'cross_passes', 'foul_s', 'foul_t', 'inlet_spacing', 'n_series',
+                                    'n_tubes', 'outlet_spacing', 'pitch_ratio', 'tube_cond', 'tube_layout', 'Shell_Side']
+
+            if self.H.Correlation_1phase == "shell_htc_DP_kern" or self.C.Correlation_1phase == "shell_htc_DP_kern":
+                
+                geometry_parameters = ['A_eff', 'Baffle_cut', 'S_V_tot', 'Shell_ID', 'T_V_tot',
+                                    'Tube_L', 'Tube_OD', 'Tube_pass','Tube_t', 'central_spacing',
+                                    'cross_passes', 'foul_s', 'foul_t', 'n_tubes', 'pitch_ratio', 
+                                    'tube_cond', 'tube_layout', 'Shell_Side']
+
         elif self.HTX_Type == 'Tube&Fins':
             
             geometry_parameters = ['A_finned', 'A_flow', 'A_in_tot', 'A_out_tot', 'A_unfinned',
@@ -250,7 +283,7 @@ class HeatExchangerMB(BaseComponent):
         
         self.check_calculable()
         
-        if htc_type == "User-Defined":
+        if self.params['htc_type'] == "User-Defined":
             
             self.H.HeatExchange_Correlation = "User-Defined"
             self.C.HeatExchange_Correlation = "User-Defined"
@@ -271,16 +304,6 @@ class HeatExchangerMB(BaseComponent):
             self.C.h_tpdryout = UD_C_HTC['Dryout']
             self.C.h_transcrit = UD_C_HTC['Transcritical']
             
-            if self.params['H_DP_ON'] == True: # !!! arbitrarily set
-                self.H.f_dp = {"K": 14.14, "B": 1.892}
-            else:
-                self.H.f_dp = {"K": 0, "B": 0}        
-                    
-            if self.params['C_DP_ON'] == True:
-                self.C.f_dp = {"K": 14.14, "B": 1.892}
-            else:
-                self.C.f_dp = {"K": 0, "B": 0}
-            
         else:
             # Type 
             self.H.HeatExchange_Correlation = "Correlation"
@@ -293,25 +316,19 @@ class HeatExchangerMB(BaseComponent):
                 
                 self.C.Correlation_1phase = Corr_C["1P"]
                 self.C.Correlation_2phase = Corr_C["2P"]
+    
+    def set_DP(self):
 
-                if self.params['H_DP_ON'] == True: # !!! arbitrarily set
-                    self.H.f_dp = {"K": 14.14, "B": 1.892}
-                else:
-                    self.H.f_dp = {"K": 0, "B": 0}        
-                    
-                if self.params['C_DP_ON'] == True:
-                    self.C.f_dp = {"K": 14.14, "B": 1.892}
-                else:
-                    self.C.f_dp = {"K": 0, "B": 0}
-                    
-            if self.C.Correlation_2phase == "Boiling_curve": # Compute the fluid boiling curve beforehand
-                try:
-                    T_sat = CP.PropsSI('T','P', self.su_C.p,'Q',0,self.su_C.fluid)
-                    (h_boil, DT_vect) = boiling_curve(self.params['Tube_OD'], self.su_C.fluid, T_sat, self.su_C.p)
-                    self.C_f_boiling = interp1d(DT_vect,h_boil)
-                except:
-                    self.C_f_boiling = interp1d([0,10000],[20000,20000])
-            
+        if self.params['H_DP_ON'] == True: # !!! arbitrarily set
+            self.H.f_dp = {"K": 14.14, "B": 1.892}
+        else:
+            self.H.f_dp = {"K": 0, "B": 0}        
+                
+        if self.params['C_DP_ON'] == True:
+            self.C.f_dp = {"K": 14.14, "B": 1.892}
+        else:
+            self.C.f_dp = {"K": 0, "B": 0}
+
 #%%
     def external_pinching(self):
         "Determine the maximum heat transfer rate based on the external pinching analysis"
@@ -645,6 +662,15 @@ class HeatExchangerMB(BaseComponent):
 
         """
         
+        if self.C.HeatExchange_Correlation == "Correlation":
+            if self.C.Correlation_2phase == "Boiling_curve": # Compute the fluid boiling curve beforehand
+                    try:
+                        T_sat = CP.PropsSI('T','P', self.su_C.p,'Q',0,self.su_C.fluid)
+                        (h_boil, DT_vect) = boiling_curve(self.params['Tube_OD'], self.su_C.fluid, T_sat, self.su_C.p)
+                        self.C_f_boiling = interp1d(DT_vect,h_boil)
+                    except:
+                        self.C_f_boiling = interp1d([0,10000],[20000,20000])
+
         self.check_calculable()
         self.check_parametrized()
         
@@ -1062,7 +1088,10 @@ class HeatExchangerMB(BaseComponent):
                     
                     elif self.H.Correlation_1phase == "Shell_Bell_Delaware_HTC":
                         alpha_h = shell_bell_delaware_htc(self.mdot_h, Th_mean, T_wall, p_h_mean, self.H_su.fluid, self.params)
-                        
+
+                    elif self.H.Correlation_1phase == "shell_htc_DP_kern":
+                        alpha_h = shell_htc_DP_kern(self.mdot_h, T_wall, Th_mean, p_h_mean, self.H_su.fluid, self.params)[0]
+
                     elif self.H.Correlation_1phase == 'Tube_And_Fins':
                         alpha_h = htc_tube_and_fins(self.H_su.fluid, self.params, p_h_mean, Th_mean, self.mdot_h, self.params['Fin_type'])[0]
                         
@@ -1094,7 +1123,13 @@ class HeatExchangerMB(BaseComponent):
                                 alpha_h = shell_bell_delaware_htc(self.mdot_h, Th_mean, T_wall, p_h_mean, self.H_su.fluid, self.params)
                             except:
                                 alpha_h = shell_bell_delaware_htc(self.mdot_h, Th_mean-0.1, T_wall, p_h_mean, self.H_su.fluid, self.params)
-                            
+                        
+                        elif self.H.Correlation_1phase == "shell_htc_DP_kern":
+                            try:
+                                alpha_h = shell_htc_DP_kern(self.mdot_h, T_wall, Th_mean, p_h_mean, self.H_su.fluid, self.params)[0]
+                            except:
+                                alpha_h = shell_htc_DP_kern(self.mdot_h, T_wall, Th_mean-0.1, p_h_mean, self.H_su.fluid, self.params)[0]
+                                
                         elif self.H.Correlation_1phase == 'Tube_And_Fins':
                             alpha_h = htc_tube_and_fins(self.C_su.fluid, self.params, p_c_mean, Tc_mean, self.mdot_c, self.params['Fin_type'])[0]
                         
@@ -1167,7 +1202,10 @@ class HeatExchangerMB(BaseComponent):
                             
                     elif self.C.Correlation_1phase == 'Shell_Bell_Delaware_HTC':
                         alpha_c = shell_bell_delaware_htc(self.mdot_c, Tc_mean, T_wall, p_c_mean, self.C_su.fluid, self.params)
-                         
+
+                    elif self.C.Correlation_1phase == "shell_htc_DP_kern":
+                        alpha_c = shell_htc_DP_kern(self.mdot_c, T_wall, Tc_mean, p_c_mean, self.C_su.fluid, self.params)[0]
+
                     elif self.C.Correlation_1phase == 'Tube_And_Fins':
                         alpha_c = htc_tube_and_fins(self.C_su.fluid, self.params, p_c_mean, Tc_mean, self.mdot_c, self.params['Fin_type'])[0]
                     

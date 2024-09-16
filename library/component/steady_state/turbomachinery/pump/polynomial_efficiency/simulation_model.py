@@ -21,12 +21,13 @@ class PumpPolynEff(BaseComponent):
         self.su = MassConnector()
         self.ex = MassConnector()
         self.W_pp = WorkConnector()
+        self.N_pp = None
 
 #%%
     def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
         self.sync_inputs()
         # Return a list of required inputs
-        return ['su_p', 'su_T', 'ex_p', 'su_fluid']
+        return ['su_p', 'su_T', 'ex_p', 'su_fluid', 'N_pp']
 
     def sync_inputs(self):
         """Synchronize the inputs dictionary with the connector states."""
@@ -40,6 +41,8 @@ class PumpPolynEff(BaseComponent):
             self.inputs['su_p'] = self.su.p
         if self.ex.p is not None:
             self.inputs['ex_p'] = self.ex.p
+        if self.N_pp is not None:
+            self.inputs['N_pp'] = self.N_pp
 
     def set_inputs(self, **kwargs):
         """Set inputs directly through a dictionary and update connector properties."""
@@ -56,10 +59,13 @@ class PumpPolynEff(BaseComponent):
             self.su.set_p(self.inputs['su_p'])
         if 'ex_p' in self.inputs:
             self.ex.set_p(self.inputs['ex_p'])
+        if 'N_pp' in self.inputs:
+            self.W_pp.set_N(self.inputs['N_pp'])
+            self.N_pp = self.inputs['N_pp']
 
     def get_required_parameters(self):
         return ['min_flowrate', 'rated_flowrate', 'max_flowrate', 'N_pp_rated', 'pump_voltage', 'pump_phases', 'eta_v', 'V_swept',
-                'eta_max_motor', 'W_dot_el_rated', 'coefs_pump', 'eta_tot', 'eta_m', 'N_pp']
+                'eta_max_motor', 'W_dot_el_rated', 'coefs_pump', 'eta_tot', 'eta_m']
 
     def print_setup(self):
         print("=== Pump Setup ===")
@@ -106,10 +112,10 @@ class PumpPolynEff(BaseComponent):
         if self.calculable and self.parametrized:
 
             #MODELLING PART
-            if self.su.p < self.ex.p and self.params['N_pp'] > 0:      
+            if self.su.p < self.ex.p and self.N_pp > 0:      
                 
                 "Flowrate"
-                self.V_dot = self.params['N_pp']*self.params['V_swept']*self.params['eta_v'] # m^3/s
+                self.V_dot = self.N_pp*self.params['V_swept']*self.params['eta_v'] # m^3/s
                 self.m_dot = self.V_dot*self.su.D # kg/s
 
                 self.su.set_m_dot(self.m_dot) 
