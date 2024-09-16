@@ -1,11 +1,11 @@
-Compressor models
-=================
+Expander models
+===============
 
-Details about the different models of compressors.
+Details about the different models of expanders.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Compressor models:
+   :caption: Expander models:
 
    constant_isentropic_efficiency/constant_isentropic_efficiency_doc
    semi_empirical/semi_empirical_doc

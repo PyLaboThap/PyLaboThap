@@ -6,6 +6,47 @@ from connector.heat_connector import HeatConnector
 from CoolProp.CoolProp import PropsSI
 
 class PumpCstEff(BaseComponent):
+    """
+    Component: Pump
+
+    Model: Constant efficiency
+
+    **Descritpion**:
+
+        This model determines the exhaust specific enthalpy and the exhaust temperature of a pump. This model can be used for on-design models of systems.
+
+    **Assumptions**:
+
+        - Steady-state operation.
+        - Efficiency stays constant for all the conditions.
+
+    **Connectors**:
+
+        su (MassConnector): Mass connector for the suction side.
+
+        ex (MassConnector): Mass connector for the exhaust side.
+
+    **Parameters**:
+
+        eta_is: Isentropic efficiency. [-]
+
+    **Inputs**:
+
+        su_p: Suction side pressure. [Pa]
+
+        su_T: Suction side temperature. [K]
+
+        ex_p: Exhaust side pressure. [Pa]
+
+        su_fluid: Suction side fluid. [-]
+
+    **Ouputs**:
+
+        ex_h: Exhaust side specific enthalpy. [J/kg] 
+
+        ex_T: Exhaust side temperature. [K]
+    """
+
     def __init__(self):
         super().__init__()
         self.su = MassConnector()
@@ -103,14 +144,12 @@ class PumpCstEff(BaseComponent):
         self.ex.set_h(h_ex)
         self.ex.set_fluid(self.su.fluid)
         self.ex.set_m_dot(self.su.m_dot)
-        self.W_pp.set_w(w_pp)
         self.W_pp.set_W_dot(W_dot_pp)
 
     def print_results(self):
         print("=== Pump Results ===")
         print(f"  - h_ex: {self.ex.h} [J/kg]")
         print(f"  - T_ex: {self.ex.T} [K]")
-        print(f"  - w_pp: {self.W_pp.w} [J/kg]")
         print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")
 
@@ -121,6 +160,5 @@ class PumpCstEff(BaseComponent):
         print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T} [K], p={self.ex.p} [Pa], h={self.ex.h} [J/kg], s={self.ex.s} [J/K.kg], m_dot={self.ex.m_dot} [kg/s]")
         print("=========================")
         print("Work connector:")
-        print(f"  - W_pp: w={self.W_pp.w} [J/kg]")
         print(f"  - W_dot_pp: {self.W_pp.W_dot} [W]")
         print("=========================")

@@ -14,7 +14,16 @@ class ExpanderSE(BaseComponent):
     """
         Component: Volumetric expander
 
-        Model: Semi-empirical model
+        Model: The model is based on the thesis of V. Lemort (2008) and is a semi-empirical model.
+
+        **Descritpion**:
+
+            This model is used to simulate the performance of a volumetric expander. 
+            The parameters of the model need to be calibrated with experimental datas to represent the real behavior of the expander.
+
+        **Assumptions**:
+
+            - Steady-state operation.
 
         **Connectors**:
 
