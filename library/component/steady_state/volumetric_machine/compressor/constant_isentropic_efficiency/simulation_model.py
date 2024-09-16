@@ -15,6 +15,15 @@ class CompressorCstEff(BaseComponent):
 
     Model: Constant isentropic efficiency
 
+    **Descritpion**:
+
+        This model determines the exhqust specific enthalpy and the exhaust temperature of a compressor. This model can be used for on-design models of systems.
+
+    **Assumptions**:
+
+        - Steady-state operation.
+        - Isentropic efficiency stays constant for all the conditions.
+
     **Connectors**:
 
         su (MassConnector): Mass connector for the suction side.

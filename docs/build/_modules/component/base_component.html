@@ -215,9 +215,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../documentation/component/steady_state/base_component/base_component_doc.html">BaseComponent Class</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../documentation/component/steady_state/models/models_doc.html">Steady-State Models</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Steady-State Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5 has-children"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Volumetric Machine</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6 has-children"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/compressor/compressor_doc.html">Compressor</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l7"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant Isentropic Efficiency Compressor model</a></li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/compressor/compressor_doc.html">Compressor models</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
 <li class="toctree-l7"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/compressor/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric compressor</a></li>
+</ul>
+</li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/expander/expander_doc.html">Expander models</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Expander models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/expander/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
+<li class="toctree-l7"><a class="reference internal" href="../../documentation/component/steady_state/models/volumetric_machine/expander/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric expander</a></li>
 </ul>
 </li>
 </ul>
@@ -331,18 +336,10 @@
 <span class="sd">        solve():</span>
 <span class="sd">            Solves the component&#39;s state, to be implemented in derived classes.</span>
 <span class="sd">            </span>
-<span class="sd">        plot_component(inputs_names=None, outputs_names=None, parameters_names=None):</span>
-<span class="sd">            Creates a visual representation of the component with labeled inputs, outputs, and parameters.</span>
-<span class="sd">            </span>
-<span class="sd">        plot_connectors(supply_connectors_names=None, exhaust_connectors_names=None):</span>
-<span class="sd">            Visualizes the connections (supply and exhaust) for the component, useful for representing flows between components.</span>
-
 <span class="sd">    **Notes**:</span>
 
 <span class="sd">    - This is a base class and should be extended for specific types of components (e.g., heat exchangers, pumps, turbines).</span>
 <span class="sd">    - The `solve` method is not implemented here and must be defined in derived classes for actual computation.</span>
-<span class="sd">    - `plot_component` and `plot_connectors` use Matplotlib to generate graphical representations of components, making </span>
-<span class="sd">      it easier to visualize system behavior in diagrams.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -390,153 +387,153 @@
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># This method should be overridden in derived classes</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The &#39;solve&#39; method should be implemented in derived classes.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The &#39;solve&#39; method should be implemented in derived classes.&quot;</span><span class="p">)</span></div>
+
     
 
-    <span class="k">def</span> <span class="nf">plot_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputs_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameters_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot a visual representation of the component with inputs/outputs and parameters.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="c1"># def plot_component(self, inputs_names=None, outputs_names=None, parameters_names=None):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Plot a visual representation of the component with inputs/outputs and parameters.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
 
-        <span class="c1"># Enable LaTeX rendering in Matplotlib</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1">#     # Enable LaTeX rendering in Matplotlib</span>
+    <span class="c1">#     plt.rcParams[&#39;text.usetex&#39;] = True</span>
 
-        <span class="c1"># Create figure and axis</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="c1">#     # Create figure and axis</span>
+    <span class="c1">#     fig, ax = plt.subplots(figsize=(8, 8))</span>
 
-        <span class="c1"># Draw the block (component)</span>
-        <span class="n">block</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">FancyBboxPatch</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round,pad=0.1&quot;</span><span class="p">,</span> 
-                                        <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#D4E9C7&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> 
-                <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="c1">#     # Draw the block (component)</span>
+    <span class="c1">#     block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle=&quot;round,pad=0.1&quot;, </span>
+    <span class="c1">#                                     edgecolor=&quot;black&quot;, facecolor=&quot;#D4E9C7&quot;, zorder=2)</span>
+    <span class="c1">#     ax.add_patch(block)</span>
+    <span class="c1">#     ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment=&#39;center&#39;, </span>
+    <span class="c1">#             verticalalignment=&#39;center&#39;, fontsize=20, fontweight=&#39;bold&#39;)</span>
 
-        <span class="c1"># Define positions for inputs, outputs, and parameters</span>
-        <span class="n">input_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for input</span>
-        <span class="n">output_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for output</span>
-        <span class="n">param_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]</span>  <span class="c1"># Position for parameters</span>
+    <span class="c1">#     # Define positions for inputs, outputs, and parameters</span>
+    <span class="c1">#     input_pos = [0.2, 0.65]  # Position for input</span>
+    <span class="c1">#     output_pos = [0.8, 0.65]  # Position for output</span>
+    <span class="c1">#     param_pos = [0.55, 0.4]  # Position for parameters</span>
 
-        <span class="c1"># Inputs</span>
-        <span class="k">if</span> <span class="n">inputs_names</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Inputs}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+    <span class="c1">#     # Inputs</span>
+    <span class="c1">#     if inputs_names:</span>
+    <span class="c1">#         ax.text(input_pos[0] - 0.15, input_pos[1] + 0.2, r&#39;\textbf{Inputs}&#39;, fontsize=17, fontweight=&#39;bold&#39;, color=&#39;black&#39;)</span>
+    <span class="c1">#         ax.annotate(&#39;&#39;, xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),</span>
+    <span class="c1">#                     fontsize=12, color=&#39;black&#39;,</span>
+    <span class="c1">#                     arrowprops=dict(facecolor=&#39;black&#39;, edgecolor=&#39;black&#39;, width=0.5, headwidth=8, shrink=0.05))</span>
 
-             <span class="c1"># Calculate spacing for inputs</span>
-            <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs_names</span><span class="p">)</span>
-            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
-            <span class="n">start_y</span> <span class="o">=</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_inputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="c1">#          # Calculate spacing for inputs</span>
+    <span class="c1">#         num_inputs = len(inputs_names)</span>
+    <span class="c1">#         vertical_spacing = 0.1</span>
+    <span class="c1">#         start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2</span>
 
-            <span class="c1"># List all inputs next to the arrow</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs_names</span><span class="p">):</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">input_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-
-
-        <span class="c1"># Outputs</span>
-        <span class="k">if</span> <span class="n">outputs_names</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Outputs}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
-
-            <span class="c1"># Calculate spacing for outputs</span>
-            <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs_names</span><span class="p">)</span>
-            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
-            <span class="n">start_y</span> <span class="o">=</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_outputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
-
-            <span class="c1"># List all outputs next to the arrow</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outputs_names</span><span class="p">):</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="c1">#         # List all inputs next to the arrow</span>
+    <span class="c1">#         for i, input_name in enumerate(inputs_names):</span>
+    <span class="c1">#             y = start_y + i * vertical_spacing</span>
+    <span class="c1">#             ax.text(input_pos[0] - 0.15, y, f&#39;$\\mathbf{{{input_name}}}$&#39;, fontsize=17, color=&#39;black&#39;, verticalalignment=&#39;center&#39;)</span>
 
 
-        <span class="c1"># Parameters</span>
-        <span class="k">if</span> <span class="n">parameters_names</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">r</span><span class="s1">&#39;\textbf</span><span class="si">{Parameters}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">),</span>
-                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+    <span class="c1">#     # Outputs</span>
+    <span class="c1">#     if outputs_names:</span>
+    <span class="c1">#         ax.text(output_pos[0] + 0.15, output_pos[1] + 0.2, r&#39;\textbf{Outputs}&#39;, fontsize=17, fontweight=&#39;bold&#39;, color=&#39;black&#39;)</span>
+    <span class="c1">#         ax.annotate(&#39;&#39;, xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),</span>
+    <span class="c1">#                     fontsize=12, color=&#39;black&#39;,</span>
+    <span class="c1">#                     arrowprops=dict(facecolor=&#39;black&#39;, edgecolor=&#39;black&#39;, width=0.5, headwidth=8, shrink=0.05))</span>
 
-            <span class="c1"># Calculate spacing for parameters</span>
-            <span class="n">num_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters_names</span><span class="p">)</span>
-            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
-            <span class="n">start_y</span> <span class="o">=</span> <span class="n">param_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_params</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="c1">#         # Calculate spacing for outputs</span>
+    <span class="c1">#         num_outputs = len(outputs_names)</span>
+    <span class="c1">#         vertical_spacing = 0.1</span>
+    <span class="c1">#         start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2</span>
 
-            <span class="c1"># List all parameters below &quot;Parameters&quot;</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters_names</span><span class="p">):</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">-</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">param_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Plot formatting</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  <span class="c1"># Hide axis</span>
+    <span class="c1">#         # List all outputs next to the arrow</span>
+    <span class="c1">#         for i, output_name in enumerate(outputs_names):</span>
+    <span class="c1">#             y = start_y + i * vertical_spacing</span>
+    <span class="c1">#             ax.text(output_pos[0] + 0.2, y, f&#39;$\\mathbf{{{output_name}}}$&#39;, fontsize=17, color=&#39;black&#39;, verticalalignment=&#39;center&#39;)</span>
 
 
-    <span class="k">def</span> <span class="nf">plot_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_connectors_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exhaust_connectors_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1">#     # Parameters</span>
+    <span class="c1">#     if parameters_names:</span>
+    <span class="c1">#         ax.text(param_pos[0], param_pos[1], r&#39;\textbf{Parameters}&#39;, fontsize=17, fontweight=&#39;bold&#39;, color=&#39;black&#39;, horizontalalignment=&#39;center&#39;)</span>
+    <span class="c1">#         ax.annotate(&#39;&#39;, xy=(param_pos[0], param_pos[1] + 0.1), xytext=(param_pos[0], param_pos[1] + 0.05),</span>
+    <span class="c1">#                     fontsize=12, color=&#39;black&#39;,</span>
+    <span class="c1">#                     arrowprops=dict(facecolor=&#39;black&#39;, edgecolor=&#39;black&#39;, width=0.5, headwidth=8, shrink=0.05))</span>
 
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot a visual representation of the component with inputs/outputs and parameters.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="c1">#         # Calculate spacing for parameters</span>
+    <span class="c1">#         num_params = len(parameters_names)</span>
+    <span class="c1">#         vertical_spacing = 0.1</span>
+    <span class="c1">#         start_y = param_pos[1] - (num_params - 1) * vertical_spacing / 2</span>
 
-        <span class="c1"># Enable LaTeX rendering in Matplotlib</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1">#         # List all parameters below &quot;Parameters&quot;</span>
+    <span class="c1">#         for i, param_name in enumerate(parameters_names):</span>
+    <span class="c1">#             y = start_y - i * vertical_spacing</span>
+    <span class="c1">#             ax.text(param_pos[0], y-0.05, f&#39;$\\mathbf{{{param_name}}}$&#39;, fontsize=17, color=&#39;black&#39;, verticalalignment=&#39;center&#39;, horizontalalignment=&#39;center&#39;)</span>
 
-        <span class="c1"># Create figure and axis</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-
-        <span class="c1"># Draw the block (component)</span>
-        <span class="n">block</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">FancyBboxPatch</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round,pad=0.1&quot;</span><span class="p">,</span> 
-                                        <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> 
-                <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Define positions for inputs, outputs, and parameters</span>
-        <span class="n">input_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for input</span>
-        <span class="n">output_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>  <span class="c1"># Position for output</span>
-
-        <span class="c1"># Inputs</span>
-        <span class="k">if</span> <span class="n">supply_connectors_names</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
-
-             <span class="c1"># Calculate spacing for inputs</span>
-            <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">supply_connectors_names</span><span class="p">)</span>
-            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
-            <span class="n">start_y</span> <span class="o">=</span> <span class="n">input_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_inputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
-
-            <span class="c1"># List all inputs next to the arrow</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">supply_connectors_names</span><span class="p">):</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">input_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">input_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="c1">#     # Plot formatting</span>
+    <span class="c1">#     ax.set_xlim(0, 1)</span>
+    <span class="c1">#     ax.set_ylim(0, 1)</span>
+    <span class="c1">#     ax.axis(&#39;off&#39;)  # Hide axis</span>
 
 
-        <span class="c1"># Outputs</span>
-        <span class="k">if</span> <span class="n">exhaust_connectors_names</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                        <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">headwidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+    <span class="c1"># def plot_connectors(self, supply_connectors_names=None, exhaust_connectors_names=None):</span>
 
-            <span class="c1"># Calculate spacing for outputs</span>
-            <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exhaust_connectors_names</span><span class="p">)</span>
-            <span class="n">vertical_spacing</span> <span class="o">=</span> <span class="mf">0.1</span>
-            <span class="n">start_y</span> <span class="o">=</span> <span class="n">output_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_outputs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">vertical_spacing</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Plot a visual representation of the component with inputs/outputs and parameters.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
 
-            <span class="c1"># List all outputs next to the arrow</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">exhaust_connectors_names</span><span class="p">):</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_spacing</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">output_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathbf</span><span class="se">{{</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="c1">#     # Enable LaTeX rendering in Matplotlib</span>
+    <span class="c1">#     plt.rcParams[&#39;text.usetex&#39;] = True</span>
+
+    <span class="c1">#     # Create figure and axis</span>
+    <span class="c1">#     fig, ax = plt.subplots(figsize=(8, 8))</span>
+
+    <span class="c1">#     # Draw the block (component)</span>
+    <span class="c1">#     block = patches.FancyBboxPatch((0.4, 0.6), 0.3, 0.1, boxstyle=&quot;round,pad=0.1&quot;, </span>
+    <span class="c1">#                                     edgecolor=&quot;black&quot;, facecolor=&quot;skyblue&quot;, zorder=2)</span>
+    <span class="c1">#     ax.add_patch(block)</span>
+    <span class="c1">#     ax.text(0.55, 0.65, self.__class__.__name__, horizontalalignment=&#39;center&#39;, </span>
+    <span class="c1">#             verticalalignment=&#39;center&#39;, fontsize=20, fontweight=&#39;bold&#39;)</span>
+
+    <span class="c1">#     # Define positions for inputs, outputs, and parameters</span>
+    <span class="c1">#     input_pos = [0.2, 0.65]  # Position for input</span>
+    <span class="c1">#     output_pos = [0.8, 0.65]  # Position for output</span>
+
+    <span class="c1">#     # Inputs</span>
+    <span class="c1">#     if supply_connectors_names:</span>
+    <span class="c1">#         ax.annotate(&#39;&#39;, xy=(input_pos[0] + 0.1, input_pos[1]), xytext=(input_pos[0] - 0.05, input_pos[1]),</span>
+    <span class="c1">#                     fontsize=12, color=&#39;black&#39;,</span>
+    <span class="c1">#                     arrowprops=dict(facecolor=&#39;black&#39;, edgecolor=&#39;black&#39;, width=0.5, headwidth=8, shrink=0.05))</span>
+
+    <span class="c1">#          # Calculate spacing for inputs</span>
+    <span class="c1">#         num_inputs = len(supply_connectors_names)</span>
+    <span class="c1">#         vertical_spacing = 0.1</span>
+    <span class="c1">#         start_y = input_pos[1] - (num_inputs - 1) * vertical_spacing / 2</span>
+
+    <span class="c1">#         # List all inputs next to the arrow</span>
+    <span class="c1">#         for i, input_name in enumerate(supply_connectors_names):</span>
+    <span class="c1">#             y = start_y + i * vertical_spacing</span>
+    <span class="c1">#             ax.text(input_pos[0] - 0.15, y, f&#39;$\\mathbf{{{input_name}}}$&#39;, fontsize=17, color=&#39;black&#39;, verticalalignment=&#39;center&#39;)</span>
 
 
-        <span class="c1"># Plot formatting</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  <span class="c1"># Hide axis</span></div>
+    <span class="c1">#     # Outputs</span>
+    <span class="c1">#     if exhaust_connectors_names:</span>
+    <span class="c1">#         ax.annotate(&#39;&#39;, xy=(output_pos[0] + 0.15, output_pos[1]), xytext=(output_pos[0], output_pos[1]),</span>
+    <span class="c1">#                     fontsize=12, color=&#39;black&#39;,</span>
+    <span class="c1">#                     arrowprops=dict(facecolor=&#39;black&#39;, edgecolor=&#39;black&#39;, width=0.5, headwidth=8, shrink=0.05))</span>
 
+    <span class="c1">#         # Calculate spacing for outputs</span>
+    <span class="c1">#         num_outputs = len(exhaust_connectors_names)</span>
+    <span class="c1">#         vertical_spacing = 0.1</span>
+    <span class="c1">#         start_y = output_pos[1] - (num_outputs - 1) * vertical_spacing / 2</span>
+
+    <span class="c1">#         # List all outputs next to the arrow</span>
+    <span class="c1">#         for i, output_name in enumerate(exhaust_connectors_names):</span>
+    <span class="c1">#             y = start_y + i * vertical_spacing</span>
+    <span class="c1">#             ax.text(output_pos[0] + 0.2, y, f&#39;$\\mathbf{{{output_name}}}$&#39;, fontsize=17, color=&#39;black&#39;, verticalalignment=&#39;center&#39;)</span>
+
+
+    <span class="c1">#     # Plot formatting</span>
+    <span class="c1">#     ax.set_xlim(0, 1)</span>
+    <span class="c1">#     ax.set_ylim(0, 1)</span>
+    <span class="c1">#     ax.axis(&#39;off&#39;)  # Hide axis</span>
 
 
 

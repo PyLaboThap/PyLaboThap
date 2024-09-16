@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../../../search.html" /><link rel="next" title="Semi-Empirical Compressor Model Example" href="../../../../../../../notebooks/semi_empirical_cp_example.html" /><link rel="prev" title="Constant Isentropic Efficiency Compressor model" href="../constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html" />
+<link rel="index" title="Index" href="../../../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../../../search.html" /><link rel="next" title="Expander models" href="../../expander/expander_doc.html" /><link rel="prev" title="Constant isentropic efficiency compressor model" href="../constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Semi-empirical model of a volumetric compressor - PyLaboThap Documentation</title>
@@ -216,9 +216,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../base_component/base_component_doc.html">BaseComponent Class</a></li>
 <li class="toctree-l4 current has-children"><a class="reference internal" href="../../../models_doc.html">Steady-State Models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Steady-State Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l5 current has-children"><a class="reference internal" href="../../volumetric_machine_doc.html">Volumetric Machine</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Volumetric Machine</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l6 current has-children"><a class="reference internal" href="../compressor_doc.html">Compressor</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l7"><a class="reference internal" href="../constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant Isentropic Efficiency Compressor model</a></li>
+<li class="toctree-l6 current has-children"><a class="reference internal" href="../compressor_doc.html">Compressor models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l7"><a class="reference internal" href="../constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
 <li class="toctree-l7 current current-page"><a class="current reference internal" href="#">Semi-empirical model of a volumetric compressor</a></li>
+</ul>
+</li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../expander/expander_doc.html">Expander models</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Expander models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../expander/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
+<li class="toctree-l7"><a class="reference internal" href="../../expander/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric expander</a></li>
 </ul>
 </li>
 </ul>
@@ -279,12 +284,22 @@
 <h1>Semi-empirical model of a volumetric compressor<a class="headerlink" href="#semi-empirical-model-of-a-volumetric-compressor" title="Link to this heading">¶</a></h1>
 <section id="model-description">
 <h2>Model description<a class="headerlink" href="#model-description" title="Link to this heading">¶</a></h2>
-<p>The semi-empirical model of the expander is based on the model proposed by (V. Lemort et al., 2009). The following connectors, inputs, outputs, and parameters for this model are:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.semi_empirical.simulation_model.CompressorSE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">component.steady_state.volumetric_machine.compressor.semi_empirical.simulation_model.</span></span><span class="sig-name descname"><span class="pre">CompressorSE</span></span><a class="reference internal" href="../../../../../../../_modules/component/steady_state/volumetric_machine/compressor/semi_empirical/simulation_model.html#CompressorSE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.semi_empirical.simulation_model.CompressorSE" title="Link to this definition">¶</a></dt>
 <dd><p>Component: Volumetric compressor</p>
-<p>Model: Semi-empirical model</p>
+<p>Model: The model is based on the thesis of V. Lemort (2008) and is a semi-empirical model.</p>
+<p><strong>Descritpion</strong>:</p>
+<blockquote>
+<div><p>This model is used to simulate the performance of a volumetric compressor.
+The parameters of the model need to be calibrated with experimental datas to represent the real behavior of the compressor.</p>
+</div></blockquote>
+<p><strong>Assumptions</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Steady-state operation.</p></li>
+</ul>
+</div></blockquote>
 <p><strong>Connectors</strong>:</p>
 <blockquote>
 <div><p>su (MassConnector): Mass connector for the suction side.</p>
@@ -318,8 +333,8 @@
 <p><strong>Ouputs</strong>:</p>
 <blockquote>
 <div><p>eta_is: Isentropic efficiency. [-]</p>
-<p>h_ex: Exhaust side specific enthalpy. [J/kg]</p>
-<p>T_ex: Exhaust side temperature. [K]</p>
+<p>ex_h: Exhaust side specific enthalpy. [J/kg]</p>
+<p>ex_T: Exhaust side temperature. [K]</p>
 <p>W_dot_cp: Compressor power. [W]</p>
 <p>m_dot: Mass flow rate. [kg/s]</p>
 <p>epsilon_v: Volumetric efficiency. [-]</p>
@@ -330,8 +345,7 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <p>V. Lemort, “Contribution to the Characterization of Scroll Machines in Compressor and
-Expander Modes,” Dec. 2008. [Online]. Available: <a class="reference external" href="http://orbi.ulg.ac.be/">http://orbi.ulg.ac.be/</a>
-handle/2268/135317. ( <a class="reference external" href="../../../../../../../_static/pdf_files/PhD_Lemort.pdf">PDF</a> )</p>
+Expander Modes,” Dec. 2008. ( <a class="reference external" href="../../../../../../../_static/pdf_files/PhD_Lemort.pdf">PDF</a> )</p>
 </section>
 </section>
 
@@ -340,12 +354,12 @@ handle/2268/135317. ( <a class="reference external" href="../../../../../../../_
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../../../../../../../notebooks/semi_empirical_cp_example.html">
+          <a class="next-page" href="../../expander/expander_doc.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Semi-Empirical Compressor Model Example</div>
+                <div class="title">Expander models</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -356,7 +370,7 @@ handle/2268/135317. ( <a class="reference external" href="../../../../../../../_
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Constant Isentropic Efficiency Compressor model</div>
+                <div class="title">Constant isentropic efficiency compressor model</div>
                 
               </div>
             </a>

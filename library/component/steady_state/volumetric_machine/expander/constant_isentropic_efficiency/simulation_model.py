@@ -14,6 +14,15 @@ class ExpanderCstEff(BaseComponent):
 
         Model: Constant isentropic efficiency model
 
+        **Descritpion**:
+
+            This model determines the exhqust specific enthalpy and the exhaust temperature of an expander. This model can be used for on-design models of systems.
+
+        **Assumptions**:
+
+            - Steady-state operation.
+            - Isentropic efficiency stays constant for all the conditions.
+
         **Connectors**:
 
             su (MassConnector): Mass connector for the suction side.

@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../../../search.html" /><link rel="next" title="Semi-empirical model of a volumetric compressor" href="../semi_empirical/semi_empirical_doc.html" /><link rel="prev" title="Compressor" href="../compressor_doc.html" />
+<link rel="index" title="Index" href="../../../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../../../search.html" /><link rel="next" title="Semi-empirical model of a volumetric compressor" href="../semi_empirical/semi_empirical_doc.html" /><link rel="prev" title="Compressor models" href="../compressor_doc.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Constant Isentropic Efficiency Compressor model - PyLaboThap Documentation</title>
+        <title>Constant isentropic efficiency compressor model - PyLaboThap Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../../../_static/custom.css?v=173837f2" />
@@ -216,9 +216,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../base_component/base_component_doc.html">BaseComponent Class</a></li>
 <li class="toctree-l4 current has-children"><a class="reference internal" href="../../../models_doc.html">Steady-State Models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Steady-State Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l5 current has-children"><a class="reference internal" href="../../volumetric_machine_doc.html">Volumetric Machine</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Volumetric Machine</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l6 current has-children"><a class="reference internal" href="../compressor_doc.html">Compressor</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l7 current current-page"><a class="current reference internal" href="#">Constant Isentropic Efficiency Compressor model</a></li>
+<li class="toctree-l6 current has-children"><a class="reference internal" href="../compressor_doc.html">Compressor models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l7 current current-page"><a class="current reference internal" href="#">Constant isentropic efficiency compressor model</a></li>
 <li class="toctree-l7"><a class="reference internal" href="../semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric compressor</a></li>
+</ul>
+</li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../expander/expander_doc.html">Expander models</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Expander models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../expander/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
+<li class="toctree-l7"><a class="reference internal" href="../../expander/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric expander</a></li>
 </ul>
 </li>
 </ul>
@@ -276,11 +281,48 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="constant-isentropic-efficiency-compressor-model">
-<h1>Constant Isentropic Efficiency Compressor model<a class="headerlink" href="#constant-isentropic-efficiency-compressor-model" title="Link to this heading">¶</a></h1>
-<div class="side-by-side"><a class="reference internal image-reference" href="../../../../../../../_images/constant_isentropic_efficiency_compressor_in_out.png"><img alt="Description of the plot" src="../../../../../../../_images/constant_isentropic_efficiency_compressor_in_out.png" style="width: 100%;" /></a>
-<a class="reference internal image-reference" href="../../../../../../../_images/constant_isentropic_efficiency_compressor_connectors.png"><img alt="Description of the plot" src="../../../../../../../_images/constant_isentropic_efficiency_compressor_connectors.png" style="width: 100%;" /></a>
-</div><section id="model-description">
+<h1>Constant isentropic efficiency compressor model<a class="headerlink" href="#constant-isentropic-efficiency-compressor-model" title="Link to this heading">¶</a></h1>
+<section id="model-description">
 <h2>Model description<a class="headerlink" href="#model-description" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.</span></span><span class="sig-name descname"><span class="pre">CompressorCstEff</span></span><a class="reference internal" href="../../../../../../../_modules/component/steady_state/volumetric_machine/compressor/constant_isentropic_efficiency/simulation_model.html#CompressorCstEff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff" title="Link to this definition">¶</a></dt>
+<dd><p>Component: Compressor</p>
+<p>Model: Constant isentropic efficiency</p>
+<p><strong>Descritpion</strong>:</p>
+<blockquote>
+<div><p>This model determines the exhqust specific enthalpy and the exhaust temperature of a compressor. This model can be used for on-design models of systems.</p>
+</div></blockquote>
+<p><strong>Assumptions</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Steady-state operation.</p></li>
+<li><p>Isentropic efficiency stays constant for all the conditions.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Connectors</strong>:</p>
+<blockquote>
+<div><p>su (MassConnector): Mass connector for the suction side.</p>
+<p>ex (MassConnector): Mass connector for the exhaust side.</p>
+</div></blockquote>
+<p><strong>Parameters</strong>:</p>
+<blockquote>
+<div><p>eta_is: Isentropic efficiency. [-]</p>
+</div></blockquote>
+<p><strong>Inputs</strong>:</p>
+<blockquote>
+<div><p>su_p: Suction side pressure. [Pa]</p>
+<p>su_T: Suction side temperature. [K]</p>
+<p>ex_p: Exhaust side pressure. [Pa]</p>
+<p>su_fluid: Suction side fluid. [-]</p>
+</div></blockquote>
+<p><strong>Ouputs</strong>:</p>
+<blockquote>
+<div><p>ex_h: Exhaust side specific enthalpy. [J/kg]</p>
+<p>ex_T: Exhaust side temperature. [K]</p>
+</div></blockquote>
+</dd></dl>
+
 <p>The constant isentropic efficiency model is a simple model based on the assumption that the isentropic efficiency stays constant.</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
@@ -317,7 +359,7 @@ the exhaust outlet.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Compressor</div>
+                <div class="title">Compressor models</div>
                 
               </div>
             </a>
@@ -351,8 +393,11 @@ the exhaust outlet.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Constant Isentropic Efficiency Compressor model</a><ul>
-<li><a class="reference internal" href="#model-description">Model description</a></li>
+<li><a class="reference internal" href="#">Constant isentropic efficiency compressor model</a><ul>
+<li><a class="reference internal" href="#model-description">Model description</a><ul>
+<li><a class="reference internal" href="#component.steady_state.volumetric_machine.compressor.constant_isentropic_efficiency.simulation_model.CompressorCstEff"><code class="docutils literal notranslate"><span class="pre">CompressorCstEff</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>

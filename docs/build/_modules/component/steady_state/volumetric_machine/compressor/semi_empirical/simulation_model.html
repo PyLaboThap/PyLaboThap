@@ -215,9 +215,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../documentation/component/steady_state/base_component/base_component_doc.html">BaseComponent Class</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/models_doc.html">Steady-State Models</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Steady-State Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5 has-children"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/volumetric_machine_doc.html">Volumetric Machine</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Volumetric Machine</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6 has-children"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/compressor_doc.html">Compressor</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l7"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant Isentropic Efficiency Compressor model</a></li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/compressor_doc.html">Compressor models</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Compressor models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
 <li class="toctree-l7"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric compressor</a></li>
+</ul>
+</li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/expander/expander_doc.html">Expander models</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Expander models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/expander/constant_isentropic_efficiency/constant_isentropic_efficiency_doc.html">Constant isentropic efficiency compressor model</a></li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/expander/semi_empirical/semi_empirical_doc.html">Semi-empirical model of a volumetric expander</a></li>
 </ul>
 </li>
 </ul>
@@ -282,12 +287,11 @@
 <span class="kn">from</span> <span class="nn">connector.heat_connector</span> <span class="kn">import</span> <span class="n">HeatConnector</span>
 
 <span class="kn">from</span> <span class="nn">CoolProp.CoolProp</span> <span class="kn">import</span> <span class="n">PropsSI</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">time</span>
-
-<span class="c1"># TO DO (for the model in general not for the purpose of the off-design model of the CB):</span>
-<span class="c1">#Find a way so that it can take as input either m_dot or N_rot</span>
 
 <div class="viewcode-block" id="CompressorSE">
 <a class="viewcode-back" href="../../../../../../documentation/component/steady_state/models/volumetric_machine/compressor/semi_empirical/semi_empirical_doc.html#component.steady_state.volumetric_machine.compressor.semi_empirical.simulation_model.CompressorSE">[docs]</a>
@@ -295,7 +299,16 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Component: Volumetric compressor</span>
 
-<span class="sd">        Model: Semi-empirical model</span>
+<span class="sd">        Model: The model is based on the thesis of V. Lemort (2008) and is a semi-empirical model.</span>
+
+<span class="sd">        **Descritpion**:</span>
+
+<span class="sd">            This model is used to simulate the performance of a volumetric compressor. </span>
+<span class="sd">            The parameters of the model need to be calibrated with experimental datas to represent the real behavior of the compressor.</span>
+
+<span class="sd">        **Assumptions**:</span>
+
+<span class="sd">            - Steady-state operation.</span>
 
 <span class="sd">        **Connectors**:</span>
 
@@ -349,9 +362,9 @@
 
 <span class="sd">            eta_is: Isentropic efficiency. [-]</span>
 
-<span class="sd">            h_ex: Exhaust side specific enthalpy. [J/kg]</span>
+<span class="sd">            ex_h: Exhaust side specific enthalpy. [J/kg]</span>
 
-<span class="sd">            T_ex: Exhaust side temperature. [K]</span>
+<span class="sd">            ex_T: Exhaust side temperature. [K]</span>
 
 <span class="sd">            W_dot_cp: Compressor power. [W]</span>
 
@@ -366,7 +379,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span> <span class="o">=</span> <span class="n">WorkConnector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span> <span class="o">=</span> <span class="n">HeatConnector</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Used in check_calculablle to see if all of the required inputs are set</span>
+    <span class="k">def</span> <span class="nf">get_required_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sync_inputs</span><span class="p">()</span>
             <span class="c1"># Return a list of required inputs</span>
             <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;su_p&#39;</span><span class="p">,</span> <span class="s1">&#39;su_T&#39;</span><span class="p">,</span> <span class="s1">&#39;ex_p&#39;</span><span class="p">,</span> <span class="s1">&#39;N_rot&#39;</span><span class="p">,</span> <span class="s1">&#39;T_amb&#39;</span><span class="p">,</span> <span class="s1">&#39;su_fluid&#39;</span><span class="p">]</span>
@@ -388,7 +401,7 @@
 
     <span class="k">def</span> <span class="nf">set_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set inputs directly through a dictionary and update connector properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># This line merges the keyword arguments (&#39;kwargs&#39;) passed to the &#39;set_inputs()&#39; method into the eisting &#39;self.inputs&#39; dictionary.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Update the connectors based on the new inputs</span>
         <span class="k">if</span> <span class="s1">&#39;su_fluid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
@@ -621,7 +634,6 @@
             <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_T_guess</span><span class="p">):</span>
                 <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_m_guess</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="c1"># Guesses for the initial values</span>
                     <span class="n">T_w_guess</span> <span class="o">=</span> <span class="n">x_T_guess</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">PropsSI</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span> <span class="c1">#x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb</span>
                     <span class="n">m_dot_guess</span> <span class="o">=</span> <span class="n">x_m_guess</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;V_s&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;N_rot&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">60</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">D</span> <span class="c1">#ff_guess[k]*self.V_s*self.N_rot/60*PropsSI(&#39;D&#39;, &#39;P&#39;, self.su.p, &#39;H&#39;, self.su.h, self.su.fluid) #initial value for M_dot</span>
@@ -632,7 +644,6 @@
                     <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_ex2_guess</span><span class="p">,</span> <span class="n">T_w_guess</span><span class="p">,</span> <span class="n">P_ex2_guess</span><span class="p">,</span> <span class="n">m_dot_guess</span><span class="p">]</span>
                     <span class="c1">#--------------------------------------------------------------------------</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solving...&quot;</span><span class="p">)</span>
                         <span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">)</span>
                         <span class="n">res_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">)</span>
                     <span class="k">except</span><span class="p">:</span>
@@ -643,11 +654,12 @@
                     <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">convergence</span> <span class="o">=</span> <span class="n">stop</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convergence</span> <span class="o">=</span> <span class="n">stop</span>
                 
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_connectors</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_connectors</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CompressorSE could not be solved. Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solved</span> <span class="o">=</span> <span class="kc">False</span>
@@ -658,10 +670,12 @@
     <span class="k">def</span> <span class="nf">update_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the connectors with the calculated values.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_fluid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">su</span><span class="o">.</span><span class="n">fluid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_h</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h_ex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P_ex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ex</span><span class="o">.</span><span class="n">set_m_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dot</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">W_cp</span><span class="o">.</span><span class="n">set_W_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W_dot_cp</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_Q_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q_dot_amb</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Q_amb</span><span class="o">.</span><span class="n">set_T_hot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_w</span><span class="p">)</span>
