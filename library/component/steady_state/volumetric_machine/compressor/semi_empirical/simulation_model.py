@@ -11,18 +11,26 @@ from connector.work_connector import WorkConnector
 from connector.heat_connector import HeatConnector
 
 from CoolProp.CoolProp import PropsSI
+from matplotlib import pyplot as plt
+import os
 from scipy.optimize import fsolve
 import numpy as np
 import time
-
-# TO DO (for the model in general not for the purpose of the off-design model of the CB):
-#Find a way so that it can take as input either m_dot or N_rot
 
 class CompressorSE(BaseComponent):
     """
         Component: Volumetric compressor
 
-        Model: Semi-empirical model
+        Model: The model is based on the thesis of V. Lemort (2008) and is a semi-empirical model.
+
+        **Descritpion**:
+
+            This model is used to simulate the performance of a volumetric compressor. 
+            The parameters of the model need to be calibrated with experimental datas to represent the real behavior of the compressor.
+
+        **Assumptions**:
+
+            - Steady-state operation.
 
         **Connectors**:
 
@@ -76,9 +84,9 @@ class CompressorSE(BaseComponent):
 
             eta_is: Isentropic efficiency. [-]
 
-            h_ex: Exhaust side specific enthalpy. [J/kg]
+            ex_h: Exhaust side specific enthalpy. [J/kg]
 
-            T_ex: Exhaust side temperature. [K]
+            ex_T: Exhaust side temperature. [K]
 
             W_dot_cp: Compressor power. [W]
 
@@ -93,7 +101,7 @@ class CompressorSE(BaseComponent):
         self.W_cp = WorkConnector()
         self.Q_amb = HeatConnector()
 
-    def get_required_inputs(self): # Used in check_calculablle to see if all of the required inputs are set
+    def get_required_inputs(self):
             self.sync_inputs()
             # Return a list of required inputs
             return ['su_p', 'su_T', 'ex_p', 'N_rot', 'T_amb', 'su_fluid']
@@ -115,7 +123,7 @@ class CompressorSE(BaseComponent):
 
     def set_inputs(self, **kwargs):
         """Set inputs directly through a dictionary and update connector properties."""
-        self.inputs.update(kwargs) # This line merges the keyword arguments ('kwargs') passed to the 'set_inputs()' method into the eisting 'self.inputs' dictionary.
+        self.inputs.update(kwargs)
 
         # Update the connectors based on the new inputs
         if 'su_fluid' in self.inputs:
@@ -348,7 +356,6 @@ class CompressorSE(BaseComponent):
             while not stop and j < len(x_T_guess):
                 k = 0
                 while not stop and k < len(x_m_guess):
-                    print(f"Attempt {j+1} - {k+1}")
                     # Guesses for the initial values
                     T_w_guess = x_T_guess[j]*PropsSI('T', 'P', self.ex.p, 'S', self.su.s, self.su.fluid)+5 #x_T_guess[j]*self.su.T+(1-x_T_guess[j])*self.T_amb
                     m_dot_guess = x_m_guess[k]*self.params['V_s']*self.inputs['N_rot']/60*self.su.D #ff_guess[k]*self.V_s*self.N_rot/60*PropsSI('D', 'P', self.su.p, 'H', self.su.h, self.su.fluid) #initial value for M_dot
@@ -359,7 +366,6 @@ class CompressorSE(BaseComponent):
                     x = [T_ex2_guess, T_w_guess, P_ex2_guess, m_dot_guess]
                     #--------------------------------------------------------------------------
                     try:
-                        print("Solving...")
                         fsolve(self.System, x, args = args)
                         res_norm = np.linalg.norm(self.res)
                     except:
@@ -370,11 +376,12 @@ class CompressorSE(BaseComponent):
                     k = k + 1
                 j = j + 1
 
-                self.convergence = stop
+            self.convergence = stop
                 
-            self.update_connectors()
+            if self.convergence:
+                self.update_connectors()
+                self.solved = True
 
-            self.solved = True
         except Exception as e:
             print(f"CompressorSE could not be solved. Error: {e}")
             self.solved = False
@@ -385,10 +392,12 @@ class CompressorSE(BaseComponent):
     def update_connectors(self):
         """Update the connectors with the calculated values."""
         self.su.set_m_dot(self.m_dot)
+
         self.ex.set_fluid(self.su.fluid)
         self.ex.set_h(self.h_ex)
         self.ex.set_p(self.P_ex)
         self.ex.set_m_dot(self.m_dot)
+
         self.W_cp.set_W_dot(self.W_dot_cp)
         self.Q_amb.set_Q_dot(self.Q_dot_amb)
         self.Q_amb.set_T_hot(self.T_w)
