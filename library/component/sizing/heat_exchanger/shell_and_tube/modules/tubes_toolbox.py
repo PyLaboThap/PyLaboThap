@@ -189,7 +189,7 @@ def carbon_steel_pipe_thickness(D_o_vect, tube_T, ext_p, int_p):
 
     for i in range(len(D_o_vect)):
         D_o = D_o_vect[i]
-        thickness_dic[D_o] = min(thickness_df.loc[str(D_o)].values)
+        thickness_dic[str(D_o)] = min(thickness_df.loc[D_o].values)
 
     return thickness_dic
 

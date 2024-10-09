@@ -53,7 +53,7 @@ from central_spacing_comp import find_divisors_between_bounds
 from library.connector.mass_connector import MassConnector
 from component.base_component import BaseComponent
 
-from library.component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.simulation_model_AS import HeatExchangerMB
+from library.component.steady_state.heat_exchanger.moving_boundary.charge_sensitive.simulation_model_AS_DP import HeatExchangerMB
 
 import pandas as pd
 import random
@@ -85,6 +85,8 @@ class ShellAndTubeSizingOpt(BaseComponent):
 
             self.score = None
             self.Q = None
+            self.DP_h = None
+            self.DP_c = None
 
             self.personnal_best_position = None
             self.personnal_best_score = None
@@ -218,14 +220,22 @@ class ShellAndTubeSizingOpt(BaseComponent):
 
                 Flow_Type = self.params['Flow_Type'], H_DP_ON = self.params['H_DP_ON'], C_DP_ON = self.params['C_DP_ON'], n_disc = self.params['n_disc']) 
 
-            HX.set_DP()
-            
+            Corr_H_DP = "pipe_internal_DP"
+            Corr_C_DP = "shell_DP_kern"
+
+            # HX.set_DP(DP_type="User-Defined", UD_H_DP=1e4, UD_C_DP=1e4)
+            HX.set_DP(DP_type = "Correlation", Corr_H=Corr_H_DP, Corr_C=Corr_C_DP)    
+
             try: 
                 HX.solve()
                 self.Q = HX.Q
+                self.DP_h = HX.DP_h
+                self.DP_c = HX.DP_c
                 return HX.Q
             except:
                 self.Q = 0
+                self.DP_h = 0
+                self.DP_c = 0
                 return 0
 
     def __init__(self):
@@ -437,6 +447,8 @@ class ShellAndTubeSizingOpt(BaseComponent):
         self.global_best_score = min(self.personal_best_scores)
         self.global_best_position = self.personal_best_positions[np.argmin(self.personal_best_scores)]
         self.global_best_Q = self.particles[np.argmin(self.personal_best_scores)].Q
+        self.global_best_DP_h = self.particles[np.argmin(self.personal_best_scores)].DP_h
+        self.global_best_DP_c = self.particles[np.argmin(self.personal_best_scores)].DP_c
         self.best_particle = copy.copy(self.particles[np.argmin(self.personal_best_scores)])
 
         # for i in range(num_particles):
@@ -460,6 +472,8 @@ class ShellAndTubeSizingOpt(BaseComponent):
 
                 print(f"New score ({i}) : {self.particles[i].score}")
                 print(f"Related Q ({i}) : {self.particles[i].Q}")
+                print(f"Related DP_h ({i}) : {self.particles[i].DP_h}")
+                print(f"Related DP_c ({i}) : {self.particles[i].DP_c}")
                 print(f"New position ({i}) : {self.particles[i].position}")
                 print(f"New velocity ({i}) : {self.particles[i].velocity}")
                 print(f"\n")
@@ -591,12 +605,15 @@ class ShellAndTubeSizingOpt(BaseComponent):
                 self.global_best_score = new_pot_global_best_score
                 self.global_best_position = self.personal_best_positions[np.argmin(self.personal_best_scores)]
                 self.global_best_Q = self.particles[np.argmin(self.personal_best_scores)].Q
+                self.global_best_DP_h = self.particles[np.argmin(self.personal_best_scores)].DP_h
+                self.global_best_DP_c = self.particles[np.argmin(self.personal_best_scores)].DP_c            
                 self.best_particle = copy.copy(self.particles[np.argmin(self.personal_best_scores)])
 
 
             # Optionally, print progress
             print("===========================")
             print(f"Iteration {iteration+1}/{max_iterations}, Global Best Score: {self.global_best_score}, Related Q: {self.global_best_Q}")
+            print(f"Related DP_h: {self.global_best_DP_h}, Related DP_c: {self.global_best_DP_c}")
             print(f"Best Position : {self.global_best_position}")
         
 
@@ -605,7 +622,7 @@ class ShellAndTubeSizingOpt(BaseComponent):
     
     def opt_size(self):
 
-        return self.particle_swarm_optimization(objective_function = self.Tube_Mass , bounds = self.bounds, num_particles = 5, num_dimensions = len(self.opt_vars), max_iterations = 15, inertia_weight = 0.6,
+        return self.particle_swarm_optimization(objective_function = self.Tube_Mass , bounds = self.bounds, num_particles = 50, num_dimensions = len(self.opt_vars), max_iterations = 15, inertia_weight = 0.6,
                                          cognitive_constant = 1, social_constant = 1, constraints = [self.constraint_Q_dot], penalty_factor = 1)
 
         
@@ -673,7 +690,6 @@ choice_vectors = {
                         84, 90, 96, 108, 120]
 """
 
-
 HX_test.set_choice_vectors(choice_vectors)
 
 """
@@ -703,6 +719,8 @@ ex_S.set_properties(T = 273.15 + 27.29, # K
                     m_dot = 1000, # kg/s
                     fluid = 'Water'
                     )
+
+"From Aitor Code"
 
 su_T = MassConnector()
 su_T.set_properties(T = 273.15 + 38.43, # K

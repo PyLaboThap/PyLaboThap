@@ -36,7 +36,7 @@ HX = HeatExchangerMB('Shell&Tube')
 # DECAGONE Evaporator case
 HX.set_inputs(
     # First fluid
-    Hsu_fluid = 'INCOMP::S800',
+    Hsu_fluid = 'INCOMP::T66',
     Hsu_T = 310 + 273.15, # K
     Hsu_p = 3.25*1e5, # Pa
     Hsu_m_dot = 19.42, # kg/s
@@ -45,7 +45,7 @@ HX.set_inputs(
     Csu_fluid = 'Cyclopentane',
     Csu_T = 95.1 + 273.15, # K
     Csu_p = 31.5*1e5, # Pa
-    Csu_m_dot = 13.84, # kg/s  # Make sure to include fluid information
+    Csu_m_dot = 13.84, # kg/s  # Make sure to include fluid informastion
 )
 
 "Geometry Loading"
@@ -143,11 +143,10 @@ HX.set_parameters(
 
     Shell_Side = 'H', # 26
 
-    Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True, n_disc = 100) # 30
+    Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True, n_disc = 50) # 30
 
 HX.set_DP()
 
 "Solve the component"
 HX.solve()
-
 HX.plot_cells()

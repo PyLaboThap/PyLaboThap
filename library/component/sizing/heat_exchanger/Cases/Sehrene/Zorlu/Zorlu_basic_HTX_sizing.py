@@ -22,12 +22,12 @@ params = {'Flow_Type':flow_config}
 if flow_config == "Shell&Tube":
     params['n_series'] = 2
 
-case = case_3
+case = case_1
 
 if case == case_1:
     data = {
             "Evap_HP" : {
-                        "T_c_i" : 36.65,
+                        "T_c_i" : 108.5,
                         "T_c_o" : 109.5,
                         "T_h_i" : 113.1,
                         "T_h_o" : 111.5,

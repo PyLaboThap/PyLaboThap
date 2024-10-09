@@ -111,7 +111,7 @@ def d_h(Tube_OD, pitch_ratio, tube_layout): # Hydraulic diameter (m)
 
 #%%
 
-def shell_htc_DP_kern(m_dot, T_wall, T_in, P_in, fluid, params):
+def shell_htc_kern(m_dot, T_wall, T_in, P_in, fluid, params):
     """
     Inputs
     ----------
@@ -164,6 +164,47 @@ def shell_htc_DP_kern(m_dot, T_wall, T_in, P_in, fluid, params):
 
     h = Nu*k/D_hydro
     
+    return h
+
+def shell_DP_kern(m_dot, T_wall, T_in, P_in, fluid, params):
+    """
+    Inputs
+    ----------
+    
+    m_dot  : Flow rate [kg/s]
+    T_wall : Wall Temperature [K]
+    T_in   : Inlet Temperature [K]
+    P_in   : Inlet pressure [Pa]
+    fluid  : fluid name [-]
+    params : HTX parameters [-]
+
+    Outputs
+    -------
+    
+    h = shell side heat transfer coefficient [W/(m^2 * K)]    
+    DP = shell side pressure drop [Pa]
+    
+    References
+    -------
+    Process Heat Transfer - D. Q. Kern
+    """
+    
+    "1) HTC"
+    
+    rho = PropsSI('D','T',T_in, 'P',P_in,fluid)
+    mu = PropsSI('V','T',T_in, 'P',P_in,fluid)
+    Pr = PropsSI('PRANDTL','T',T_in, 'P',P_in,fluid)
+    k = PropsSI('L','T',T_in, 'P',P_in,fluid)
+    
+    mu_w = PropsSI('V','T',T_wall,'P',P_in,fluid)
+
+    S_T = s_max(params['Tube_OD'], params['pitch_ratio'], params['Shell_ID'], params['central_spacing'], params['tube_layout']) # m^2
+    D_hydro = d_h(params['Tube_OD'], params['pitch_ratio'], params['tube_layout'])
+
+    V_t = m_dot/(S_T*rho)
+    
+    Re = rho*V_t*(D_hydro/mu)
+    
     "2) DP"
     
     f = np.e**(0.576 - 0.19*np.log(Re)) # [-] : Friction coefficient
@@ -172,7 +213,8 @@ def shell_htc_DP_kern(m_dot, T_wall, T_in, P_in, fluid, params):
 
     DP = (f*G**2 * params['Shell_ID'] * (params['cross_passes'] + 1))/(2*rho*D_hydro*phi_s)
     
-    return h, DP
+    return DP
+
 #%%
 
 def shell_htc_donohue(m_dot, T_in, P_in, fluid, params):
@@ -190,7 +232,6 @@ def shell_htc_donohue(m_dot, T_in, P_in, fluid, params):
     -------
     
     h = shell side heat transfer coefficient [W/(m^2 * K)]    
-    DP = shell side pressure drop [Pa]
     
     References
     -------
@@ -219,6 +260,46 @@ def shell_htc_donohue(m_dot, T_in, P_in, fluid, params):
     
     h = Nu*k/params['Tube_OD']   
     
+    return h
+
+def shell_DP_donohue(m_dot, T_in, P_in, fluid, params):
+    """
+    Inputs
+    ----------
+    
+    m_dot  : Flow rate [kg/s]
+    T_in   : Inlet Temperature [K]
+    P_in   : Inlet pressure [Pa]
+    fluid  : fluid name [-]
+    params : HTX geometrical parameters [-]
+
+    Outputs
+    -------
+    
+    DP = shell side pressure drop [Pa]
+    
+    References
+    -------
+    Process Heat Transfer - D. Q. Kern
+    """
+    
+    rho = PropsSI('D','T',T_in, 'P',P_in,fluid)
+    mu = PropsSI('V','T',T_in, 'P',P_in,fluid)
+    Pr = PropsSI('PRANDTL','T',T_in, 'P',P_in,fluid)
+    k = PropsSI('L','T',T_in, 'P',P_in,fluid)
+    
+    S_T = s_max(params['Tube_OD'], params['pitch_ratio'], params['Shell_ID'], params['central_spacing'], params['tube_layout']) # m^2
+    D_hydro = d_h(params['Tube_OD'], params['pitch_ratio'], params['tube_layout'])
+    
+    V_t = m_dot/(S_T*rho)
+        
+    S_L = s_L(params['Baffle_cut'], params['Shell_ID'], params['n_tubes'], params['Tube_OD']) # m^2
+    V_L = m_dot/(S_L*rho)
+    
+    V_R = (V_L*V_t)**(1/2)
+    
+    Re = rho*V_R*(params['Tube_OD']/mu)
+    
     "2) DP"
     
     f = np.e**(0.576 - 0.19*np.log(Re)) # [-] : Friction coefficient
@@ -227,7 +308,8 @@ def shell_htc_donohue(m_dot, T_in, P_in, fluid, params):
 
     DP = (f*G**2 * params['Shell_ID'] * (params['cross_passes'] + 1))/(2*rho*D_hydro*phi_s)
     
-    return h, DP
+    return DP
+
 
 #%%
 
@@ -356,9 +438,12 @@ def shell_bell_delaware_htc(m_dot_shell, T_shell, T_shell_w, P_shell, shell_flui
     cp = PropsSI('C','T',T_shell, 'P',P_shell,shell_fluid)
     Pr = PropsSI('PRANDTL','T',T_shell, 'P',P_shell,shell_fluid)
 
-    # Wall fluid thermodynamical properties
-    mu_w = PropsSI('V','T',T_shell_w, 'P',P_shell,shell_fluid)
-    
+    try:
+        # Wall fluid thermodynamical properties
+        mu_w = PropsSI('V','T',T_shell_w, 'P',P_shell,shell_fluid)
+    except: 
+        mu_w = PropsSI('V','T',T_shell, 'P',P_shell,shell_fluid)
+
     # Effective sections and hydraulic diameter
     S_T = s_max(params['Tube_OD'], params['pitch_ratio'], params['Shell_ID'], params['central_spacing'], params['tube_layout']) # m^2
     S_L = s_L(params['Baffle_cut'], params['Shell_ID'], params['n_tubes'], params['Tube_OD']) # m^2

@@ -5,62 +5,109 @@ Created on Fri May 10 14:31:24 2024
 @author: Basile
 """
 
-from Port.Mass_connector import Mass_connector
+from connector.mass_connector import MassConnector
 from CoolProp.CoolProp import PropsSI
 import numpy as np
+from component.base_component import BaseComponent
 
-class Mixer(object):
-    
-    class geom():
-            pass 
-
-    def __init__(self, geom):
-        
-        
-        "Status variables"
-        self.calculable = None
-        self.parametrized = None
-        self.defined = False
-        
-        "Geometry sub-object"
-        self.geom = geom # parameters 
-        
+class Mixer(BaseComponent): 
+    """
+    Component: Mixer
+    -----------------------------------------------------------
+    Connectors:
+        su (array of MassConnector): Mass connectors for the supply side.
+        ex (MassConnector): Mass connector for the exhaust side.
+    -----------------------------------------------------------
+    Parameters:
+        n_inlet : Number of supply inlets
+    -----------------------------------------------------------
+    Inputs:
+        su_p: Supply side pressures (shall all be the same).
+        su_h: Supply side enthalpies.
+        su_m_dot: Supply side flowrates.
+        su_fluid: Suction side fluids (no mixture for now, shall be the same).
+    -----------------------------------------------------------
+    Ouputs:
+        ex_p: Exhaust side pressure (same as inlet pressures).
+        ex_h: Exhaust side enthalpy (from conservation of internal energy).
+        ex_m_dot: Exhaust side flowrate (sum of all inlet flowrates).
+        ex_fluid: Exhaust side fluid (no mixture for now).
+    """
+    def __init__(self, n_inlets):
+                
         "Input"
-        self.point_su = np.full(geom.n_inlet, None)
+        self.su = np.full(n_inlets, MassConnector())
+
+        self.params['n_inlets'] = n_inlets
 
         "Outputs"
-        self.point_ex = [None]
-                
-#%%    
-    def check_calculable(self):
-        if self.point_su[0] != None and self.point_su[1] != None:
-            if (self.point_su[0].completely_known) and (self.point_su[1].completely_known):
-                self.calculable = True
+        self.ex = MassConnector()
+
+    def get_required_inputs(self):
+        if self.inputs == {}:
+            for i in range(self.params['n_inlets']):
+                if self.su[i].fluid is not None:
+                    self.inputs['su_'+ str(i) +'_fluid'] = self.su[i].fluid
+                if self.su[i].T is not None:
+                    self.inputs['su_'+ str(i) +'_T'] = self.su[i].T
+                elif self.su[i].h is not None:
+                    self.inputs['su_'+ str(i) +'_h'] = self.su[i].h
+                if self.su[i].p is not None:
+                    self.inputs['su_'+ str(i) +'_p'] = self.su[i].p
+                if self.su[i].m_dot is not None:
+                    self.inputs['su_'+ str(i) +'_m_dot'] = self.su[i].m_dot
         
-    def check_parametrized(self):
-        if self.geom != None:
-            self.parametrized = True
-           
-#%%
-    def set_parameters(self, **kwargs):
-            """
-            Set parameters of the heat exchanger.
+        if self.inputs != {}:
+            for i in range(self.params['n_inlets']):
+                self.su[i].set_fluid(self.inputs['su_'+ str(i) +'_fluid'])
+                if ('su_'+ str(i) +'_T') in self.inputs:
+                    self.su[i].set_T(self.inputs['su_'+ str(i) +'_T'])
+                elif ('su_'+ str(i) +'_h') in self.inputs:
+                    self.su[i].set_h(self.inputs['su_'+ str(i) +'_h'])
+                if ('su_'+ str(i) +'_p') in self.inputs:
+                    self.su[i].set_p(self.inputs['su_'+ str(i) +'_p'])
+                if ('su_'+ str(i) +'_m_dot') in self.inputs:
+                    self.su[i].set_m_dot(self.inputs['su_'+ str(i) +'_m_dot'])
+
+        req_inputs = []
+        for i in range(self.params['n_inlets']):
+            req_inputs.append('su_'+str(i)+'_p')
+            req_inputs.append('su_'+str(i)+'_h')
+            req_inputs.append('su_'+str(i)+'_fluid')
+            req_inputs.append('su_'+str(i)+'_m_dot')
+
+        return req_inputs
     
-            Parameters
-            ----------
-            **kwargs : dict
-                Key-value pairs representing parameters and their values.
-                
-                Example of call : heat_exchanger.set_parameters(D_o=0.05, t=0.002, H_core=2.0)
-            """
-            for key, value in kwargs.items():
-                if hasattr(self, key):
-                    setattr(self, key, value)
-                else:
-                    print(f"Warning: Parameter '{key}' not found in the heat exchanger.")
-            
-            self.check_parametrized()
-            
+    def get_required_parameters(self):
+        return [
+            'n_inlets',
+        ]
+    
+    def print_setup(self):
+        print("=== Mixer Setup ===")
+        print("Connectors:")
+
+        for i in range(self.params['n_inlets']):
+            print(f"  - su ({i}): fluid={self.su[i].fluid}, T={self.su[i].T}, p={self.su[i].p}, m_dot={self.su[i].m_dot}")
+
+        print(f"  - ex: fluid={self.ex.fluid}, T={self.ex.T}, p={self.ex.p}, m_dot={self.ex.m_dot}")
+
+        print("\nInputs:")
+        for input in self.get_required_inputs():
+            if input in self.inputs:
+                print(f"  - {input}: {self.inputs[input]}")
+            else:
+                print(f"  - {input}: Not set")
+
+        print("\nParameters:")
+        for param in self.get_required_parameters():
+            if param in self.params:
+                print(f"  - {param}: {self.params[param]}")
+            else:
+                print(f"  - {param}: Not set")
+
+        print("======================")
+
 #%%
 
     def solve(self):
@@ -74,7 +121,7 @@ class Mixer(object):
         
         "2) Compute output"
         
-        self.point_ex[0] = Mass_connector()
+        self.point_ex[0] = MassConnector()
         self.point_ex[0].set_fluid(self.point_su[0].fluid)
         self.point_ex[0].set_p(self.point_su[0].p)
         
