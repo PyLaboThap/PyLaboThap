@@ -89,6 +89,7 @@ class PCHESizingOpt(BaseComponent):
         'C_Corr' : {"1P" : "Gnielinski", "SC" : "Gnielinski"},
         'H_DP'   : {"1P" : "Gnielinski_DP", "SC" : "Gnielinski_DP"},
         'C_DP'   : {"1P" : "Gnielinski_DP", "SC" : "Gnielinski_DP"},
+        'obj': 'cost',
     }
 
     def __init__(self):
@@ -227,7 +228,8 @@ class PCHESizingOpt(BaseComponent):
 
         PF = 1
 
-        # Objective Function : HX Mass
+        # Masse toujours calculée (utile pour le rapport final / export_params_dict
+        # même si l'objectif d'optimisation est 'cost').
         rho_mat = 7850 # kg/m^3
         self.m_HX = self.params['n_parallel']*rho_mat*(self.params['L_x'] * self.params['L_y'] * self.params['L_z'] - (self.params['C_V_tot'] + self.params['H_V_tot']))
 
@@ -250,7 +252,12 @@ class PCHESizingOpt(BaseComponent):
 
             self.penalty = PF*(abs(pen_DP_c) + abs(pen_DP_h) + abs(pen_Q))
 
-            self.score = self.m_HX + self.penalty
+            # --- Objectif : masse ou coût (Weiland et al., via _compute_capex_alt) ---
+            if self.params.get('obj', 'mass') == 'cost':
+                self.capex_score = self.cost_estimation()
+                self.score = self.capex_score + self.penalty
+            else:
+                self.score = self.m_HX + self.penalty
 
         except:
             self.penalty = 1e8
@@ -275,19 +282,27 @@ class PCHESizingOpt(BaseComponent):
         # Su Won Lee, Seong Min Shin, SungKun Chung, HangJin Jo
 
         C_UA = 1.77 # $/UA :
+        
+        alpha_h_mean = sum(self.HX.alpha_h*self.HX.w)/self.HX.w_sum
+        alpha_c_mean = sum(self.HX.alpha_c*self.HX.w)/self.HX.w_sum
+                
+        self.UA = self.HX.Q.Q_dot/np.sum(self.HX.LMTD*self.HX.w)
+            
+        # self.UA = np.mean(self.HX.UA_avail*self.HX.w/self.params["n_disc"])
 
-        self.U = sum((self.HX.Qvec_h/self.HX.LMTD)*self.HX.w)
-        self.UA = self.U*(1/(1/self.HX.A_h + 1/self.HX.A_c))
-
+        # sCO2 Power Cycle Component Cost Correlations From DOE Data Spanning Multiple
+        # Scales and Applications (2019), Eq. (10) — recuperator cost vs UA
+        # Nathan T. Weiland, Blake W. Lance, Sandeep R. Pidaparti
+        # Proceedings of ASME Turbo Expo 2019, GT2019-90493
         self.CAPEX_alt = 49.45*self.UA**0.7544
 
-        self.CAPEX = {"HX" : actualize_price(C_m*self.m_HX, 2022, "USD"),
+        self.CAPEX = {"HX" : actualize_price(self.CAPEX_alt, 2017, "USD"),
                       "Currency" : "USD"}
 
         self.CAPEX["Install"] = self.CAPEX["HX"]*0.35
         self.CAPEX["Total"] = self.CAPEX["HX"] + self.CAPEX["Install"]
-
-        return
+        
+        return self.CAPEX["Total"]
 
     #%%
 
@@ -351,9 +366,11 @@ class PCHESizingOpt(BaseComponent):
 
     #%%
 
-    def sizing(self, n_jobs=-1, backend="threading", chunksize="auto", n_particles = 30, max_iter = None, patience = 10):
+    def sizing(self, n_jobs=-1, backend="threading", chunksize="auto", n_particles = 30, max_iter = None, patience = 10, obj = "cost"):
         self._apply_deferred_parameters()
-
+        
+        self.params["obj"] = obj
+        
         # ---- fixed order + bounds ----
         ORDER = ['alpha', 'D_c', 'L_x', 'L_y', 'L_z', 'n_parallel', 'n_series']
         def bounds_dict_to_arrays(bounds_dict, order=ORDER):
@@ -472,7 +489,7 @@ class PCHESizingOpt(BaseComponent):
             print(f"DP_c : {round(self.HX.DP_c,1)} [Pa]")
             print(f"DP_h : {round(self.HX.DP_h,1)} [Pa]")
             print(f"m_HX : {round(self.m_HX,1)} [kg]")
-            print(f"CAPEX est. : {round(self.CAPEX['Total'],1)} [$ (2025)]")
+            print(f"CAPEX est. : {round(self.CAPEX['Total'],1)} [€ (2026)]")
 
         return best_pos
 

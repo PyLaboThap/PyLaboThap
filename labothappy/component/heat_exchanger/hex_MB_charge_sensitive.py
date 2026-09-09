@@ -2470,7 +2470,7 @@ class HexMBChargeSensitive(BaseComponent):
             elif self.HTX_Type == 'Shell&Tube':       
                 fact_cond_1 = np.log(self.params['Tube_OD']/(self.params['Tube_OD'] - 2*self.params['Tube_t']))
                 fact_cond_2 = 2*np.pi*self.params['tube_cond']*self.params['Tube_L']*self.params['n_series']*self.params['n_tubes']*self.params['n_parallel']
-                R_cond = fact_cond_1/fact_cond_2                      
+                self.R_cond = fact_cond_1/fact_cond_2                      
                 
                 self.A_in_tubes = self.params['n_series']*self.params['n_parallel']*self.params['Tube_L']*self.params['n_tubes']*np.pi*((self.params['Tube_OD'] - 2*self.params['Tube_t']))
                 self.A_out_tubes = self.params['n_series']*self.params['n_parallel']*self.params['Tube_L']*self.params['n_tubes']*np.pi*(self.params['Tube_OD'])
@@ -2483,14 +2483,14 @@ class HexMBChargeSensitive(BaseComponent):
                     self.A_h = self.A_in_tubes 
  
                 if self.params['foul_s'] != None:
-                    R_fouling_s = self.params['foul_s'] / self.A_out_tubes
+                    self.R_fouling_s = self.params['foul_s'] / self.A_out_tubes
                 else: 
-                    R_fouling_s = 0
+                    self.R_fouling_s = 0
     
                 if self.params['foul_t'] != None:
-                    R_fouling_t = self.params['foul_t'] / self.A_in_tubes
+                    self.R_fouling_t = self.params['foul_t'] / self.A_in_tubes
                 else: 
-                    R_fouling_t = 0                
+                    self.R_fouling_t = 0                
                     
                 try: 
                     self.params["Overdesign"]
@@ -2501,7 +2501,7 @@ class HexMBChargeSensitive(BaseComponent):
                     alpha_h = self.alpha_h[k]
                     alpha_c = self.alpha_c[j]
                                                 
-                    UA_jk = 1/(1 / (alpha_c * self.A_c) + 1 / (alpha_h * self.A_h) + R_fouling_s + R_fouling_t)
+                    UA_jk = 1/(1 / (alpha_c * self.A_c) + 1 / (alpha_h * self.A_h) + self.R_fouling_s + self.R_fouling_t)
                     
                     if self.params['Shell_Side'] == 'H':
                         self.UA_matrix[j,k] = UA_jk * self.overlap_matrix[j, k] 
@@ -2517,23 +2517,23 @@ class HexMBChargeSensitive(BaseComponent):
                 
                 fact_cond_1 = np.log(self.params['Tube_OD']/(self.params['Tube_OD'] - 2*self.params['Tube_t']))
                 fact_cond_2 = 2*np.pi*self.params['Tube_cond']*self.params['Tube_L']*self.params['n_tubes']*self.params['n_series']*self.params['n_parallel']
-                R_cond = fact_cond_1/fact_cond_2                      
+                self.R_cond = fact_cond_1/fact_cond_2                      
                 
-                R_fouling = 0 # self.geom.fouling / self.A_out_tubes             
+                self.R_fouling = 0 # self.geom.fouling / self.A_out_tubes             
                         
                 # In the equation below, thickness resistance is given with respect to A_h arbitrarely
             
                 if self.params['Fin_Side'] == 'H': # Fin side is the hot side 
-                    self.UA_avail[k] = 1/(1/(alpha_c*self.params['A_in_tot']) + 1/(alpha_h*self.params['A_out_tot']) + R_fouling + R_cond) # 1/((1+self.geom.fooling)/(alpha_h*self.geom.A_h) + 1/(alpha_c*self.geom.A_c) + t/(self.geom.tube_cond)) 
+                    self.UA_avail[k] = 1/(1/(alpha_c*self.params['A_in_tot']) + 1/(alpha_h*self.params['A_out_tot']) + self.R_fouling + self.R_cond) # 1/((1+self.geom.fooling)/(alpha_h*self.geom.A_h) + 1/(alpha_c*self.geom.A_c) + t/(self.geom.tube_cond)) 
                 else: 
-                    self.UA_avail[k] = 1/(1/(alpha_h*self.params['A_in_tot']) + 1/(alpha_c*self.params['A_out_tot']) + R_fouling + R_cond) # 1/((1+self.geom.fooling)/(alpha_h*self.geom.A_h) + 1/(alpha_c*self.geom.A_c) + t/(self.geom.tube_cond)) 
+                    self.UA_avail[k] = 1/(1/(alpha_h*self.params['A_in_tot']) + 1/(alpha_c*self.params['A_out_tot']) + self.R_fouling + self.R_cond) # 1/((1+self.geom.fooling)/(alpha_h*self.geom.A_h) + 1/(alpha_c*self.geom.A_c) + t/(self.geom.tube_cond)) 
 
             elif self.HTX_Type == 'PCHE':
                 
                 if 'foul' in self.params:
-                    R_fouling = self.params['foul'] / self.A_in_tubes
+                    self.R_fouling = self.params['foul'] / self.A_in_tubes
                 else: 
-                    R_fouling = 0
+                    self.R_fouling = 0
                 
                 self.A_c = 1/(1+self.params['R_p'])*self.params['N_c']*self.params['N_p']*(np.pi/2)*self.params['D_c']*self.params['L_c']*self.params['n_series']*self.params['n_parallel']
                 self.A_h = self.params['R_p']/(1+self.params['R_p'])*self.params['N_c']*self.params['N_p']*(np.pi/2)*self.params['D_c']*self.params['L_c']*self.params['n_series']*self.params['n_parallel']
@@ -2541,9 +2541,9 @@ class HexMBChargeSensitive(BaseComponent):
                 # self.t_e = ((self.params['D_c'] + self.params['t_3'])*(self.params['D_c']/2 + self.params['t_2']) - (1/8*np.pi*self.params['D_c']**2))/(self.params['D_c'] + self.params['t_3'])
                 self.t_e = self.params['t_3'] - np.pi*self.params['D_c']/8
                 
-                R_cond = self.t_e/self.params['k_cond']
+                self.R_cond = max(self.t_e/self.params['k_cond'],0)
                 
-                self.UA_avail[k] = 1/(1/(alpha_h*self.A_h) + 1/(alpha_c*self.A_c) + R_fouling + R_cond)
+                self.UA_avail[k] = 1/(1/(alpha_h*self.A_h) + 1/(alpha_c*self.A_c) + self.R_fouling + self.R_cond)
         
                 "5) Compute LMTD"        
                 

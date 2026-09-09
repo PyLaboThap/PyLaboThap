@@ -499,7 +499,6 @@ class CO2RCOptimizer(CO2RC_HX_optimizer):
 
         return self
 
-
 #%% Main
 
 if __name__ == "__main__":
@@ -507,7 +506,7 @@ if __name__ == "__main__":
     # Cycle sizing parameters
 
     T_hot = 150 + 273.15
-    T_cold = 5 + 273.15
+    T_cold = 10 + 273.15
     n_MW = 10
     W_dot_obj = n_MW * 1e6
     eta_obj = 0.12
@@ -540,7 +539,7 @@ if __name__ == "__main__":
         eta_gh_disc=eta_gh_disc, PP_gh_disc=PP_gh_disc,
         eta_rec_disc=eta_rec_disc, PP_cd_disc=PP_cd_disc,
     )
-
+    
     if Optimizer.params['RC_ARCH'] == "Recomp":
         Optimizer.set_it_var(P_high=140e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, spliter_frac = 0.9, eta_gh=0.95, PP_gh=5, eta_rec_LT=0.8, eta_rec_HT=0.8, PP_cd=5, mdot_CS=450*n_MW)
     elif Optimizer.params['RC_ARCH'] == "Recomp_1_recup":
@@ -556,7 +555,7 @@ if __name__ == "__main__":
     Optimizer.set_HSource(T=T_hot,      P=100e5, fluid='Water', m_dot=50.0)
 
     Optimizer.set_RC()
-
+    
     #%% Composants — configuration statique (paramètres, bornes, corrélations, RUN_KWARGS)
 
     sizing_models = {}
@@ -607,7 +606,7 @@ if __name__ == "__main__":
     TR.RUN_KWARGS = dict(max_iter=3, n_jobs=-1)
 
     Optimizer.sizing_models = sizing_models
-
+    
     #%%
     t0 = time.perf_counter()
     Optimizer.cycle_design(ntop=5, n_particles=100, n_jobs=-1, patience=30)
@@ -623,3 +622,4 @@ if __name__ == "__main__":
         )
     else:
         print("⚠️ Aucun RC valide trouvé — rien à logger.")
+

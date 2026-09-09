@@ -1175,10 +1175,10 @@ class AxialTurbineMeanLineSizing(object):
             Based on 2017 CEPCI (chemical plant cost index) for dollars
             """
             
-            T_500 = 273.15+500
+            T_550 = 273.15+550
             
-            if self.inputs['T0_su'] > T_500: # K  
-                f = 1 + 1.106*1e-4*(self.inputs['T0_su'] - T_500)**2
+            if self.inputs['T0_su'] > T_550: # K  
+                f = 1 + 1.106*1e-4*(self.inputs['T0_su'] - T_550)**2
             else:
                 f = 1
         

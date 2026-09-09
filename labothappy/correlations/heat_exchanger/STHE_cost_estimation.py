@@ -942,11 +942,12 @@ def krishna_cost_correlation_STHE(m_HX, n_B, n_tubes, tube_L, tube_OD):
     
     # Labor + Procurement Costs
     
-    # A = 255 $/kg for Nickel Superalloy -> Says 255 $/kg in the source but other metnion 15-80 $/kg
-    # A = 5   # $/kg for A304L
-    # A = 7   # $/kg for A316L
+    # A = 255 $/kg for Nickel Superalloy -> Says 255 $/kg in the source but other mention 15-80 $/kg - maybe consider specific manufacturing
+    # A = 2.5   # $/kg for A106 Gr.B / API 5L Gr.B Carbon Steel
+    # A = 4   # $/kg for A304L
+    # A = 6   # $/kg for A316L
 
-    A = 2.5   # $/kg for A106 Gr.B / API 5L Gr.B Carbon Steel
+    A = 6     # $/kg for A316L
     B = 5     # $ * mm
     C = 14    # $
     D = 2     # $ * m
