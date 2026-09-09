@@ -146,10 +146,17 @@ def system_RC_parallel(x, input_data):
 
         rho_HS     = RC.components['GasHeater'].model.su_H.D
         m_HS_act   = RC.components['GasHeater'].model.su_H.m_dot
-        W_pump_aux = params.get('DP_h_gh', 0.5e5) * m_HS_act / \
-                     (rho_HS * params.get('eta_pp', 0.8))
 
-        W_dot_net = W_exp - W_pump - W_pump_aux - W_cp
+        rho_CS     = RC.components['Condenser'].model.su_C.D
+        m_CS_act   = RC.components['Condenser'].model.su_C.m_dot
+
+        W_pump_aux_HS = params.get('DP_h_gh', 0.5e5) * m_HS_act / \
+                     (rho_HS * params.get('eta_pp_aux', 0.8))
+
+        W_pump_aux_CS = params.get('DP_c_cond', 0.5e5) * m_CS_act / \
+                     (rho_CS * params.get('eta_pp_aux', 0.8))
+
+        W_dot_net = W_exp - W_pump - W_pump_aux_HS - W_pump_aux_CS - W_cp
         eta       = W_dot_net / Q_gh if Q_gh > 0 else 0.0
 
         penalty_W_dot = 0
@@ -472,10 +479,17 @@ class CO2RC_HX_optimizer:
 
         rho_HS     = RC.components['GasHeater'].model.su_H.D
         m_HS_act   = RC.components['GasHeater'].model.su_H.m_dot
-        W_pump_aux = self.params.get('DP_h_gh', 0.5e5) * m_HS_act / \
-                     (rho_HS * self.params.get('eta_pp', 0.8))
 
-        self.W_dot_net = W_exp - W_pump - W_pump_aux - W_cp
+        rho_CS     = RC.components['Condenser'].model.su_C.D
+        m_CS_act   = RC.components['Condenser'].model.su_C.m_dot
+
+        self.W_pump_aux_HS = W_pump_aux_HS = self.params.get('DP_h_gh', 0.5e5) * m_HS_act / \
+                     (rho_HS * self.params.get('eta_pp_aux', 0.8))
+
+        self.W_pump_aux_CS = W_pump_aux_CS = self.params.get('DP_c_cond', 0.5e5) * m_CS_act / \
+                     (rho_CS * self.params.get('eta_pp_aux', 0.8))
+
+        self.W_dot_net = W_exp - W_pump - W_pump_aux_HS - W_pump_aux_CS - W_cp
         self.eta       = self.W_dot_net / Q_gh if Q_gh > 0 else 0.0
 
         self.Q_dot_waste = RC.components['GasHeater'].model.ex_H.m_dot * (
@@ -750,6 +764,7 @@ if __name__ == "__main__":
             
             # Pump
             eta_pp=0.85,
+            eta_pp_aux=0.8,
             
             # Compressor (for recompression layouts)
             eta_cp = 0.8,

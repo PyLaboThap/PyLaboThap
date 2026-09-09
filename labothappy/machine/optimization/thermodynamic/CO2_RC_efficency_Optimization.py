@@ -25,7 +25,9 @@ warnings.filterwarnings('ignore')
 
 def system_RC_parallel(x, input_data):
     """
-    Evaluate one particle x = [P_high, m_dot, m_dot_HS_factor].
+    Evaluate one particle x.
+    Non-Recomp: x = [P_high, m_dot, m_dot_HS_fact, m_dot_CS_fact]
+    Recomp/Recomp_1_recup: x = [P_high, m_dot, m_dot_HS_fact, m_dot_CS_fact, spliter_frac]
     Returns scalar cost (lower = better); large positive = infeasible.
     """
     warnings.filterwarnings('ignore')
@@ -40,7 +42,9 @@ def system_RC_parallel(x, input_data):
     P_high        = x[0]
     m_dot         = x[1]
     m_dot_HS_fact = x[2]
+    m_dot_CS_fact = x[3]          # <-- position [3], commun à toutes les architectures
     m_dot_HS      = m_dot * m_dot_HS_fact
+    m_dot_CS      = m_dot * m_dot_CS_fact
 
     # --- Build connectors ---
     HSource = MassConnector()
@@ -49,7 +53,7 @@ def system_RC_parallel(x, input_data):
 
     CSource = MassConnector()
     CSource.set_properties(T=cs_props['T'], P=cs_props['P'],
-                           fluid=cs_props['fluid'], m_dot=cs_props.get('m_dot', 1000.0))
+                           fluid=cs_props['fluid'], m_dot=m_dot_CS)
 
     # --- Low pressure initial guess ---
     P_sat_CS    = PropsSI('P', 'T', cs_props['T'], 'Q', 0.5, fluid)
@@ -86,10 +90,10 @@ def system_RC_parallel(x, input_data):
                 DP_c_cond = params.get('DP_c_cond', 0e5), 
                 mute_print_flag=1,
             )
-            
+
         elif arch == "Recomp":
-            spliter_frac = x[3]
-    
+            spliter_frac = x[4]      # <-- décalé de [3] à [4]
+
             RC = Recomp_CO2_TC(
                 HSource, CSource, 
                 params['PP_gh'], params['PP_rec'], 
@@ -106,7 +110,7 @@ def system_RC_parallel(x, input_data):
                 mute_print_flag=1)
             
         elif arch == "Recomp_1_recup":
-            spliter_frac = x[3]
+            spliter_frac = x[4]      # <-- décalé de [3] à [4]
     
             RC = Recomp_CO2_TC_1_recup(
                 HSource, CSource, 
@@ -161,10 +165,17 @@ def system_RC_parallel(x, input_data):
 
         rho_HS     = RC.components['GasHeater'].model.su_H.D
         m_HS_act   = RC.components['GasHeater'].model.su_H.m_dot
-        W_pump_aux = params.get('DP_h_gh', 0.5e5) * m_HS_act / \
-                     (rho_HS * params.get('eta_pp', 0.8))
+        
+        rho_CS     = RC.components['Condenser'].model.su_C.D
+        m_CS_act   = RC.components['Condenser'].model.su_C.m_dot
+        
+        W_pump_aux_HS = params.get('DP_h_gh', 0.5e5) * m_HS_act / \
+                     (rho_HS * params.get('eta_pp_aux', 0.8))
 
-        W_dot_net = W_exp - W_pump - W_pump_aux - W_cp
+        W_pump_aux_CS = params.get('DP_c_cond', 0.5e5) * m_CS_act / \
+                     (rho_CS * params.get('eta_pp_aux', 0.8))
+
+        W_dot_net = W_exp - W_pump - W_pump_aux_HS - W_pump_aux_CS - W_cp
         eta       = W_dot_net / Q_gh if Q_gh > 0 else 0.0
         
     except Exception:
@@ -308,39 +319,42 @@ class CO2RC_eff_optimizer:
     # ------------------------------------------------------------------ final eval
 
     def _evaluate_final(self, best_pos):
-        """
-        Re-evaluates the best PSO position with full diagnostics and
-        populates self.eta, self.W_dot_net, self.RC, self.it_var.
-        Mirrors system_RC_parallel exactly so there is no disconnect.
-        """
         if self.params['RC_ARCH'] == "Recomp" or self.params['RC_ARCH'] == "Recomp_1_recup":
-            P_high, m_dot, m_dot_HS_fact, spliter_frac = best_pos
+            P_high, m_dot, m_dot_HS_fact, m_dot_CS_fact, spliter_frac = best_pos
             m_dot_HS = m_dot * m_dot_HS_fact
+            m_dot_CS = m_dot * m_dot_CS_fact
+
             self.it_var['spliter_frac'] = spliter_frac
             self.it_var['P_high']  = P_high
             self.it_var['mdot']    = m_dot
             self.it_var['mdot_HS'] = m_dot_HS
-            
-        else:
-            P_high, m_dot, m_dot_HS_fact = best_pos
-            m_dot_HS = m_dot * m_dot_HS_fact
+            self.it_var['mdot_CS'] = m_dot_CS
 
+        else:
+            P_high, m_dot, m_dot_HS_fact, m_dot_CS_fact = best_pos
+            m_dot_HS = m_dot * m_dot_HS_fact
+            m_dot_CS = m_dot * m_dot_CS_fact
+    
             self.it_var['P_high']  = P_high
             self.it_var['mdot']    = m_dot
             self.it_var['mdot_HS'] = m_dot_HS
-
+            self.it_var['mdot_CS'] = m_dot_CS
+    
+        # Débit source froide optimisé
+        self._CSource_props['m_dot'] = m_dot_CS   # doit précéder set_RC()
+    
         # Update source props so set_RC picks up the optimised m_dot_HS
         self._HSource_props['m_dot'] = m_dot_HS
-
+    
         self.set_RC()
         RC = self.RC
 
-        # try:
-        RC.solve()
-        # except Exception as e:
-        #     self._log_penalty(f"Final solve exception: {e}")
-        #     self.eta = self.W_dot_net = None
-        #     return
+        try:
+            RC.solve()
+        except Exception as e:
+            self._log_penalty(f"Final solve exception: {e}")
+            self.eta = self.W_dot_net = None
+            return
 
         if not getattr(RC, 'converged', True):
             self._log_penalty("Final solve did not converge")
@@ -372,10 +386,19 @@ class CO2RC_eff_optimizer:
 
         rho_HS     = RC.components['GasHeater'].model.su_H.D
         m_HS_act   = RC.components['GasHeater'].model.su_H.m_dot
-        W_pump_aux = self.params.get('DP_h_gh', 0.5e5) * m_HS_act / \
-                     (rho_HS * self.params.get('eta_pp', 0.8))
+        
+        rho_CS     = RC.components['Condenser'].model.su_C.D
+        m_CS_act   = RC.components['Condenser'].model.su_C.m_dot
+        
+        self.W_pump_aux_HS = W_pump_aux_HS = self.params.get('DP_h_gh', 0.5e5) * m_HS_act / \
+                     (rho_HS * self.params.get('eta_pp_aux', 0.8))
 
-        self.W_dot_net = W_exp - W_pump - W_pump_aux - W_cp
+        self.W_pump_aux_CS = W_pump_aux_CS = self.params.get('DP_c_cond', 0.5e5) * m_CS_act / \
+                     (rho_CS * self.params.get('eta_pp_aux', 0.8))
+
+        W_dot_net = W_exp - W_pump - W_pump_aux_HS - W_pump_aux_CS - W_cp
+
+        self.W_dot_net = W_dot_net
         self.eta       = self.W_dot_net / Q_gh if Q_gh > 0 else 0.0
 
         # self.Q_dot_waste = RC.components['GasHeater'].model.ex_H.m_dot * (
@@ -384,7 +407,7 @@ class CO2RC_eff_optimizer:
         #               RC.components['GasHeater'].model.ex_H.p,
         #               RC.components['GasHeater'].model.ex_H.fluid)
         # )
-
+        
     # ------------------------------------------------------------------ optimise
 
     def opt_RC(self, n_jobs = 1, n_particles=100, max_iter=30, patience=None,
@@ -407,30 +430,32 @@ class CO2RC_eff_optimizer:
             patience = max(1, max_iter // 5)
         
         if self.params['RC_ARCH'] == "Recomp" or self.params['RC_ARCH'] == "Recomp_1_recup":
-            # --- bounds ---
             lb = np.array([
                 self.params['P_high_min'],
                 self.params['m_dot_min'],
                 self.params['m_dot_HS_fact_min'],
-                self.params['spliter_frac_min'],
+                self.params['m_dot_CS_fact_min'],   # <-- position [3]
+                self.params['spliter_frac_min'],    # <-- décalé en [4]
             ])
             ub = np.array([
                 self.params['P_high_max'],
                 self.params['m_dot_max'],
                 self.params['m_dot_HS_fact_max'],
-                self.params['spliter_frac_max'],
+                self.params['m_dot_CS_fact_max'],   # <-- position [3]
+                self.params['spliter_frac_max'],    # <-- décalé en [4]
             ])
         else:   
-            # --- bounds ---
             lb = np.array([
                 self.params['P_high_min'],
                 self.params['m_dot_min'],
                 self.params['m_dot_HS_fact_min'],
+                self.params['m_dot_CS_fact_min'],   # <-- position [3]
             ])
             ub = np.array([
                 self.params['P_high_max'],
                 self.params['m_dot_max'],
                 self.params['m_dot_HS_fact_max'],
+                self.params['m_dot_CS_fact_max'],   # <-- position [3]
             ])
 
         # --- warm start ---
@@ -520,6 +545,9 @@ class CO2RC_eff_optimizer:
         print(f"  m_dot (CO2)       : {bp[1]:.4f}  kg/s")
         print(f"  m_dot_HS_factor   : {bp[2]:.4f}  [-]")
         print(f"  m_dot_HS          : {bp[1]*bp[2]:.4f}  kg/s")
+        print(f"  m_dot_CS_factor   : {bp[3]:.4f}  [-]")
+        print(f"  m_dot_CS          : {self.it_var.get('mdot_CS', float('nan')):.4f}  kg/s")
+        
         if self.W_dot_net is not None:
             print(f"  W_net             : {self.W_dot_net/1e3:.3f}  kW")
             print(f"  Thermal η         : {self.eta*100:.3f}  %")
@@ -584,7 +612,7 @@ if __name__ == "__main__":
         for T in T_vec:
     
             Optimizer.set_parameters(
-                RC_ARCH = 'Recomp',
+                RC_ARCH = 'REC',
     
                 eta_pp  = 0.8,
                 eta_gh  = 0.95,
@@ -592,7 +620,8 @@ if __name__ == "__main__":
                 eta_rec_HT = 0.9, # Recompression Case
                 eta_exp = 0.9,
                 eta_cp = 0.8,
-    
+                eta_pp_aux = 0.8, 
+
                 PP_gh   = 5,
                 PP_rec  = 0,
                 PP_cd   = 5,
@@ -602,7 +631,8 @@ if __name__ == "__main__":
                 DP_c_gh  = 50e3,
                 DP_h_rec = 50e3,
                 DP_c_rec = 50e3,
-                DP_cond  = 50e3,
+                DP_h_cond  = 50e3,
+                DP_c_cond  = 50e3,
     
                 P_high_min       = 80e5,
                 P_high_max       = 200e5,
@@ -610,6 +640,8 @@ if __name__ == "__main__":
                 m_dot_max        = 100.0,
                 m_dot_HS_fact_min = 0.1,
                 m_dot_HS_fact_max = 2,
+                m_dot_CS_fact_min = 1,
+                m_dot_CS_fact_max = 20,
                 spliter_frac_min = 0,
                 spliter_frac_max = 1
             )
@@ -625,7 +657,7 @@ if __name__ == "__main__":
             Optimizer.set_HSource(T=T, P=10e5, fluid='INCOMP::TVP1', m_dot=50.0)
     
             Optimizer.set_RC()
-            Optimizer.opt_RC(n_jobs = n_cores - 1, n_particles=100, max_iter=50, patience = 10)
+            Optimizer.opt_RC(n_jobs = n_cores - 1, n_particles=50, max_iter=50, patience = 10)
     
             eta_vec.append(Optimizer.eta)
             P_high_vec.append(Optimizer.it_var['P_high'])
@@ -731,6 +763,7 @@ if __name__ == "__main__":
                             PP_rec  = 0,
                             PP_cd   = 5,
                             SC_cd   = 0.1,
+                            eta_pp_aux = 0.8, 
                             
                             DP_h_gh  = 50e3,
                             DP_c_gh  = 50e3,
@@ -745,6 +778,8 @@ if __name__ == "__main__":
                             m_dot_max        = 100.0,
                             m_dot_HS_fact_min = 0.01,
                             m_dot_HS_fact_max = 5,
+                            m_dot_CS_fact_min = 1,
+                            m_dot_CS_fact_max = 20,
                             spliter_frac_min = 0,
                             spliter_frac_max = 1
                         )

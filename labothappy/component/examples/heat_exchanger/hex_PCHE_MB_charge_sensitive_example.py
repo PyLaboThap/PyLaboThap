@@ -85,35 +85,72 @@ if test_case == "test_CO2":
 
 if test_case == "TCO2_recup":
 
-    HX.set_inputs(
-        # First fluid
-        fluid_H = 'CO2',
-        T_su_H = 321.88, # K
-        P_su_H = 5742510, # Pa
-        m_dot_H = 415.93, # kg/s
+    # HX.set_inputs(
+    #     # First fluid
+    #     fluid_H = 'CO2',
+    #     T_su_H = 321.88, # K
+    #     P_su_H = 5742510, # Pa
+    #     m_dot_H = 415.93, # kg/s
     
-        # Second fluid
+    #     # Second fluid
+    #     fluid_C = 'CO2',
+    #     T_su_C = 305.61, # K
+    #     P_su_C = 14153425, # Pa
+    #     m_dot_C = 415.93, # kg/s  # Make sure to include fluid information
+    # )
+    
+    HX.set_inputs(
+        # First fluid (hot, low pressure side)
+        fluid_H = 'CO2',
+        T_su_H = 324.32693723066194, # K
+        P_su_H = 5965838.051959021,  # Pa
+        m_dot_H = 365.4045005233005, # kg/s
+
+        # Second fluid (cold, high pressure side)
         fluid_C = 'CO2',
-        T_su_C = 305.61, # K
-        P_su_C = 14153425, # Pa
-        m_dot_C = 415.93, # kg/s  # Make sure to include fluid information
-    )
+        T_su_C = 306.51381083434006, # K
+        P_su_C = 17830200.39180647,  # Pa
+        m_dot_C = 365.4045005233005, # kg/s  # Make sure to include fluid information
+     )
     
     "Geometry Loading"
-    params = {'alpha': 32.62, # Channel zigzag angle
-              'D_c': 2.42*1e-3, # Channel diameter
-              'C_V_tot' : 1, 
-              'H_V_tot' : 1, 
-              'k_cond': 60, # plate conductivity
-              'L_c': 0.7432303013776589, # channel length
-              'N_c': 736, # n channels per plate
-              'N_p': 563, # n plates
-              'R_p': 1, # n_hot_channel_row / n_cold_channel_row
-              't_2': 0.0012282802564224898, # Horizontal pitch
-              't_3': 0.0009428803890487963, # Plate_thickness
-              'type_channel' : 'Zigzag',
-              "AS_Type" : "HEOS",
-              } 
+    # params = {'alpha': 32.62, # Channel zigzag angle
+    #           'D_c': 2.42*1e-3, # Channel diameter
+    #           'C_V_tot' : 1, 
+    #           'H_V_tot' : 1, 
+    #           'k_cond': 60, # plate conductivity
+    #           'L_c': 0.7432303013776589, # channel length
+    #           'N_c': 736, # n channels per plate
+    #           'N_p': 563, # n plates
+    #           'R_p': 1, # n_hot_channel_row / n_cold_channel_row
+    #           't_2': 0.0012282802564224898, # Horizontal pitch
+    #           't_3': 0.0009428803890487963, # Plate_thickness
+    #           'type_channel' : 'Zigzag',
+    #           "AS_Type" : "HEOS",
+    #           } 
+
+    params = {'htc_type': 'Correlation',
+     'H_DP_ON': True,
+     'C_DP_ON': True,
+     'DP_type': 'Correlation_Disc',
+     'k_cond': 60,
+     'R_p': 1,
+     'n_disc': 30,
+     'Flow_Type': 'CounterFlow',
+     'alpha': 32.75894777574109,
+     'D_c': 0.00260327556385287644,
+     'L_x': 0.9678590073596489,
+     'L_y': 1.383632361107553,
+     'L_z': 2.40535912168745,
+     'n_parallel': 1.0,
+     'n_series': 1,
+     't_2': 0.0011768512314588966,
+     't_3': 0.0009979156335845336,
+     'L_c': 1.2590167498697942,
+     'N_p': 686.0,
+     'N_c': 400.0,
+     'C_V_tot': 0.5248529955154483,
+     'H_V_tot': 0.5248529955154483}
 
     Corr_H = {"1P" : "Gnielinski", "SC" : "Gnielinski"}
     Corr_C = {"1P" : "Gnielinski", "SC" : "Gnielinski"}

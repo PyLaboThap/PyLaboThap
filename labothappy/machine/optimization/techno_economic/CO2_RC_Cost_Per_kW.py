@@ -42,15 +42,15 @@ def TCO2_rec_comp_sizing(RC, turb_choice):
         )
     
         REC_sizing.set_parameters(
-            k_cond=20, R_p=1, n_disc=30,
+            k_cond=20, R_p=1, n_disc=100,
             Flow_Type='CounterFlow', H_DP_ON=True, C_DP_ON=True,
         )
     
-        H_Corr = {"1P": "Gnielinski", "SC": "Gnielinski"}
-        C_Corr = {"1P": "Gnielinski", "SC": "Gnielinski"}
+        H_Corr = {"1P": "Gnielinski", "SC": "Gnielinski", "2P": "Thome_Condensation"}
+        C_Corr = {"1P": "Gnielinski", "SC": "Gnielinski", "2P": "Flow_boiling"}
     
-        Corr_H_DP = {"SC" : "Darcy_Weisbach", "1P" : "Darcy_Weisbach"}
-        Corr_C_DP = {"SC" : "Darcy_Weisbach", "1P" : "Darcy_Weisbach"}  
+        Corr_H_DP = {"SC" : "Gnielinski_DP", "1P" : "Gnielinski_DP", "2P": "Choi_DP"}
+        Corr_C_DP = {"SC" : "Gnielinski_DP", "1P" : "Gnielinski_DP", "2P": "Choi_DP"}  
     
         # Corr_H_DP = {"SC" : "Gnielinski_DP", "1P" : "Gnielinski_DP"}
         # Corr_C_DP = {"SC" : "Gnielinski_DP", "1P" : "Gnielinski_DP"}  
@@ -60,15 +60,15 @@ def TCO2_rec_comp_sizing(RC, turb_choice):
         REC_sizing.set_bounds(
             alpha=[10, 40], D_c=[1e-3, 3e-3],
             L_x=[0.2, 1.5], L_y=[0.2, 2.3], L_z=[0.2, 0.6],
-            n_parallel=[2, 8], n_series=[1, 8],
+            n_parallel=[1, 8], n_series=[1, 8],
         )
     
         REC_sizing.set_constraints(
             Q_dot=REC_model.Q.Q_dot, DP_h=REC_model.DP_h, DP_c=REC_model.DP_c
         )
-        REC_sizing.sizing(n_jobs=-1, n_particles=100, max_iter=50, patience=10)
+        REC_sizing.sizing(n_jobs=-1, n_particles=50, max_iter=50, patience=10)
     
-        if REC_sizing.score == 1000000:
+        if REC_sizing.score >= 20000:
             raise ValueError("Recuperator Sizing did not Converge")
         # if REC_sizing.penalty >= 1e2:
         #     raise ValueError("Recuperator Sizing does not satisfy process conditions")
@@ -319,6 +319,13 @@ def TCO2_rec_comp_sizing(RC, turb_choice):
 
     return RC, 1, turb_choice
 
+def size_all_components(RC):
+    
+    for component in RC.components:
+        print(component)
+        
+    return
+
 #%% Classe étendue : hérite de la brique d'optimisation importée
 
 class CO2RCOptimizer(CO2RC_HX_optimizer):
@@ -418,12 +425,14 @@ class CO2RCOptimizer(CO2RC_HX_optimizer):
                 print(f"⚠️ Failed to solve final RC circuit: {e}")
                 continue
 
-            self.current_RC, flag, turb_choice = TCO2_rec_comp_sizing(self.current_RC, self.turb_choice)
+            # self.current_RC, flag, turb_choice = TCO2_rec_comp_sizing(self.current_RC, self.turb_choice)
+            
+            size_all_components(self.current_RC)
+            
+            # if flag == 1:
+            #     self.potential_RC.append(self.current_RC)
 
-            if flag == 1:
-                self.potential_RC.append(self.current_RC)
-
-            turb_choices.append(turb_choice)
+            # turb_choices.append(turb_choice)
 
         filtered = [c for c in turb_choices if c in ("Axial", "Radial")]
         if filtered:
@@ -519,17 +528,18 @@ class CO2RCOptimizer(CO2RC_HX_optimizer):
 
 if __name__ == "__main__":
 
-    T_test = 150 + 273.15
+    T_hot = 150 + 273.15
+    T_cold = 5 + 273.15
     n_MW = 10
     W_dot_obj = n_MW * 1e6
     eta_obj = 0.12
 
     Optimizer = CO2RCOptimizer('CO2')
 
-    m_dot_HS_fact_bounds = [0.5, 2]
+    m_dot_HS_fact_bounds = [0.1, 3]
     m_dot_CS_fact_bounds = [5, 15]
-    P_high_bounds = np.array([110, 150]) * 1e5
-    m_dot_bounds = np.array([10, 40]) * n_MW
+    P_high_bounds = np.array([110, 180]) * 1e5
+    m_dot_bounds = np.array([10, 80]) * n_MW
 
     eta_gh_disc = np.arange(0.9, 0.98, 0.02)
     PP_gh_disc = np.arange(1, 10, 1)
@@ -540,10 +550,11 @@ if __name__ == "__main__":
         save_file_path=None,   # ou un chemin, comme dans le fichier 2 d'origine
         RC_ARCH='REC',          # seule architecture compatible avec le sizing actuel
         eta_pp=0.8,
+        eta_pp_aux=0.8,
         DP_h_gh=100e3, DP_c_gh=4e5,
         PP_rec=0, DP_h_rec=4e5, DP_c_rec=2e5,
         eta_exp=0.9,
-        SC_cd=0.1, DP_h_cond=2e5, DP_c_cond=100e3,
+        SC_cd=0.1, DP_h_cond=2e5, DP_c_cond=50e3,
         P_high_bounds=P_high_bounds,
         m_dot_HS_fact_bounds=m_dot_HS_fact_bounds,
         m_dot_CS_fact_bounds=m_dot_CS_fact_bounds,
@@ -553,18 +564,18 @@ if __name__ == "__main__":
     )
 
     if Optimizer.params['RC_ARCH'] == "Recomp":
-        Optimizer.set_it_var(P_high=140e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, spliter_frac = 0.9, eta_gh=0.95, PP_gh=5, eta_rec_LT=0.8, eta_rec_HT=0.8, PP_cd=5, mdot_CS=100*n_MW)
+        Optimizer.set_it_var(P_high=140e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, spliter_frac = 0.9, eta_gh=0.95, PP_gh=5, eta_rec_LT=0.8, eta_rec_HT=0.8, PP_cd=5, mdot_CS=450*n_MW)
     elif Optimizer.params['RC_ARCH'] == "Recomp_1_recup":
-        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, spliter_frac = 1, eta_gh=0.95, PP_gh=5, eta_rec=0.8, PP_cd=5, mdot_CS=100*n_MW)
+        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, spliter_frac = 1, eta_gh=0.95, PP_gh=5, eta_rec=0.8, PP_cd=5, mdot_CS=450*n_MW)
     elif Optimizer.params['RC_ARCH'] == "REC":
-        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, eta_gh=0.95, PP_gh=5, eta_rec=0.8, PP_cd=5, mdot_CS=100*n_MW)
+        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, eta_gh=0.95, PP_gh=5, eta_rec=0.8, PP_cd=5, mdot_CS=450*n_MW)
     elif Optimizer.params['RC_ARCH'] == "basic":
-        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, eta_gh=0.95, PP_gh=5, PP_cd=5, mdot_CS=100*n_MW)
+        Optimizer.set_it_var(P_high=100e5, mdot=20.0*n_MW, mdot_HS=15.0*n_MW, eta_gh=0.95, PP_gh=5, PP_cd=5, mdot_CS=450*n_MW)
 
     Optimizer.set_obj(W_dot=W_dot_obj, eta=eta_obj)
 
-    Optimizer.set_CSource(T=15 + 273.15, P=5e5,  fluid='Water', m_dot=1000.0)
-    Optimizer.set_HSource(T=T_test,      P=100e5, fluid='Water', m_dot=50.0)
+    Optimizer.set_CSource(T=T_cold, P=5e5,  fluid='Water', m_dot=450*n_MW)
+    Optimizer.set_HSource(T=T_hot,      P=100e5, fluid='Water', m_dot=50.0)
 
     Optimizer.set_RC()
     Optimizer.cycle_design(ntop=10, n_particles=100, n_jobs=-1, patience = 30)

@@ -78,10 +78,35 @@ def _eval_particle(x, cls, fluid, params, inputs):
 
 class RadialTurbineMeanLineSizing(object):
 
+    # Paramètres géométriques/technologiques par défaut, cohérents avec
+    # l'exemple __main__ (turbine radiale CO2). set_parameters() faisant un
+    # update incrémental, ces valeurs restent actives pour toute clé non
+    # explicitement surchargée par l'appelant.
+    DEFAULT_PARAMETERS = {
+        'S_b4_ratio': 1.05,     # flow path length to blade height ratio (1 à 2, 1.05 max pour CO2)
+        't_TE_c_S_max': 0.02,   # [-]
+        't_TE_S': 5e-4,         # [m]
+        'cl_a': 0.4e-3,         # [m] : Axial clearance
+        'cl_r': 0.4e-3,         # [m] : Radial clearance
+        'damping': 0.5,         # [-]
+        'Mth_target': 0.4,      # [-]
+        'r5t_guess': 0.15,      # [m]
+        'r4_guess': 0.22,       # [m]
+    }
+
+    # Bornes par défaut pour l'optimisation PSO (design_system / opt_size / sizing).
+    DEFAULT_BOUNDS = {
+        'r5_r4_bounds': [0.3, 0.7],     # [-] : r5/r4 ratio
+        'psi_bounds': [0.5, 1.5],
+        'phi_bounds': [0.3, 0.6],
+        'xhi_bounds': [0.3, 0.6],
+        'r5h_r5t_bounds': [0.3, 0.4],   # [-] : hub_tip ratio at the exit
+    }
+
     def __init__(self, fluid):
         self.inputs = {}
-        self.params = {}  
-        self.bounds = {}
+        self.params = dict(self.DEFAULT_PARAMETERS)
+        self.bounds = dict(self.DEFAULT_BOUNDS)
     
         # Abstract State 
         self.fluid = fluid
@@ -973,27 +998,27 @@ if __name__ == "__main__":
         p_ex = 39.8*1e5, # Pa
         )
     
-    Turb.set_parameters(
-        S_b4_ratio = 1.05, # flow path length to blade height ratio -> from 1 to 2 depending on the app, 1.05 max for CO2
-        t_TE_c_S_max = 0.02, # [-]
-        t_TE_S = 5*1e-4, # [m]
-        cl_a = 0.4*1e-3, # [m] : Axial clearance
-        cl_r = 0.4*1e-3, # [m] : Radial clearance
+    # Grâce à DEFAULT_PARAMETERS et DEFAULT_BOUNDS, tous les paramètres et
+    # bornes de ce cas d'étude sont déjà couverts — ces deux appels
+    # deviennent facultatifs.
+    # Turb.set_parameters(
+    #     S_b4_ratio = 1.05,
+    #     t_TE_c_S_max = 0.02,
+    #     t_TE_S = 5*1e-4,
+    #     cl_a = 0.4*1e-3,
+    #     cl_r = 0.4*1e-3,
+    #     damping = 0.5,
+    #     Mth_target = 0.4,
+    #     r5t_guess = 0.15,
+    #     r4_guess = 0.22,
+    #     )
+    #
+    # Turb.set_bounds(
+    #     r5_r4_bounds = [0.3,0.7],
+    #     psi_bounds = [0.5, 1.5],
+    #     phi_bounds = [0.3, 0.6],
+    #     xhi_bounds = [0.3, 0.6],
+    #     r5h_r5t_bounds = [0.3, 0.4],
+    #     )
         
-        damping = 0.5, # [-]
-    
-        Mth_target = 0.4, # [-]    
-        r5t_guess = 0.15, # [m]
-        r4_guess = 0.22, # [m]
-        )
-    
-    Turb.set_bounds(
-        r5_r4_bounds = [0.3,0.7], # [-] : r5/r4 ratio
-        psi_bounds = [0.5, 1.5],
-        phi_bounds = [0.3, 0.6],
-        xhi_bounds = [0.3, 0.6],
-        r5h_r5t_bounds = [0.3, 0.4], # [-] : hub_tip ratio at the exit
-        )
-        
-    Turb.sizing_parallel(max_iter=3, n_jobs=-1)
-
+    Turb.sizing(max_iter=3, n_jobs=-1)

@@ -1,6 +1,6 @@
 from labothappy.component.heat_exchanger.hex_csteff_disc import HexCstEffDisc
 
-case_study = "RecupHT"
+case_study = "RecupTest"
 
 #Exo ORC M&S
 HTX = HexCstEffDisc()
@@ -51,6 +51,32 @@ elif case_study == "RecupHT":
     HTX.set_parameters(**{
         'eta_max' : 0.95,
         'n_disc' : 20, 
+        'Pinch_min' : 0,
+        'DP_c' : 0,
+        'DP_h' : 0*1e3,    
+    })
+    
+    HTX.solve()
+    HTX.plot_disc()
+    
+
+elif case_study == "RecupTest":
+    
+    HTX.set_inputs(
+        fluid_C = 'CO2',
+        T_su_C = 306.51,
+        m_dot_C = 365.4,
+        P_su_C = 17830200,
+    
+        fluid_H = 'CO2',
+        T_su_H = 324.403943370302,
+        m_dot_H = 365.4,
+        P_su_H = 5965838,
+    )
+    
+    HTX.set_parameters(**{
+        'eta_max' : 0.95,
+        'n_disc' : 100, 
         'Pinch_min' : 0,
         'DP_c' : 0,
         'DP_h' : 0*1e3,    

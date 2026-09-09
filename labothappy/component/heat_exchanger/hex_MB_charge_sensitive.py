@@ -1546,9 +1546,9 @@ class HexMBChargeSensitive(BaseComponent):
             raise ValueError(f"Pressure drop correlation {self.H.Correlation_DP['1P']} for '1P' phase conditions is not implemented in compute_cell_H_DP_1P method.")
             
         if np.isfinite(self.w[k]):
-            return min(DP_H*self.w[k]/max(sum(self.w),1), p_h_mean*0.95)
+            return min(min(DP_H*self.w[k]/max(sum(self.w),1), p_h_mean*0.95), 0.9*self.p_hi/self.params['n_disc'])
         else:
-            return min(DP_H/self.params['n_disc'], p_h_mean*0.95)
+            return min(min(DP_H/self.params['n_disc'], p_h_mean*0.95), 0.9*self.p_hi/self.params['n_disc'])
         
     def compute_cell_H_DP_2P(self, k, Th_mean, p_h_mean, T_wall_h, G_h, havg_h, Th_sat_mean, h_out):
         
@@ -1866,6 +1866,8 @@ class HexMBChargeSensitive(BaseComponent):
             
 
         elif self.HTX_Type == 'PCHE':            
+            
+            # self.params['A_eff'] =  self.params['R_p']/(1+self.params['R_p'])*self.params['N_c']*self.params['N_p']*(np.pi/2)*self.params['D_c']*self.params['L_c']*self.params['n_series']*self.params['n_parallel']
             pass # Implement interdependence computation
         
         return
@@ -1988,7 +1990,7 @@ class HexMBChargeSensitive(BaseComponent):
                 self.AS_H.T()
             else:
                 try:    
-                    self.AS_H.update(CP.HQ_INPUTS, 0.5, self.h_hi)
+                    self.AS_H.update(CP.HmassQ_INPUTS, self.h_hi, 0.5)
                     self.T_hi = self.AS_H.T()
                 except:
                     self.AS_H.update(CP.PQ_INPUTS, self.p_hi, 0.5)
@@ -2731,8 +2733,8 @@ class HexMBChargeSensitive(BaseComponent):
             
             HX.p_ci = self.pvec_c[0]
             HX.p_co = self.pvec_c[-1]
-            HX.p_hi = self.pvec_h[0]
-            HX.p_ho = self.pvec_h[-1]
+            HX.p_hi = self.pvec_h[-1]
+            HX.p_ho = self.pvec_h[0]
             
             "Compute the external pinching & update cell boundaries"
             Qmax_ext = HX.external_pinching(pvec_h=HX.pvec_h, pvec_c=HX.pvec_c) # Call to external-pinching procedure

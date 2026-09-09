@@ -93,30 +93,53 @@ def _eval_particle(x, cls, fluid, params, bounds, stage_params, inputs):
 
 class AxialTurbineMeanLineSizing(object):
 
+    DEFAULT_PARAMETERS = {
+        'Zweifel': 0.8,
+        'damping': 0.2,
+        'p_rel_tol': 0.01,
+        'delta_tip': 0.4e-3,
+        'N_lw': 0,
+        'D_lw': 0,
+        'e_blade': 0.002e-3,
+        't_TE_o': 0.05,
+        't_TE_min': 5e-4,
+    }
+
+    # Bornes de faisabilité géométrique (identiques dans les 4 cas) +
+    # bornes d'optimisation PSO, désormais fixées à l'union des extrêmes
+    # observés sur les 4 cas d'étude (Cuerva, Zorlu, TCO2_ORC, Salah_Case).
+    # Élargit la zone de recherche par rapport à un réglage cas par cas,
+    # mais rend chaque cas exécutable sans set_bounds() supplémentaire —
+    # y compris M_1st_bounds, qui manquait de fait dans 3 des 4 cas
+    # d'origine alors que sizing()/opt_size() y accèdent sans condition.
+    DEFAULT_BOUNDS = {
+        'AR_min': 0.8,
+        'r_hub_tip_max': 0.95,
+        'r_hub_tip_min': 0.6,
+        'Re_bounds': [1e6, 8e6],
+        'psi_bounds': [0.8, 2.5],
+        'phi_bounds': [0.5, 1],
+        'R_bounds': [0.4, 0.6],
+        'r_m_bounds': [0.1, 0.6],
+        'M_1st_bounds': [0.3, 0.5],
+    }
+
     def __init__(self, fluid):
         self.inputs = {}
-        self.params = {}
-        self.bounds = {}
+        self.params = dict(self.DEFAULT_PARAMETERS)
+        self.bounds = dict(self.DEFAULT_BOUNDS)
         
         # Abstract State 
         self.fluid = fluid
-        # self.AS = CP.AbstractState('HEOS', fluid)
         self.AS = CP.AbstractState("BICUBIC&HEOS", fluid)
         
-        # Blade Dictionnary
         self.stages = []
-
-        # Velocity Triangle Data
         self.Vel_Tri = {}
         self.Vel_Tri_Last_Stage = {}
-        
-        # Blade Row Efficiency
         self.eta_blade_row = None
         self.allowable_positions = []
         self.W_dot = 0
-        
         self.CAPEX = {}
-
     def reset(self):
 
         # self.AS = CP.AbstractState('HEOS', self.fluid)
@@ -1633,7 +1656,7 @@ class AxialTurbineMeanLineSizing(object):
 
 if __name__ == "__main__":
 
-    case_study = "TCO2_ORC"
+    case_study = "Salah_Case"
         
     if case_study == 'Cuerva':
     
@@ -1647,28 +1670,8 @@ if __name__ == "__main__":
             p_ex = 78300, # Pa
             )
         
-        Turb.set_parameters(
-            Zweifel = 0.8, # [-]
-            M_1_st = 0.3, # [-]
-            damping = 0.2, # [-]
-            delta_tip = 0.4*1e-3, # [m] : tip clearance
-            N_lw = 0, # [-] : Number of lashing wires
-            D_lw = 0, # [m] : Diameter of lashing wires
-            e_blade = 0.002*1e-3, # [m] : blade roughness
-            t_TE_o = 0.05, # [-] : trailing edge to throat opening ratio
-            t_TE_min = 5*1e-4, # [m]
-            )
-        
-        Turb.set_bounds(
-            AR_min = 0.8, # [-]
-            r_hub_tip_max = 0.95, # [-]
-            r_hub_tip_min = 0.6, # [-]
-            Re_bounds = [1*1e5,1*1e6], # [-]
-            psi_bounds = [1,2.5], # [-]
-            phi_bounds = [0.4,0.8], # [-]
-            R_bounds = [0.4,0.6], # [-]
-            r_m_bounds = [0.1, 0.6], # [m]
-            )
+        # DEFAULT_PARAMETERS et DEFAULT_BOUNDS couvrent déjà ce cas —
+        # aucun set_parameters/set_bounds nécessaire.
     
     elif case_study == 'Zorlu':
         
@@ -1682,28 +1685,7 @@ if __name__ == "__main__":
             p_ex = 82000, # Pa
             )
         
-        Turb.set_parameters(
-            Zweifel = 0.8, # [-]
-            M_1_st = 0.3, # [-]
-            damping = 0.2, # [-]
-            delta_tip = 0.4*1e-3, # [m] : tip clearance
-            N_lw = 0, # [-] : Number of lashing wires
-            D_lw = 0, # [m] : Diameter of lashing wires
-            e_blade = 0.002*1e-3, # [m] : blade roughness
-            t_TE_o = 0.05, # [-] : trailing edge to throat opening ratio
-            t_TE_min = 5*1e-4, # [m]
-            )
-        
-        Turb.set_bounds(
-            AR_min = 0.8, # [-]
-            r_hub_tip_max = 0.95, # [-]
-            r_hub_tip_min = 0.6, # [-]
-            Re_bounds = [1*1e5,1*1e6], # [-]
-            psi_bounds = [1,2.5], # [-]
-            phi_bounds = [0.4,0.7], # [-]
-            R_bounds = [0.45,0.55], # [-]
-            r_m_bounds = [0.15, 0.5], # [m]
-            )
+        # DEFAULT_PARAMETERS et DEFAULT_BOUNDS couvrent déjà ce cas.
         
     elif case_study == 'TCO2_ORC':
     
@@ -1711,36 +1693,14 @@ if __name__ == "__main__":
 
         Turb.set_inputs(
             mdot = 318.437021666738, # kg/s
-            W_dot = 15*1e6, # W : 
+            W_dot = 15*1e6, # W
             p0_su = 15309670.5, # Pa 
             T0_su = 406.4, # K
-            p_ex = 5220928, # 5742510, # Pa
-            )
-                
-        Turb.set_parameters(
-            Zweifel = 0.8, # [-]
-            damping = 0.2, # [-]
-            p_rel_tol = 0.01, # [-]
-            delta_tip = 0.4*1e-3, # [m] : tip clearance
-            N_lw = 0, # [-] : Number of lashing wires
-            D_lw = 0, # [m] : Diameter of lashing wires
-            e_blade = 0.002*1e-3, # [m] : blade roughness
-            t_TE_o = 0.05, # [-] : trailing edge to throat opening ratio
-            t_TE_min = 5*1e-4, # [m]
+            p_ex = 5220928, # Pa
             )
         
-        Turb.set_bounds(
-            AR_min = 0.8, # [-]
-            r_hub_tip_max = 0.95, # [-]
-            r_hub_tip_min = 0.6, # [-]
-            Re_bounds = [1*1e6,8*1e6], # [-]
-            psi_bounds = [0.5,2.5], # [-]
-            phi_bounds = [0.4,1], # [-]
-            R_bounds = [0.45,0.55], # [-]
-            M_1st_bounds = [0.4, 0.5], # [-]
-            r_m_bounds = [0.1, 0.6], # [m]
-            # Omega_choices = [500,750,1000,1500,3000], # [RPM]
-            )
+        # DEFAULT_PARAMETERS et DEFAULT_BOUNDS couvrent déjà ce cas —
+        # c'est d'ailleurs celui qui définissait M_1st_bounds à l'origine.
     
     elif case_study == 'Salah_Case':
     
@@ -1754,31 +1714,10 @@ if __name__ == "__main__":
             p_ex = 100*1e5, # Pa
             )
         
-        Turb.set_parameters(
-            Zweifel = 0.8, # [-]
-            M_1_st = 0.5, #0.3, # [-]
-            damping = 0.2, # [-]
-            delta_tip = 0.4*1e-3, # [m] : tip clearance
-            N_lw = 0, # [-] : Number of lashing wires
-            D_lw = 0, # [m] : Diameter of lashing wires
-            e_blade = 0.002*1e-3, # [m] : blade roughness
-            t_TE_o = 0.05, # [-] : trailing edge to throat opening ratio
-            t_TE_min = 5*1e-4, # [m]
-            )
-        
-        Turb.set_bounds(
-            AR_min = 0.8, # [-]
-            r_hub_tip_max = 0.95, # [-]
-            r_hub_tip_min = 0.6, # [-]
-            Re_bounds = [1*1e6,7*1e6], # [-]
-            psi_bounds = [1.5,2.5], # [-]
-            phi_bounds = [0.6,0.9], # [-]
-            R_bounds = [0.45,0.55], # [-]
-            r_m_bounds = [0.15, 0.5], # [m]
-            )
+        # DEFAULT_PARAMETERS et DEFAULT_BOUNDS couvrent déjà ce cas.
 
     # profiling mode switch
-    PROFILE = True  # set False for normal runs
+    PROFILE = True
     
     if PROFILE:
         os.environ["OMP_NUM_THREADS"] = "1"
@@ -1789,20 +1728,14 @@ if __name__ == "__main__":
     import time
     time_1 = []
     
-    # for i in range(10):
     t0 = time.perf_counter()
-    
-    # best_pos = Turb.design()
-    best_pos = Turb.sizing_parallel(n_jobs=-1)
-    
+    best_pos = Turb.sizing(n_jobs=-1, n_particles=50)
     elapsed = time.perf_counter() - t0
     print(f"Optimization completed in {elapsed:.2f} s")
     time_1.append(elapsed)
-    
     
     Turb.plot_geometry()
     Turb.plot_n_blade()
     Turb.plot_radius_verif()
     Turb.plot_Mollier()
     
-    # (1.4528688807250987, 0.4939933148314975, 0.42406128096733176, 6364578.748939947, 0.4557043394023795)

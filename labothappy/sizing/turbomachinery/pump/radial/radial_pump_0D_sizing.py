@@ -1,4 +1,3 @@
-
 import numpy as np
 import CoolProp.CoolProp as CP
 
@@ -6,16 +5,32 @@ from labothappy.correlations.turbomachinery.correlations_0D import cordier_line
 from labothappy.toolbox.economics.cpi_data import actualize_price
 
 class RadialPumpODSizing():
-    
+
+    # Valeurs par défaut, cohérentes avec les autres composants du cycle CO2
+    # (mêmes plages que celles utilisées dans TCO2_rec_comp_sizing).
+    DEFAULT_PARAMETERS = {
+        'Omega_choices': np.array([750, 1000, 1500, 3000]),
+        'n_parallel_choices': np.array([1, 2, 3, 4, 5, 6, 7, 8]),
+    }
+
     def __init__(self, fluid):
-        
-        self.params = {}
+
+        self.params = dict(self.DEFAULT_PARAMETERS)
         self.inputs = {}
+
+        # set_bounds/set_choice_vectors ci-dessous référencent self.bounds
+        # et self.set_choice_vectors, qui n'existent pas dans cette classe
+        # (code visiblement copié depuis ShellAndTubeSizingOpt) — sizing()
+        # ne les utilise pas, donc c'est du code mort. self.bounds est
+        # initialisé ici pour éviter un AttributeError si set_bounds est
+        # appelé, mais set_choice_vectors reste absent et fera échouer
+        # l'appel si choice_vectors est fourni.
+        self.bounds = {}
 
         self.CAPEX = {}
 
         self.AS = CP.AbstractState('HEOS', fluid)
-        
+
     #%% DATA HANDLING
     
     def set_inputs(self, **parameters):
@@ -306,7 +321,7 @@ class RadialPumpODSizing():
 
 if __name__ == "__main__":
 
-    PP_des = RadialPumpODDesign('CO2')
+    PP_des = RadialPumpODSizing('CO2')
     
     PP_des.set_inputs(
         P_su = 40e5, # Pa
@@ -323,10 +338,12 @@ if __name__ == "__main__":
         m_dot = 500, # kg/s
         )
     
-    PP_des.set_parameters(
-        Omega_choices = np.array([750, 1000, 1500, 3000]),
-        n_parallel_choices = np.array([1, 2, 3, 4, 5, 6, 7, 8])
-        )
+    # Grâce à DEFAULT_PARAMETERS, Omega_choices/n_parallel_choices sont déjà
+    # posés à l'instanciation — cet appel devient facultatif pour ce cas.
+    # PP_des.set_parameters(
+    #     Omega_choices = np.array([750, 1000, 1500, 3000]),
+    #     n_parallel_choices = np.array([1, 2, 3, 4, 5, 6, 7, 8])
+    #     )
     
     PP_des.sizing()
     

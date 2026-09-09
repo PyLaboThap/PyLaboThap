@@ -188,6 +188,48 @@ class ShellAndTubeSizingOpt(BaseComponent):
     _MAX_CYCLE_KEYS = {'T_max_cycle', 'p_max_cycle'}
     _OPT_VAR_KEYS = {'opt_vars'}
 
+    # Vecteurs de choix par défaut (diamètres/coques standards). Ne couvrent
+    # pas Shell_Side, T_max_cycle/p_max_cycle ni les corrélations : ceux-ci
+    # dépendent vraiment du cas (côté H/C, quelles corrélations où) et
+    # doivent rester fournis explicitement à chaque fois.
+    DEFAULT_CHOICE_VECTORS = {
+        'D_o_inch': [0.375, 0.5, 0.625, 0.75, 1, 1.25, 1.5],
+        'Shell_ID_inch': [8, 10, 12, 13.25, 15.25, 17.25, 19.25, 21.25, 23.25, 25, 27,
+                          29, 31, 33, 35, 37, 39, 42, 45, 48, 54, 60, 66, 72, 78, 84, 90, 96, 108, 120],
+        'Tube_pass': [1, 2, 4],
+        'tube_layout': [0, 45, 60],
+        'n_parallel': [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 20],
+    }
+
+    # Bornes par défaut, cohérentes avec DEFAULT_CHOICE_VECTORS ci-dessus.
+    DEFAULT_BOUNDS = {
+        'L_shell': [1, 15],
+        'D_o_inch': [DEFAULT_CHOICE_VECTORS['D_o_inch'][0], DEFAULT_CHOICE_VECTORS['D_o_inch'][-1]],
+        'Shell_ID_inch': [DEFAULT_CHOICE_VECTORS['Shell_ID_inch'][0], DEFAULT_CHOICE_VECTORS['Shell_ID_inch'][-1]],
+        'Tube_pass': [DEFAULT_CHOICE_VECTORS['Tube_pass'][0], DEFAULT_CHOICE_VECTORS['Tube_pass'][-1]],
+        'tube_layout': [DEFAULT_CHOICE_VECTORS['tube_layout'][0], DEFAULT_CHOICE_VECTORS['tube_layout'][-1]],
+        'Baffle_cut': [15, 45],
+    }
+
+    # Paramètres par défaut communs à la plupart des cas Shell&Tube.
+    # Shell_Side, T_max_cycle/p_max_cycle, les corrélations (H_Corr/C_Corr/
+    # H_DP/C_DP), les contraintes (Q_dot/DP_h/DP_c) et opt_vars restent
+    # volontairement absents : ils dépendent du cas et doivent être fournis
+    # explicitement via set_parameters(...).
+    DEFAULT_PARAMETERS = {
+        'n_series': 1,
+        'foul_t': 0.000176,
+        'foul_s': 0.000176,
+        'tube_cond': 50,
+        'Overdesign': 0,
+        'Flow_Type': 'Shell&Tube',
+        'H_DP_ON': True,
+        'C_DP_ON': True,
+        'n_disc': 30,
+        'opt_vars' : ['D_o_inch', 'L_shell', 'Shell_ID_inch', 'Central_spac', 'Tube_pass', 'tube_layout', 'Baffle_cut'],
+        'tube_t_flag' : True,
+    }
+
     class Particle(BaseComponent):
         def __init__(self, params = {}, su_S = None, ex_S = None, su_T = None, ex_T = None, choice_vectors = None, P_max_cycle = None, T_max_cycle = None, H_htc_Corr = None, C_htc_Corr = None, H_DP_Corr = None, C_DP_Corr = None):
             super().__init__()
@@ -383,7 +425,13 @@ class ShellAndTubeSizingOpt(BaseComponent):
     def __init__(self, seed = None):
         super().__init__()
 
-        self.params = {}
+        # self.params, self.bounds, self.choice_vectors sont initialisés
+        # à partir des defaults de classe (update incrémental ensuite via
+        # set_parameters/set_bounds/set_choice_vectors, donc rien n'est
+        # écrasé si l'appelant ne surcharge qu'une partie des clés).
+        self.params = dict(self.DEFAULT_PARAMETERS)
+        self.bounds = dict(self.DEFAULT_BOUNDS)
+        self.choice_vectors = copy.deepcopy(self.DEFAULT_CHOICE_VECTORS)
 
         self.particles = None
         self.global_best_position = None
@@ -394,8 +442,6 @@ class ShellAndTubeSizingOpt(BaseComponent):
 
         # Optimization related parameters/variables
         self.opt_vars = {}
-        self.bounds = {}
-        self.choice_vectors = {}
 
         # For tube thickness study
         self.P_max_cycle = None
@@ -1314,7 +1360,7 @@ if __name__ == "__main__":
 
     HX_test = ShellAndTubeSizingOpt()
 
-    test_case = "CO2_CD"
+    test_case = "Methanol"
 
     n_disc = 5
     Tube_t_flag = True
@@ -1326,18 +1372,6 @@ if __name__ == "__main__":
 
     if test_case == "Methanol":
 
-        # --- Exemple avec n_series optimisé par le PSO (présent dans choice_vectors + opt_vars) ---
-        choice_vectors = {
-                            'D_o_inch' : [0.375, 0.5, 0.625, 0.75, 1, 1.25, 1.5],
-                            'Shell_ID_inch' : [8, 10, 12, 13.25, 15.25, 17.25, 19.25, 21.25, 23.25, 25, 27,        
-                                29, 31, 33, 35, 37, 39, 42, 45, 48, 54, 60, 66, 72, 78, 84, 90, 96, 108, 120],
-                            'Tube_pass' : [2],
-                            'tube_layout' : [0,45,60],
-                            'n_parallel' : [1,2],
-                            # décommenter pour optimiser n_series au lieu de le figer :
-                            'n_series' : [1,2],
-                            }
-    
         HX_test.set_inputs(
             fluid_H = 'Methanol',
             T_su_H = 273.15 + 95, # K
@@ -1351,15 +1385,8 @@ if __name__ == "__main__":
             )
     
         HX_test.set_parameters(
-                                # n_series = 1, # [-] valeur fixe utilisée si 'n_series' absent de choice_vectors/opt_vars
-                                foul_t = 0.0002, foul_s = 0.00033, tube_cond = 50, Overdesign = 0,
                                 Shell_Side = 'H',
-                                Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True,
-                                n_disc = n_disc, Tube_t_flag = Tube_t_flag,
-    
-                                opt_vars = ['D_o_inch', 'L_shell', 'Shell_ID_inch', 'Central_spac', 'Tube_pass', 'tube_layout', 'Baffle_cut'],
-                                # pour optimiser n_series, ajouter 'n_series' à la liste ci-dessus
-                                # et l'ajouter aussi à choice_vectors plus haut.
+
                                 T_max_cycle = 273.15+110, # K
                                 p_max_cycle = 10*1e5, # Pa
     
@@ -1372,16 +1399,11 @@ if __name__ == "__main__":
                                 DP_h = 13.2*1e3,
                                 DP_c = 4.3*1e3,
                               )
+        
+        HX_test.set_choice_vectors({'n_parallel': [1, 2]})
+        HX_test.set_bounds({}, choice_vectors = {'Tube_pass': [2]})
 
     elif test_case == "R134a":
-    
-        choice_vectors = {
-                            'D_o_inch' : [0.375, 0.5, 0.625, 0.75, 1, 1.25, 1.5],
-                            'Shell_ID_inch' : [8, 10, 12, 13.25, 15.25, 17.25, 19.25, 21.25, 23.25, 25, 27,
-                                29, 31, 33, 35, 37, 39, 42, 45, 48, 54, 60, 66, 72, 78, 84, 90, 96, 108, 120],
-                            'Tube_pass' : [2],
-                            'tube_layout' : [60],
-                            'n_parallel' : [1]}
     
         HX_test.set_inputs(
             fluid_H = 'Water',
@@ -1396,13 +1418,9 @@ if __name__ == "__main__":
             )
     
         HX_test.set_parameters(
-                                n_series = 1, # [-]
-                                foul_t = 0.000176, foul_s = 0.000176, tube_cond = 50, Overdesign = 0,
                                 Shell_Side = 'H',
-                                Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True,
-                                n_disc = n_disc, Tube_t_flag = Tube_t_flag,
-    
-                                opt_vars = ['D_o_inch', 'L_shell', 'Shell_ID_inch', 'Central_spac', 'Tube_pass', 'tube_layout', 'Baffle_cut'],
+                                Tube_t_flag = Tube_t_flag,
+
                                 T_max_cycle = 273.15+110, # K
                                 p_max_cycle = 5*1e5, # Pa
     
@@ -1415,17 +1433,10 @@ if __name__ == "__main__":
                                 DP_h = 8.2*1e3,
                                 DP_c = 21.7*1e3,
                               )
+        HX_test.set_choice_vectors({'tube_layout': [60], 'n_parallel': [1]})
 
     elif test_case == "CO2_CD":
-    
-        choice_vectors = {
-                            'D_o_inch' : [0.375, 0.5, 0.625, 0.75, 1, 1.25, 1.5],
-                            'Shell_ID_inch' : [8, 10, 12, 13.25, 15.25, 17.25, 19.25, 21.25, 23.25, 25, 27,        
-                                29, 31, 33, 35, 37, 39, 42, 45, 48, 54, 60, 66, 72, 78, 84, 90, 96, 108, 120],
-                            'Tube_pass' : [1,2,4],
-                            'tube_layout' : [0,45,60],
-                            'n_parallel' : [1,2,3,4,6,8,10,12,14,16,20]} 
-    
+
         HX_test.set_inputs(
             fluid_H = 'CO2',
             T_su_H = 289.64, # K
@@ -1439,13 +1450,9 @@ if __name__ == "__main__":
             )
     
         HX_test.set_parameters(
-                                n_series = 1, # [-]
-                                foul_t = 0.000176, foul_s = 0.000176, tube_cond = 50, Overdesign = 0,
                                 Shell_Side = 'C',
-                                Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True,
                                 n_disc = 30,
-    
-                                opt_vars = ['D_o_inch', 'L_shell', 'Shell_ID_inch', 'Central_spac', 'Tube_pass', 'tube_layout', 'Baffle_cut'],
+
                                 T_max_cycle = 273.15+140, # K
                                 p_max_cycle = 160*1e5, # Pa
     
@@ -1458,17 +1465,14 @@ if __name__ == "__main__":
                                 DP_h = 2*1e5,
                                 DP_c = 1*1e5,
                               )
+        # DEFAULT_CHOICE_VECTORS / DEFAULT_BOUNDS couvrent déjà ce cas —
+        # aucun set_bounds/set_choice_vectors nécessaire.
 
     elif test_case == "CO2_GH":
     
-        choice_vectors = {
-                            'D_o_inch' : [0.375, 0.5, 0.625, 0.75, 1, 1.25, 1.5],
-                            'Shell_ID_inch' : [8, 10, 12, 13.25, 15.25, 17.25, 19.25, 21.25, 23.25, 25, 27,        
-                                29, 31, 33, 35, 37, 39, 42, 45, 48, 54, 60, 66, 72, 78, 84, 90, 96, 108, 120],
-                            'Tube_pass' : [1],
-                            'tube_layout' : [0,45,60],
-                            'n_parallel' : [1,2,3]}
-    
+        HX_test.set_choice_vectors({'Tube_pass': [1], 'n_parallel': [1, 2, 3]})
+        HX_test.set_bounds({}, choice_vectors = {'Tube_pass': [1], 'n_parallel': [1, 2, 3]})
+
         HX_test.set_inputs(
             fluid_C = 'CO2',
             T_su_C = 316.5, # K
@@ -1482,13 +1486,8 @@ if __name__ == "__main__":
             )
     
         HX_test.set_parameters(
-                                n_series = 1, # [-]
-                                foul_t = 0.000176, foul_s = 0.000176, tube_cond = 50, Overdesign = 0,
                                 Shell_Side = 'H',
-                                Flow_Type = 'Shell&Tube', H_DP_ON = True, C_DP_ON = True,
-                                n_disc = 30,
-    
-                                opt_vars = ['D_o_inch', 'L_shell', 'Shell_ID_inch', 'Central_spac', 'Tube_pass', 'tube_layout', 'Baffle_cut'],
+
                                 T_max_cycle = 273.15+140, # K
                                 p_max_cycle = 160*1e5, # Pa
     
@@ -1501,17 +1500,6 @@ if __name__ == "__main__":
                                 DP_h = 112284,
                                 DP_c = 205160.5,
                           )
-        
-    bounds = {
-                "L_shell" : [1,15],
-                "D_o_inch" : [choice_vectors['D_o_inch'][0], choice_vectors['D_o_inch'][-1]],
-                "Shell_ID_inch" : [choice_vectors['Shell_ID_inch'][0], choice_vectors['Shell_ID_inch'][-1]],
-                "Tube_pass" : [choice_vectors['Tube_pass'][0], choice_vectors['Tube_pass'][-1]],
-                "tube_layout" : [choice_vectors['tube_layout'][0], choice_vectors['tube_layout'][-1]],
-                "Baffle_cut" : [15, 45]
-                }
-    
-    HX_test.set_bounds(bounds, choice_vectors=choice_vectors)
 
     import time
     t0 = time.perf_counter()
