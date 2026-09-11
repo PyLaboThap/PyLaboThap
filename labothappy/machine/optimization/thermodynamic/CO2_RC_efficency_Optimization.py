@@ -583,7 +583,7 @@ class CO2RC_eff_optimizer:
 
 if __name__ == "__main__":
     
-    case_study = "test"
+    case_study = "Comparison"
     
     if case_study == "test":
     
@@ -592,8 +592,8 @@ if __name__ == "__main__":
         import matplotlib.pyplot as plt
     
         # ---- sweep ----
-        # T_vec = np.linspace(100, 400, 6) + 273.15
-        T_vec = np.linspace(150, 150, 1) + 273.15
+        T_vec = np.linspace(100, 350, 6) + 273.15
+        # T_vec = np.linspace(150, 150, 1) + 273.15
         ARCH = ['basic', 'REC', 'Recomp_1_recup', 'Recomp']
         
         # T_vec = np.array([350]) + 273.15
@@ -604,8 +604,9 @@ if __name__ == "__main__":
         m_dot_HS_vec = []
         T_h_ex_vec   = []
         Q_dot_waste  = []
-    
-        W_dot_test = 1e6  # 1 MW target
+        
+        n_MW = 1
+        W_dot_test = n_MW*1e6  # 1 MW target
     
         Optimizer = CO2RC_eff_optimizer('CO2')
     
@@ -636,8 +637,8 @@ if __name__ == "__main__":
     
                 P_high_min       = 80e5,
                 P_high_max       = 200e5,
-                m_dot_min        = 10.0,
-                m_dot_max        = 100.0,
+                m_dot_min        = 10.0*n_MW,
+                m_dot_max        = 100.0*n_MW,
                 m_dot_HS_fact_min = 0.1,
                 m_dot_HS_fact_max = 2,
                 m_dot_CS_fact_min = 1,
@@ -708,19 +709,142 @@ if __name__ == "__main__":
         
         Pour chaque (architecture, température), on relance l'optimisation PSO
         N_RUNS fois (le PSO étant stochastique, plusieurs essais réduisent le
-        risque de rester bloqué dans un optimum local) et on garde le meilleur
-        résultat valide. Si aucun des N_RUNS essais ne produit de solution
-        valide, on enregistre None pour ce point.
+        risque de rester bloqué dans un optimum local).
+        
+        Pour chaque condition (architecture, température), on conserve les
+        BEST_KEEP (par défaut 5) meilleurs runs valides rencontrés :
+          - si moins de BEST_KEEP runs valides ont été trouvés, on les ajoute tous ;
+          - une fois BEST_KEEP atteints, un nouveau run ne remplace le moins bon
+            de la liste que s'il fait mieux (eta plus élevé).
+        
+        Ces meilleurs runs sont enregistrés (et réécrits à chaque mise à jour,
+        pour être robuste à une interruption) dans un fichier CSV.
         """
         
+        import csv
         import multiprocessing
         import numpy as np
         import matplotlib.pyplot as plt
         
+        # ---------------------------------------------------------------------
+        # Bornes d'optimisation par architecture et par température (°C)
+        # ---------------------------------------------------------------------
+        BOUNDS = {
+            'REC': {
+                100.0: dict(P_high_min=1.449e+07, P_high_max=1.580e+07, m_dot_min=69.197, m_dot_max=73.322, m_dot_HS_fact_min=1.5721, m_dot_HS_fact_max=3.6346, m_dot_CS_fact_min=10.6236, m_dot_CS_fact_max=15.4395),
+                150.0: dict(P_high_min=1.604e+07, P_high_max=1.704e+07, m_dot_min=33.763, m_dot_max=35.160, m_dot_HS_fact_min=1.1774, m_dot_HS_fact_max=2.8640, m_dot_CS_fact_min=7.7265, m_dot_CS_fact_max=21.3089),
+                200.0: dict(P_high_min=1.858e+07, P_high_max=2e+07, m_dot_min=22.302, m_dot_max=22.680, m_dot_HS_fact_min=0.8287, m_dot_HS_fact_max=2.9539, m_dot_CS_fact_min=16.8675, m_dot_CS_fact_max=19.6892),
+                250.0: dict(P_high_min=1.636e+07, P_high_max=2e+07, m_dot_min=16.796, m_dot_max=19.942, m_dot_HS_fact_min=0.5621, m_dot_HS_fact_max=5.1976, m_dot_CS_fact_min=3.6010, m_dot_CS_fact_max=22.1168),
+                300.0: dict(P_high_min=1.541e+07, P_high_max=2e+07, m_dot_min=13.836, m_dot_max=16.337, m_dot_HS_fact_min=0.5281, m_dot_HS_fact_max=3.3241, m_dot_CS_fact_min=5.9445, m_dot_CS_fact_max=21.5712),
+                350.0: dict(P_high_min=1.466e+07, P_high_max=2e+07, m_dot_min=11.571, m_dot_max=18.151, m_dot_HS_fact_min=0.4916, m_dot_HS_fact_max=5.1040, m_dot_CS_fact_min=0.4834, m_dot_CS_fact_max=19.1780),
+            },
+            'Recomp': {
+                100.0: dict(P_high_min=1.307e+07, P_high_max=1.670e+07, m_dot_min=68.991, m_dot_max=94.019, m_dot_HS_fact_min=1.4913, m_dot_HS_fact_max=5.1649, m_dot_CS_fact_min=8.5376, m_dot_CS_fact_max=19.6382),
+                150.0: dict(P_high_min=1.043e+07, P_high_max=1.701e+07, m_dot_min=27.424, m_dot_max=90.502, m_dot_HS_fact_min=0.6013, m_dot_HS_fact_max=4.4915, m_dot_CS_fact_min=11.3029, m_dot_CS_fact_max=17.9534),
+                200.0: dict(P_high_min=1.060e+07, P_high_max=1.697e+07, m_dot_min=26.044, m_dot_max=56.034, m_dot_HS_fact_min=0.4544, m_dot_HS_fact_max=5.4410, m_dot_CS_fact_min=6.5479, m_dot_CS_fact_max=21.5822),
+                250.0: dict(P_high_min=1.269e+07, P_high_max=1.846e+07, m_dot_min=24.450, m_dot_max=36.267, m_dot_HS_fact_min=0.4694, m_dot_HS_fact_max=3.5117, m_dot_CS_fact_min=3.4953, m_dot_CS_fact_max=18.9767),
+                300.0: dict(P_high_min=1.483e+07, P_high_max=2e+07, m_dot_min=14.451, m_dot_max=25.908, m_dot_HS_fact_min=0.2716, m_dot_HS_fact_max=3.3641, m_dot_CS_fact_min=7.3641, m_dot_CS_fact_max=16.2130),
+                350.0: dict(P_high_min=7.751e+06, P_high_max=2e+07, m_dot_min=7.686, m_dot_max=64.905, m_dot_HS_fact_min=0.2388, m_dot_HS_fact_max=5.1119, m_dot_CS_fact_min=0.0000, m_dot_CS_fact_max=19.7339),
+            },
+            'Recomp_1_recup': {
+                100.0: dict(P_high_min=1.347e+07, P_high_max=1.751e+07, m_dot_min=72.328, m_dot_max=103.851, m_dot_HS_fact_min=1.3625, m_dot_HS_fact_max=4.1721, m_dot_CS_fact_min=3.1581, m_dot_CS_fact_max=22.0434),
+                150.0: dict(P_high_min=1.202e+07, P_high_max=1.558e+07, m_dot_min=29.343, m_dot_max=83.315, m_dot_HS_fact_min=0.3673, m_dot_HS_fact_max=5.3512, m_dot_CS_fact_min=6.8280, m_dot_CS_fact_max=19.5688),
+                200.0: dict(P_high_min=1.242e+07, P_high_max=1.896e+07, m_dot_min=19.407, m_dot_max=74.857, m_dot_HS_fact_min=0.9736, m_dot_HS_fact_max=5.3729, m_dot_CS_fact_min=7.6422, m_dot_CS_fact_max=16.3157),
+                250.0: dict(P_high_min=9.989e+06, P_high_max=2e+07, m_dot_min=16.573, m_dot_max=63.474, m_dot_HS_fact_min=0.0000, m_dot_HS_fact_max=5.1693, m_dot_CS_fact_min=3.3169, m_dot_CS_fact_max=13.2376),
+                300.0: dict(P_high_min=1.036e+07, P_high_max=2e+07, m_dot_min=19.989, m_dot_max=26.812, m_dot_HS_fact_min=0.6716, m_dot_HS_fact_max=3.1881, m_dot_CS_fact_min=10.6725, m_dot_CS_fact_max=16.5460),
+                350.0: dict(P_high_min=1.057e+07, P_high_max=2e+07, m_dot_min=13.028, m_dot_max=24.634, m_dot_HS_fact_min=1.5937, m_dot_HS_fact_max=4.9266, m_dot_CS_fact_min=4.2053, m_dot_CS_fact_max=16.5487),
+            },
+            'basic': {
+                100.0: dict(P_high_min=1.488e+07, P_high_max=1.557e+07, m_dot_min=68.180, m_dot_max=70.718, m_dot_HS_fact_min=1.8095, m_dot_HS_fact_max=3.4618, m_dot_CS_fact_min=10.1894, m_dot_CS_fact_max=18.7389),
+                150.0: dict(P_high_min=1.938e+07, P_high_max=1.995e+07, m_dot_min=33.787, m_dot_max=34.969, m_dot_HS_fact_min=1.0745, m_dot_HS_fact_max=5.2738, m_dot_CS_fact_min=8.1782, m_dot_CS_fact_max=20.2015),
+                200.0: dict(P_high_min=1.785e+07, P_high_max=2e+07, m_dot_min=19.508, m_dot_max=44.410, m_dot_HS_fact_min=0.2997, m_dot_HS_fact_max=4.4355, m_dot_CS_fact_min=5.0229, m_dot_CS_fact_max=20.3731),
+                250.0: dict(P_high_min=7.654e+06, P_high_max=2e+07, m_dot_min=6.271, m_dot_max=101.155, m_dot_HS_fact_min=0.1, m_dot_HS_fact_max=5.0931, m_dot_CS_fact_min=7.8644, m_dot_CS_fact_max=19.2222),
+                300.0: dict(P_high_min=1.156e+07, P_high_max=2e+07, m_dot_min=12.747, m_dot_max=25.952, m_dot_HS_fact_min=1.2133, m_dot_HS_fact_max=5.2711, m_dot_CS_fact_min=0.8459, m_dot_CS_fact_max=20.8587),
+                350.0: dict(P_high_min=9.394e+06, P_high_max=2e+07, m_dot_min=11.152, m_dot_max=23.315, m_dot_HS_fact_min=0.4942, m_dot_HS_fact_max=5.5206, m_dot_CS_fact_min=3.9687, m_dot_CS_fact_max=17.6152),
+            },
+        }
+        
+        _AVAILABLE_T_BY_ARCH = {arch: sorted(d.keys()) for arch, d in BOUNDS.items()}
+        
+        
+        def get_bounds(arch, T_C):
+            """Renvoie le dict de bornes pour (arch, T_C). Si T_C n'est pas une clé
+            exacte (arrondi/erreur flottante), utilise la température disponible
+            la plus proche pour cette architecture."""
+            arch_bounds = BOUNDS[arch]
+            if T_C in arch_bounds:
+                return arch_bounds[T_C]
+        
+            available = _AVAILABLE_T_BY_ARCH[arch]
+            T_used = min(available, key=lambda t: abs(t - T_C))
+            if abs(T_used - T_C) > 1.0:
+                print(f"    [!] Pas de bornes exactes pour {arch} @ {T_C}°C -> utilisation de {T_used}°C")
+            return arch_bounds[T_used]
+        
+        
+        # ---------------------------------------------------------------------
+        # Gestion des "N meilleurs runs" par condition (architecture, température)
+        # ---------------------------------------------------------------------
+        BEST_KEEP = 5  # nombre de meilleurs runs conservés par condition
+        CSV_PATH = "best_runs.csv"
+        
+        FIELDNAMES = [
+            "architecture", "T_C", "rank",
+            "P_high_Pa", "m_dot_CO2_kg_s", "m_dot_HS_factor", "m_dot_HS_kg_s",
+            "m_dot_CS_factor", "m_dot_CS_kg_s", "W_net_W", "eta",
+        ]
+        
+        # best_runs[(arch, T_C)] = liste des BEST_KEEP meilleurs runs (dicts), triée
+        # par eta décroissant
+        best_runs = {}
+        
+        
+        def extract_run_data(Optimizer, eta):
+            """Récupère les grandeurs d'intérêt sur l'objet Optimizer après
+            résolution. Adapter les noms d'attributs ci-dessous si l'API de
+            CO2RC_eff_optimizer diffère (ex. Optimizer.m_dot vs Optimizer.mdot)."""
+            return {
+                "P_high_Pa": getattr(Optimizer, "P_high", None),
+                "m_dot_CO2_kg_s": getattr(Optimizer, "m_dot", getattr(Optimizer, "mdot", None)),
+                "m_dot_HS_factor": getattr(Optimizer, "m_dot_HS_factor", None),
+                "m_dot_HS_kg_s": getattr(Optimizer, "m_dot_HS", None),
+                "m_dot_CS_factor": getattr(Optimizer, "m_dot_CS_factor", None),
+                "m_dot_CS_kg_s": getattr(Optimizer, "m_dot_CS", None),
+                "W_net_W": getattr(Optimizer, "W_net", getattr(Optimizer, "W_dot", None)),
+                "eta": eta,
+            }
+        
+        
+        def update_best_runs(key, new_run, max_keep=BEST_KEEP):
+            """Ajoute new_run à la liste des meilleurs runs pour `key`. Si la liste
+            dépasse max_keep après ajout, le run le plus faible (eta le plus bas)
+            est écarté -- ce qui peut être new_run lui-même s'il n'est pas assez bon."""
+            lst = best_runs.setdefault(key, [])
+            lst.append(new_run)
+            lst.sort(key=lambda r: r["eta"], reverse=True)
+            del lst[max_keep:]
+        
+        
+        def write_best_runs_csv(path=CSV_PATH):
+            rows = []
+            for (arch, T_C), lst in best_runs.items():
+                for rank, run in enumerate(lst, start=1):
+                    row = {"architecture": arch, "T_C": T_C, "rank": rank}
+                    row.update(run)
+                    rows.append(row)
+            rows.sort(key=lambda r: (r["architecture"], r["T_C"], r["rank"]))
+        
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+                writer.writeheader()
+                for row in rows:
+                    writer.writerow(row)
+        
+        
         n_cores = multiprocessing.cpu_count()
         
         # ---- sweep ----
-        T_vec = np.linspace(100, 400, 7) + 273.15
+        T_vec = np.linspace(100, 350, 6) + 273.15
         ARCH = ['basic', 'REC', 'Recomp_1_recup', 'Recomp']
         
         N_RUNS = 5  # nombre d'optimisations par point (arch, T)
@@ -739,7 +863,11 @@ if __name__ == "__main__":
             print(f"{'='*60}")
         
             for T in T_vec:
-                print(f"\n--- T = {T-273.15:.1f} °C ---")
+                T_C = round(T - 273.15, 1)
+                print(f"\n--- T = {T_C:.1f} °C ---")
+        
+                b = get_bounds(arch, T_C)
+                condition_key = (arch, T_C)
         
                 run_etas = []  # eta valides sur les N_RUNS essais de ce point
         
@@ -763,31 +891,36 @@ if __name__ == "__main__":
                             PP_rec  = 0,
                             PP_cd   = 5,
                             SC_cd   = 0.1,
-                            eta_pp_aux = 0.8, 
-                            
+                            eta_pp_aux = 0.8,
+        
                             DP_h_gh  = 50e3,
                             DP_c_gh  = 50e3,
                             DP_h_rec = 50e3,
                             DP_c_rec = 50e3,
                             DP_h_cond  = 50e3,
                             DP_c_cond  = 50e3,
-                            
-                            P_high_min       = 80e5,
-                            P_high_max       = 200e5,
-                            m_dot_min        = 5,
-                            m_dot_max        = 100.0,
-                            m_dot_HS_fact_min = 0.01,
-                            m_dot_HS_fact_max = 5,
-                            m_dot_CS_fact_min = 1,
-                            m_dot_CS_fact_max = 20,
+        
+                            P_high_min        = b['P_high_min'],
+                            P_high_max        = b['P_high_max'],
+                            m_dot_min         = b['m_dot_min'],
+                            m_dot_max         = b['m_dot_max'],
+                            m_dot_HS_fact_min = b['m_dot_HS_fact_min'],
+                            m_dot_HS_fact_max = b['m_dot_HS_fact_max'],
+                            m_dot_CS_fact_min = b['m_dot_CS_fact_min'],
+                            m_dot_CS_fact_max = b['m_dot_CS_fact_max'],
                             spliter_frac_min = 0,
                             spliter_frac_max = 1
                         )
         
+                        # Point de départ du solveur : centre des bornes de ce point (arch, T)
+                        P_high_init = 0.5 * (b['P_high_min'] + b['P_high_max'])
+                        mdot_init = 0.5 * (b['m_dot_min'] + b['m_dot_max'])
+                        mdot_HS_init = 0.5 * (b['m_dot_HS_fact_min'] + b['m_dot_HS_fact_max'])
+        
                         if arch in ("Recomp", "Recomp_1_recup"):
-                            Optimizer.set_it_var(P_high=100e5, mdot=20.0, mdot_HS=15.0, spliter_frac=1)
+                            Optimizer.set_it_var(P_high=P_high_init, mdot=mdot_init, mdot_HS=mdot_HS_init, spliter_frac=1)
                         else:
-                            Optimizer.set_it_var(P_high=100e5, mdot=20.0, mdot_HS=15.0)
+                            Optimizer.set_it_var(P_high=P_high_init, mdot=mdot_init, mdot_HS=mdot_HS_init)
         
                         Optimizer.set_obj(W_dot=W_dot_test)
                         Optimizer.set_CSource(T=15 + 273.15, P=5e5,  fluid='Water', m_dot=1000.0)
@@ -801,6 +934,11 @@ if __name__ == "__main__":
                         if eta is not None and np.isfinite(eta) and 0 < eta < 1:
                             eta_run = eta
                             print(f"    -> eta = {eta:.4f}")
+        
+                            # Mise à jour du top BEST_KEEP pour cette condition (arch, T)
+                            run_data = extract_run_data(Optimizer, eta)
+                            update_best_runs(condition_key, run_data)
+                            write_best_runs_csv()  # réécriture à chaque amélioration -> robuste à une interruption
                         else:
                             print(f"    ⚠️ Pas de solution valide (eta={eta})")
         
@@ -822,6 +960,9 @@ if __name__ == "__main__":
                     print(f"  ⚠️ Aucune solution valide sur {N_RUNS} essais")
         
                 results[arch].append(best_eta)
+        
+        print(f"\n{len(best_runs)} conditions (architecture, T) traitées.")
+        print(f"Top {BEST_KEEP} runs par condition enregistrés dans {CSV_PATH}")    
         
         # ---- Affichage récapitulatif ----
         print(f"\n{'='*60}")
